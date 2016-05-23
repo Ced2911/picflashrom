@@ -1,0 +1,186 @@
+<HTML>
+<HEAD>
+<TITLE>Listing of ../src/main.c</TITLE>
+<LINK rel=stylesheet href="udf_styles.css" type="text/css">
+</HEAD>
+<BODY>
+<table class="">
+<tr><td><code><i>     1</i> </code></td><td><code>&nbsp /********************************************************************</code></td></tr>
+<tr><td><code><i>     2</i> </code></td><td><code>&nbsp &nbsp Software&nbsp License&nbsp Agreement:</code></td></tr>
+<tr><td><code><i>     3</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>     4</i> </code></td><td><code>&nbsp &nbsp The&nbsp software&nbsp supplied&nbsp herewith&nbsp by&nbsp Microchip&nbsp Technology&nbsp Incorporated</code></td></tr>
+<tr><td><code><i>     5</i> </code></td><td><code>&nbsp &nbsp (the&nbsp "Company")&nbsp for&nbsp its&nbsp PIC(R)&nbsp Microcontroller&nbsp is&nbsp intended&nbsp and</code></td></tr>
+<tr><td><code><i>     6</i> </code></td><td><code>&nbsp &nbsp supplied&nbsp to&nbsp you,&nbsp the&nbsp Company's&nbsp customer,&nbsp for&nbsp use&nbsp solely&nbsp and</code></td></tr>
+<tr><td><code><i>     7</i> </code></td><td><code>&nbsp &nbsp exclusively&nbsp on&nbsp Microchip&nbsp PIC&nbsp Microcontroller&nbsp products.&nbsp The</code></td></tr>
+<tr><td><code><i>     8</i> </code></td><td><code>&nbsp &nbsp software&nbsp is&nbsp owned&nbsp by&nbsp the&nbsp Company&nbsp and/or&nbsp its&nbsp supplier,&nbsp and&nbsp is</code></td></tr>
+<tr><td><code><i>     9</i> </code></td><td><code>&nbsp &nbsp protected&nbsp under&nbsp applicable&nbsp copyright&nbsp laws.&nbsp All&nbsp rights&nbsp are&nbsp reserved.</code></td></tr>
+<tr><td><code><i>    10</i> </code></td><td><code>&nbsp &nbsp Any&nbsp use&nbsp in&nbsp violation&nbsp of&nbsp the&nbsp foregoing&nbsp restrictions&nbsp may&nbsp subject&nbsp the</code></td></tr>
+<tr><td><code><i>    11</i> </code></td><td><code>&nbsp &nbsp user&nbsp to&nbsp criminal&nbsp sanctions&nbsp under&nbsp applicable&nbsp laws,&nbsp as&nbsp well&nbsp as&nbsp to</code></td></tr>
+<tr><td><code><i>    12</i> </code></td><td><code>&nbsp &nbsp civil&nbsp liability&nbsp for&nbsp the&nbsp breach&nbsp of&nbsp the&nbsp terms&nbsp and&nbsp conditions&nbsp of&nbsp this</code></td></tr>
+<tr><td><code><i>    13</i> </code></td><td><code>&nbsp &nbsp license.</code></td></tr>
+<tr><td><code><i>    14</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    15</i> </code></td><td><code>&nbsp &nbsp THIS&nbsp SOFTWARE&nbsp IS&nbsp PROVIDED&nbsp IN&nbsp AN&nbsp "AS&nbsp IS"&nbsp CONDITION.&nbsp NO&nbsp WARRANTIES,</code></td></tr>
+<tr><td><code><i>    16</i> </code></td><td><code>&nbsp &nbsp WHETHER&nbsp EXPRESS,&nbsp IMPLIED&nbsp OR&nbsp STATUTORY,&nbsp INCLUDING,&nbsp BUT&nbsp NOT&nbsp LIMITED</code></td></tr>
+<tr><td><code><i>    17</i> </code></td><td><code>&nbsp &nbsp TO,&nbsp IMPLIED&nbsp WARRANTIES&nbsp OF&nbsp MERCHANTABILITY&nbsp AND&nbsp FITNESS&nbsp FOR&nbsp A</code></td></tr>
+<tr><td><code><i>    18</i> </code></td><td><code>&nbsp &nbsp PARTICULAR&nbsp PURPOSE&nbsp APPLY&nbsp TO&nbsp THIS&nbsp SOFTWARE.&nbsp THE&nbsp COMPANY&nbsp SHALL&nbsp NOT,</code></td></tr>
+<tr><td><code><i>    19</i> </code></td><td><code>&nbsp &nbsp IN&nbsp ANY&nbsp CIRCUMSTANCES,&nbsp BE&nbsp LIABLE&nbsp FOR&nbsp SPECIAL,&nbsp INCIDENTAL&nbsp OR</code></td></tr>
+<tr><td><code><i>    20</i> </code></td><td><code>&nbsp &nbsp CONSEQUENTIAL&nbsp DAMAGES,&nbsp FOR&nbsp ANY&nbsp REASON&nbsp WHATSOEVER.</code></td></tr>
+<tr><td><code><i>    21</i> </code></td><td><code>&nbsp &nbsp *******************************************************************/</code></td></tr>
+<tr><td><code><i>    22</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    23</i> </code></td><td><code>&nbsp /**&nbsp INCLUDES&nbsp *******************************************************/</code></td></tr>
+<tr><td><code><i>    24</i> </code></td><td><code>&nbsp #include&nbsp "system.h"</code></td></tr>
+<tr><td><code><i>    25</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  system_config.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    26</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    27</i> </code></td><td><code>&nbsp #include&nbsp "usb.h"</code></td></tr>
+<tr><td><code><i>    28</i> </code></td><td><code>&nbsp //#include&nbsp "usb_device_hid.h"</code></td></tr>
+<tr><td><code><i>    29</i> </code></td><td><code>&nbsp #include&nbsp "usb_device_cdc.h"</code></td></tr>
+<tr><td><code><i>    30</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    31</i> </code></td><td><code>&nbsp #include&nbsp "app_device_custom_hid.h"</code></td></tr>
+<tr><td><code><i>    32</i> </code></td><td><code>&nbsp #include&nbsp "app_led_usb_status.h"</code></td></tr>
+<tr><td><code><i>    33</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    34</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    35</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    36</i> </code></td><td><code>&nbsp MAIN_RETURN&nbsp main(void)</code></td></tr>
+<tr><td><code><i>    37</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>    38</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp SYSTEM_Initialize(SYSTEM_STATE_USB_START);</code></td></tr>
+<tr><td><code><i>    39</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    40</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp USBDeviceInit();</code></td></tr>
+<tr><td><code><i>    41</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp USBDeviceAttach();</code></td></tr>
+<tr><td><code><i>    42</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    43</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp while(1)</code></td></tr>
+<tr><td><code><i>    44</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    45</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp SYSTEM_Tasks();</code></td></tr>
+<tr><td><code><i>    46</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    47</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #if&nbsp defined(USB_POLLING)</code></td></tr>
+<tr><td><code><i>    48</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Interrupt&nbsp or&nbsp polling&nbsp method.&nbsp&nbsp If&nbsp using&nbsp polling,&nbsp must&nbsp call</code></td></tr>
+<tr><td><code><i>    49</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp this&nbsp function&nbsp periodically.&nbsp&nbsp This&nbsp function&nbsp will&nbsp take&nbsp care</code></td></tr>
+<tr><td><code><i>    50</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp of&nbsp processing&nbsp and&nbsp responding&nbsp to&nbsp SETUP&nbsp transactions</code></td></tr>
+<tr><td><code><i>    51</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp (such&nbsp as&nbsp during&nbsp the&nbsp enumeration&nbsp process&nbsp when&nbsp you&nbsp first</code></td></tr>
+<tr><td><code><i>    52</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp plug&nbsp in).&nbsp&nbsp USB&nbsp hosts&nbsp require&nbsp that&nbsp USB&nbsp devices&nbsp should&nbsp accept</code></td></tr>
+<tr><td><code><i>    53</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp and&nbsp process&nbsp SETUP&nbsp packets&nbsp in&nbsp a&nbsp timely&nbsp fashion.&nbsp&nbsp Therefore,</code></td></tr>
+<tr><td><code><i>    54</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp when&nbsp using&nbsp polling,&nbsp this&nbsp function&nbsp should&nbsp be&nbsp called</code></td></tr>
+<tr><td><code><i>    55</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp regularly&nbsp (such&nbsp as&nbsp once&nbsp every&nbsp 1.8ms&nbsp or&nbsp faster**&nbsp [see</code></td></tr>
+<tr><td><code><i>    56</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp inline&nbsp code&nbsp comments&nbsp in&nbsp usb_device.c&nbsp for&nbsp explanation&nbsp when</code></td></tr>
+<tr><td><code><i>    57</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp "or&nbsp faster"&nbsp applies])&nbsp&nbsp In&nbsp most&nbsp cases,&nbsp the&nbsp USBDeviceTasks()</code></td></tr>
+<tr><td><code><i>    58</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp function&nbsp does&nbsp not&nbsp take&nbsp very&nbsp long&nbsp to&nbsp execute&nbsp (ex:&nbsp&lsaquo  100</code></td></tr>
+<tr><td><code><i>    59</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp instruction&nbsp cycles)&nbsp before&nbsp it&nbsp returns.</code></td></tr>
+<tr><td><code><i>    60</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp USBDeviceTasks();</code></td></tr>
+<tr><td><code><i>    61</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #endif</code></td></tr>
+<tr><td><code><i>    62</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    63</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp If&nbsp the&nbsp USB&nbsp device&nbsp isn't&nbsp configured&nbsp yet,&nbsp we&nbsp can't&nbsp really&nbsp do&nbsp anything</code></td></tr>
+<tr><td><code><i>    64</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp else&nbsp since&nbsp we&nbsp don't&nbsp have&nbsp a&nbsp host&nbsp to&nbsp talk&nbsp to.&nbsp&nbsp So&nbsp jump&nbsp back&nbsp to&nbsp the</code></td></tr>
+<tr><td><code><i>    65</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp top&nbsp of&nbsp the&nbsp while&nbsp loop.&nbsp */</code></td></tr>
+<tr><td><code><i>    66</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp if(&nbsp USBGetDeviceState()&nbsp&lsaquo &nbsp CONFIGURED_STATE&nbsp )</code></td></tr>
+<tr><td><code><i>    67</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    68</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp Jump&nbsp back&nbsp to&nbsp the&nbsp top&nbsp of&nbsp the&nbsp while&nbsp loop.&nbsp */</code></td></tr>
+<tr><td><code><i>    69</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp continue;</code></td></tr>
+<tr><td><code><i>    70</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>    71</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    72</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp If&nbsp we&nbsp are&nbsp currently&nbsp suspended,&nbsp then&nbsp we&nbsp need&nbsp to&nbsp see&nbsp if&nbsp we&nbsp need&nbsp to</code></td></tr>
+<tr><td><code><i>    73</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp issue&nbsp a&nbsp remote&nbsp wakeup.&nbsp&nbsp In&nbsp either&nbsp case,&nbsp we&nbsp shouldn't&nbsp process&nbsp any</code></td></tr>
+<tr><td><code><i>    74</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp keyboard&nbsp commands&nbsp since&nbsp we&nbsp aren't&nbsp currently&nbsp communicating&nbsp to&nbsp the&nbsp host</code></td></tr>
+<tr><td><code><i>    75</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp thus&nbsp just&nbsp continue&nbsp back&nbsp to&nbsp the&nbsp start&nbsp of&nbsp the&nbsp while&nbsp loop.&nbsp */</code></td></tr>
+<tr><td><code><i>    76</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp if(&nbsp USBIsDeviceSuspended()&nbsp ==&nbsp true&nbsp )</code></td></tr>
+<tr><td><code><i>    77</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    78</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp Jump&nbsp back&nbsp to&nbsp the&nbsp top&nbsp of&nbsp the&nbsp while&nbsp loop.&nbsp */</code></td></tr>
+<tr><td><code><i>    79</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp continue;</code></td></tr>
+<tr><td><code><i>    80</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>    81</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    82</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Application&nbsp specific&nbsp tasks</code></td></tr>
+<tr><td><code><i>    83</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp APP_DeviceCustomHIDTasks();</code></td></tr>
+<tr><td><code><i>    84</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    85</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }//end&nbsp while</code></td></tr>
+<tr><td><code><i>    86</i> </code></td><td><code>&nbsp }//end&nbsp main</code></td></tr>
+<tr><td><code><i>    87</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    88</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    89</i> </code></td><td><code>&nbsp /*******************************************************************</code></td></tr>
+<tr><td><code><i>    90</i> </code></td><td><code>&nbsp &nbsp *&nbsp Function:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp bool&nbsp USER_USB_CALLBACK_EVENT_HANDLER(</code></td></tr>
+<tr><td><code><i>    91</i> </code></td><td><code>&nbsp &nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp USB_EVENT&nbsp event,&nbsp void&nbsp *pdata,&nbsp uint16_t&nbsp size)</code></td></tr>
+<tr><td><code><i>    92</i> </code></td><td><code>&nbsp &nbsp *</code></td></tr>
+<tr><td><code><i>    93</i> </code></td><td><code>&nbsp &nbsp *&nbsp PreCondition:&nbsp&nbsp&nbsp&nbsp None</code></td></tr>
+<tr><td><code><i>    94</i> </code></td><td><code>&nbsp &nbsp *</code></td></tr>
+<tr><td><code><i>    95</i> </code></td><td><code>&nbsp &nbsp *&nbsp Input:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp USB_EVENT&nbsp event&nbsp -&nbsp the&nbsp type&nbsp of&nbsp event</code></td></tr>
+<tr><td><code><i>    96</i> </code></td><td><code>&nbsp &nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp void&nbsp *pdata&nbsp -&nbsp pointer&nbsp to&nbsp the&nbsp event&nbsp data</code></td></tr>
+<tr><td><code><i>    97</i> </code></td><td><code>&nbsp &nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp uint16_t&nbsp size&nbsp -&nbsp size&nbsp of&nbsp the&nbsp event&nbsp data</code></td></tr>
+<tr><td><code><i>    98</i> </code></td><td><code>&nbsp &nbsp *</code></td></tr>
+<tr><td><code><i>    99</i> </code></td><td><code>&nbsp &nbsp *&nbsp Output:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp None</code></td></tr>
+<tr><td><code><i>   100</i> </code></td><td><code>&nbsp &nbsp *</code></td></tr>
+<tr><td><code><i>   101</i> </code></td><td><code>&nbsp &nbsp *&nbsp Side&nbsp Effects:&nbsp&nbsp&nbsp&nbsp None</code></td></tr>
+<tr><td><code><i>   102</i> </code></td><td><code>&nbsp &nbsp *</code></td></tr>
+<tr><td><code><i>   103</i> </code></td><td><code>&nbsp &nbsp *&nbsp Overview:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp This&nbsp function&nbsp is&nbsp called&nbsp from&nbsp the&nbsp USB&nbsp stack&nbsp to</code></td></tr>
+<tr><td><code><i>   104</i> </code></td><td><code>&nbsp &nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp notify&nbsp a&nbsp user&nbsp application&nbsp that&nbsp a&nbsp USB&nbsp event</code></td></tr>
+<tr><td><code><i>   105</i> </code></td><td><code>&nbsp &nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp occured.&nbsp&nbsp This&nbsp callback&nbsp is&nbsp in&nbsp interrupt&nbsp context</code></td></tr>
+<tr><td><code><i>   106</i> </code></td><td><code>&nbsp &nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp when&nbsp the&nbsp USB_INTERRUPT&nbsp option&nbsp is&nbsp selected.</code></td></tr>
+<tr><td><code><i>   107</i> </code></td><td><code>&nbsp &nbsp *</code></td></tr>
+<tr><td><code><i>   108</i> </code></td><td><code>&nbsp &nbsp *&nbsp Note:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp None</code></td></tr>
+<tr><td><code><i>   109</i> </code></td><td><code>&nbsp &nbsp *******************************************************************/</code></td></tr>
+<tr><td><code><i>   110</i> </code></td><td><code>&nbsp bool&nbsp USER_USB_CALLBACK_EVENT_HANDLER(USB_EVENT&nbsp event,&nbsp void&nbsp *pdata,&nbsp uint16_t&nbsp size)</code></td></tr>
+<tr><td><code><i>   111</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>   112</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp switch((int)event)</code></td></tr>
+<tr><td><code><i>   113</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   114</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_TRANSFER:</code></td></tr>
+<tr><td><code><i>   115</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   116</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   117</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_SOF:</code></td></tr>
+<tr><td><code><i>   118</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp We&nbsp are&nbsp using&nbsp the&nbsp SOF&nbsp as&nbsp a&nbsp timer&nbsp to&nbsp time&nbsp the&nbsp LED&nbsp indicator.&nbsp&nbsp Call</code></td></tr>
+<tr><td><code><i>   119</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp the&nbsp LED&nbsp update&nbsp function&nbsp here.&nbsp */</code></td></tr>
+<tr><td><code><i>   120</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp APP_LEDUpdateUSBStatus();</code></td></tr>
+<tr><td><code><i>   121</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   122</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   123</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_SUSPEND:</code></td></tr>
+<tr><td><code><i>   124</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp Update&nbsp the&nbsp LED&nbsp status&nbsp for&nbsp the&nbsp suspend&nbsp event.&nbsp */</code></td></tr>
+<tr><td><code><i>   125</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp APP_LEDUpdateUSBStatus();</code></td></tr>
+<tr><td><code><i>   126</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   127</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Call&nbsp the&nbsp hardware&nbsp platform&nbsp specific&nbsp handler&nbsp for&nbsp suspend&nbsp events&nbsp for</code></td></tr>
+<tr><td><code><i>   128</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //possible&nbsp further&nbsp action&nbsp (like&nbsp optionally&nbsp going&nbsp reconfiguring&nbsp the&nbsp application</code></td></tr>
+<tr><td><code><i>   129</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //for&nbsp lower&nbsp power&nbsp states&nbsp and&nbsp going&nbsp to&nbsp sleep&nbsp during&nbsp the&nbsp suspend&nbsp event).&nbsp&nbsp This</code></td></tr>
+<tr><td><code><i>   130</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //would&nbsp normally&nbsp be&nbsp done&nbsp in&nbsp USB&nbsp compliant&nbsp bus&nbsp powered&nbsp applications,&nbsp although</code></td></tr>
+<tr><td><code><i>   131</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //no&nbsp further&nbsp processing&nbsp is&nbsp needed&nbsp for&nbsp purely&nbsp self&nbsp powered&nbsp applications&nbsp that</code></td></tr>
+<tr><td><code><i>   132</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //don't&nbsp consume&nbsp power&nbsp from&nbsp the&nbsp host.</code></td></tr>
+<tr><td><code><i>   133</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp SYSTEM_Initialize(SYSTEM_STATE_USB_SUSPEND);</code></td></tr>
+<tr><td><code><i>   134</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   135</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   136</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_RESUME:</code></td></tr>
+<tr><td><code><i>   137</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp Update&nbsp the&nbsp LED&nbsp status&nbsp for&nbsp the&nbsp resume&nbsp event.&nbsp */</code></td></tr>
+<tr><td><code><i>   138</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp APP_LEDUpdateUSBStatus();</code></td></tr>
+<tr><td><code><i>   139</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   140</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Call&nbsp the&nbsp hardware&nbsp platform&nbsp specific&nbsp resume&nbsp from&nbsp suspend&nbsp handler&nbsp (ex:&nbsp to</code></td></tr>
+<tr><td><code><i>   141</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //restore&nbsp I/O&nbsp pins&nbsp to&nbsp higher&nbsp power&nbsp states&nbsp if&nbsp they&nbsp were&nbsp changed&nbsp during&nbsp the&nbsp </code></td></tr>
+<tr><td><code><i>   142</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //preceding&nbsp SYSTEM_Initialize(SYSTEM_STATE_USB_SUSPEND)&nbsp call&nbsp at&nbsp the&nbsp start</code></td></tr>
+<tr><td><code><i>   143</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //of&nbsp the&nbsp suspend&nbsp condition.</code></td></tr>
+<tr><td><code><i>   144</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp SYSTEM_Initialize(SYSTEM_STATE_USB_RESUME);</code></td></tr>
+<tr><td><code><i>   145</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   146</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   147</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_CONFIGURED:</code></td></tr>
+<tr><td><code><i>   148</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp When&nbsp the&nbsp device&nbsp is&nbsp configured,&nbsp we&nbsp can&nbsp (re)initialize&nbsp the&nbsp demo</code></td></tr>
+<tr><td><code><i>   149</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp code.&nbsp */</code></td></tr>
+<tr><td><code><i>   150</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp APP_DeviceCustomHIDInitialize();</code></td></tr>
+<tr><td><code><i>   151</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   152</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   153</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_SET_DESCRIPTOR:</code></td></tr>
+<tr><td><code><i>   154</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   155</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   156</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_EP0_REQUEST:</code></td></tr>
+<tr><td><code><i>   157</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp We&nbsp have&nbsp received&nbsp a&nbsp non-standard&nbsp USB&nbsp request.&nbsp&nbsp The&nbsp HID&nbsp driver</code></td></tr>
+<tr><td><code><i>   158</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp needs&nbsp to&nbsp check&nbsp to&nbsp see&nbsp if&nbsp the&nbsp request&nbsp was&nbsp for&nbsp it.&nbsp */</code></td></tr>
+<tr><td><code><i>   159</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //USBCheckHIDRequest();</code></td></tr>
+<tr><td><code><i>   160</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp USBCheckCDCRequest();</code></td></tr>
+<tr><td><code><i>   161</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   162</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   163</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_BUS_ERROR:</code></td></tr>
+<tr><td><code><i>   164</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   165</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   166</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp EVENT_TRANSFER_TERMINATED:</code></td></tr>
+<tr><td><code><i>   167</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   168</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   169</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp default:</code></td></tr>
+<tr><td><code><i>   170</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   171</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   172</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp return&nbsp true;</code></td></tr>
+<tr><td><code><i>   173</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>   174</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   175</i> </code></td><td><code>&nbsp /*******************************************************************************</code></td></tr>
+<tr><td><code><i>   176</i> </code></td><td><code>&nbsp &nbsp End&nbsp of&nbsp File</code></td></tr>
+<tr><td><code><i>   177</i> </code></td><td><code>&nbsp */</code></td></tr>
+<tr><td><code><i>   178</i> </code></td><td><code>&nbsp </code></code></BODY>
+</HTML>

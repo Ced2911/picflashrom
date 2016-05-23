@@ -1,0 +1,136 @@
+<HTML>
+<HEAD>
+<TITLE>Listing of ../src/app_led_usb_status.c</TITLE>
+<LINK rel=stylesheet href="udf_styles.css" type="text/css">
+</HEAD>
+<BODY>
+<table class="">
+<tr><td><code><i>     1</i> </code></td><td><code>&nbsp /*******************************************************************************</code></td></tr>
+<tr><td><code><i>     2</i> </code></td><td><code>&nbsp &nbsp&nbsp USB&nbsp Status&nbsp Indicator&nbsp LED</code></td></tr>
+<tr><td><code><i>     3</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>     4</i> </code></td><td><code>&nbsp &nbsp&nbsp Company:</code></td></tr>
+<tr><td><code><i>     5</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp Microchip&nbsp Technology&nbsp Inc.</code></td></tr>
+<tr><td><code><i>     6</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>     7</i> </code></td><td><code>&nbsp &nbsp&nbsp File&nbsp Name:</code></td></tr>
+<tr><td><code><i>     8</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp led_usb_status.c</code></td></tr>
+<tr><td><code><i>     9</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    10</i> </code></td><td><code>&nbsp &nbsp&nbsp Summary:</code></td></tr>
+<tr><td><code><i>    11</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp Indicates&nbsp the&nbsp USB&nbsp device&nbsp status&nbsp to&nbsp the&nbsp user&nbsp via&nbsp an&nbsp LED.</code></td></tr>
+<tr><td><code><i>    12</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    13</i> </code></td><td><code>&nbsp &nbsp&nbsp Description:</code></td></tr>
+<tr><td><code><i>    14</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp Indicates&nbsp the&nbsp USB&nbsp device&nbsp status&nbsp to&nbsp the&nbsp user&nbsp via&nbsp an&nbsp LED.</code></td></tr>
+<tr><td><code><i>    15</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp *&nbsp The&nbsp LED&nbsp is&nbsp turned&nbsp off&nbsp for&nbsp suspend&nbsp mode.</code></td></tr>
+<tr><td><code><i>    16</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp *&nbsp It&nbsp blinks&nbsp quickly&nbsp with&nbsp 50%&nbsp on&nbsp time&nbsp when&nbsp configured</code></td></tr>
+<tr><td><code><i>    17</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp *&nbsp It&nbsp blinks&nbsp slowly&nbsp at&nbsp a&nbsp low&nbsp on&nbsp time&nbsp (~5%&nbsp on,&nbsp 95%&nbsp off)&nbsp for&nbsp all&nbsp other&nbsp states.</code></td></tr>
+<tr><td><code><i>    18</i> </code></td><td><code>&nbsp *******************************************************************************/</code></td></tr>
+<tr><td><code><i>    19</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    20</i> </code></td><td><code>&nbsp //&nbsp DOM-IGNORE-BEGIN</code></td></tr>
+<tr><td><code><i>    21</i> </code></td><td><code>&nbsp /*******************************************************************************</code></td></tr>
+<tr><td><code><i>    22</i> </code></td><td><code>&nbsp Copyright&nbsp (c)&nbsp 2013&nbsp released&nbsp Microchip&nbsp Technology&nbsp Inc.&nbsp&nbsp All&nbsp rights&nbsp reserved.</code></td></tr>
+<tr><td><code><i>    23</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    24</i> </code></td><td><code>&nbsp Microchip&nbsp licenses&nbsp to&nbsp you&nbsp the&nbsp right&nbsp to&nbsp use,&nbsp modify,&nbsp copy&nbsp and&nbsp distribute</code></td></tr>
+<tr><td><code><i>    25</i> </code></td><td><code>&nbsp Software&nbsp only&nbsp when&nbsp embedded&nbsp on&nbsp a&nbsp Microchip&nbsp microcontroller&nbsp or&nbsp digital&nbsp signal</code></td></tr>
+<tr><td><code><i>    26</i> </code></td><td><code>&nbsp controller&nbsp that&nbsp is&nbsp integrated&nbsp into&nbsp your&nbsp product&nbsp or&nbsp third&nbsp party&nbsp product</code></td></tr>
+<tr><td><code><i>    27</i> </code></td><td><code>&nbsp (pursuant&nbsp to&nbsp the&nbsp sublicense&nbsp terms&nbsp in&nbsp the&nbsp accompanying&nbsp license&nbsp agreement).</code></td></tr>
+<tr><td><code><i>    28</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    29</i> </code></td><td><code>&nbsp You&nbsp should&nbsp refer&nbsp to&nbsp the&nbsp license&nbsp agreement&nbsp accompanying&nbsp this&nbsp Software&nbsp for</code></td></tr>
+<tr><td><code><i>    30</i> </code></td><td><code>&nbsp additional&nbsp information&nbsp regarding&nbsp your&nbsp rights&nbsp and&nbsp obligations.</code></td></tr>
+<tr><td><code><i>    31</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    32</i> </code></td><td><code>&nbsp SOFTWARE&nbsp AND&nbsp DOCUMENTATION&nbsp ARE&nbsp PROVIDED&nbsp "AS&nbsp IS"&nbsp WITHOUT&nbsp WARRANTY&nbsp OF&nbsp ANY&nbsp KIND,</code></td></tr>
+<tr><td><code><i>    33</i> </code></td><td><code>&nbsp EITHER&nbsp EXPRESS&nbsp OR&nbsp IMPLIED,&nbsp INCLUDING&nbsp WITHOUT&nbsp LIMITATION,&nbsp ANY&nbsp WARRANTY&nbsp OF</code></td></tr>
+<tr><td><code><i>    34</i> </code></td><td><code>&nbsp MERCHANTABILITY,&nbsp TITLE,&nbsp NON-INFRINGEMENT&nbsp AND&nbsp FITNESS&nbsp FOR&nbsp A&nbsp PARTICULAR&nbsp PURPOSE.</code></td></tr>
+<tr><td><code><i>    35</i> </code></td><td><code>&nbsp IN&nbsp NO&nbsp EVENT&nbsp SHALL&nbsp MICROCHIP&nbsp OR&nbsp ITS&nbsp LICENSORS&nbsp BE&nbsp LIABLE&nbsp OR&nbsp OBLIGATED&nbsp UNDER</code></td></tr>
+<tr><td><code><i>    36</i> </code></td><td><code>&nbsp CONTRACT,&nbsp NEGLIGENCE,&nbsp STRICT&nbsp LIABILITY,&nbsp CONTRIBUTION,&nbsp BREACH&nbsp OF&nbsp WARRANTY,&nbsp OR</code></td></tr>
+<tr><td><code><i>    37</i> </code></td><td><code>&nbsp OTHER&nbsp LEGAL&nbsp EQUITABLE&nbsp THEORY&nbsp ANY&nbsp DIRECT&nbsp OR&nbsp INDIRECT&nbsp DAMAGES&nbsp OR&nbsp EXPENSES</code></td></tr>
+<tr><td><code><i>    38</i> </code></td><td><code>&nbsp INCLUDING&nbsp BUT&nbsp NOT&nbsp LIMITED&nbsp TO&nbsp ANY&nbsp INCIDENTAL,&nbsp SPECIAL,&nbsp INDIRECT,&nbsp PUNITIVE&nbsp OR</code></td></tr>
+<tr><td><code><i>    39</i> </code></td><td><code>&nbsp CONSEQUENTIAL&nbsp DAMAGES,&nbsp LOST&nbsp PROFITS&nbsp OR&nbsp LOST&nbsp DATA,&nbsp COST&nbsp OF&nbsp PROCUREMENT&nbsp OF</code></td></tr>
+<tr><td><code><i>    40</i> </code></td><td><code>&nbsp SUBSTITUTE&nbsp GOODS,&nbsp TECHNOLOGY,&nbsp SERVICES,&nbsp OR&nbsp ANY&nbsp CLAIMS&nbsp BY&nbsp THIRD&nbsp PARTIES</code></td></tr>
+<tr><td><code><i>    41</i> </code></td><td><code>&nbsp (INCLUDING&nbsp BUT&nbsp NOT&nbsp LIMITED&nbsp TO&nbsp ANY&nbsp DEFENSE&nbsp THEREOF),&nbsp OR&nbsp OTHER&nbsp SIMILAR&nbsp COSTS.</code></td></tr>
+<tr><td><code><i>    42</i> </code></td><td><code>&nbsp *******************************************************************************/</code></td></tr>
+<tr><td><code><i>    43</i> </code></td><td><code>&nbsp //&nbsp DOM-IGNORE-END</code></td></tr>
+<tr><td><code><i>    44</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    45</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    46</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    47</i> </code></td><td><code>&nbsp //&nbsp Section:&nbsp Included&nbsp Files</code></td></tr>
+<tr><td><code><i>    48</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    49</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    50</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  stdint.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    51</i> </code></td><td><code>&nbsp #include&nbsp "system.h"</code></td></tr>
+<tr><td><code><i>    52</i> </code></td><td><code>&nbsp #include&nbsp "usb_device.h"</code></td></tr>
+<tr><td><code><i>    53</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    54</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    55</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    56</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    57</i> </code></td><td><code>&nbsp //&nbsp Section:&nbsp File&nbsp Scope&nbsp or&nbsp Global&nbsp Constants</code></td></tr>
+<tr><td><code><i>    58</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    59</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    60</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    61</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    62</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    63</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    64</i> </code></td><td><code>&nbsp //&nbsp Section:&nbsp File&nbsp Scope&nbsp Data&nbsp Types</code></td></tr>
+<tr><td><code><i>    65</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    66</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    67</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    68</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    69</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    70</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    71</i> </code></td><td><code>&nbsp //&nbsp Section:&nbsp Macros&nbsp or&nbsp Functions</code></td></tr>
+<tr><td><code><i>    72</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    73</i> </code></td><td><code>&nbsp //&nbsp *****************************************************************************</code></td></tr>
+<tr><td><code><i>    74</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    75</i> </code></td><td><code>&nbsp void&nbsp APP_LEDUpdateUSBStatus(void)</code></td></tr>
+<tr><td><code><i>    76</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>    77</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp static&nbsp uint16_t&nbsp ledCount&nbsp =&nbsp 0;</code></td></tr>
+<tr><td><code><i>    78</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    79</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp if(USBGetSuspendState()&nbsp ==&nbsp true)</code></td></tr>
+<tr><td><code><i>    80</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    81</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp LED_Off(LED_USB_DEVICE_STATE);</code></td></tr>
+<tr><td><code><i>    82</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return;</code></td></tr>
+<tr><td><code><i>    83</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>    84</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    85</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp switch(USBGetDeviceState())</code></td></tr>
+<tr><td><code><i>    86</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>    87</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp CONFIGURED_STATE:</code></td></tr>
+<tr><td><code><i>    88</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp We&nbsp are&nbsp configured.&nbsp&nbsp Blink&nbsp fast.</code></td></tr>
+<tr><td><code><i>    89</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp On&nbsp for&nbsp 75ms,&nbsp off&nbsp for&nbsp 75ms,&nbsp then&nbsp reset/repeat.&nbsp */</code></td></tr>
+<tr><td><code><i>    90</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp if(ledCount&nbsp ==&nbsp 1)</code></td></tr>
+<tr><td><code><i>    91</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    92</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp LED_On(LED_USB_DEVICE_STATE);</code></td></tr>
+<tr><td><code><i>    93</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>    94</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp else&nbsp if(ledCount&nbsp ==&nbsp 75)</code></td></tr>
+<tr><td><code><i>    95</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    96</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp LED_Off(LED_USB_DEVICE_STATE);</code></td></tr>
+<tr><td><code><i>    97</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>    98</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp else&nbsp if(ledCount&nbsp&rsaquo &nbsp 150)</code></td></tr>
+<tr><td><code><i>    99</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   100</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ledCount&nbsp =&nbsp 0;</code></td></tr>
+<tr><td><code><i>   101</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   102</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   103</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   104</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp default:</code></td></tr>
+<tr><td><code><i>   105</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp We&nbsp aren't&nbsp configured&nbsp yet,&nbsp but&nbsp we&nbsp aren't&nbsp suspended&nbsp so&nbsp let's&nbsp blink&nbsp with</code></td></tr>
+<tr><td><code><i>   106</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp a&nbsp slow&nbsp pulse.&nbsp On&nbsp for&nbsp 50ms,&nbsp then&nbsp off&nbsp for&nbsp 950ms,&nbsp then&nbsp reset/repeat.&nbsp */</code></td></tr>
+<tr><td><code><i>   107</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp if(ledCount&nbsp ==&nbsp 1)</code></td></tr>
+<tr><td><code><i>   108</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   109</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp LED_On(LED_USB_DEVICE_STATE);</code></td></tr>
+<tr><td><code><i>   110</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   111</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp else&nbsp if(ledCount&nbsp ==&nbsp 50)</code></td></tr>
+<tr><td><code><i>   112</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   113</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp LED_Off(LED_USB_DEVICE_STATE);</code></td></tr>
+<tr><td><code><i>   114</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   115</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp else&nbsp if(ledCount&nbsp&rsaquo &nbsp 950)</code></td></tr>
+<tr><td><code><i>   116</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   117</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ledCount&nbsp =&nbsp 0;</code></td></tr>
+<tr><td><code><i>   118</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   119</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   120</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   121</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   122</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp /*&nbsp Increment&nbsp the&nbsp millisecond&nbsp counter.&nbsp */</code></td></tr>
+<tr><td><code><i>   123</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp ledCount++;</code></td></tr>
+<tr><td><code><i>   124</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>   125</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   126</i> </code></td><td><code>&nbsp /*******************************************************************************</code></td></tr>
+<tr><td><code><i>   127</i> </code></td><td><code>&nbsp &nbsp End&nbsp of&nbsp File</code></td></tr>
+<tr><td><code><i>   128</i> </code></td><td><code>&nbsp */</code></code></BODY>
+</HTML>

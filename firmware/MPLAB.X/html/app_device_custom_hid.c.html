@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+<TITLE>Listing of ../src/app_device_custom_hid.c</TITLE>
+<LINK rel=stylesheet href="udf_styles.css" type="text/css">
+</HEAD>
+<BODY>
+<table class="">
+<tr><td><code><i>     1</i> </code></td><td><code>&nbsp /********************************************************************</code></td></tr>
+<tr><td><code><i>     2</i> </code></td><td><code>&nbsp &nbsp Software&nbsp License&nbsp Agreement:</code></td></tr>
+<tr><td><code><i>     3</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>     4</i> </code></td><td><code>&nbsp &nbsp The&nbsp software&nbsp supplied&nbsp herewith&nbsp by&nbsp Microchip&nbsp Technology&nbsp Incorporated</code></td></tr>
+<tr><td><code><i>     5</i> </code></td><td><code>&nbsp &nbsp (the&nbsp "Company")&nbsp for&nbsp its&nbsp PIC(R)&nbsp Microcontroller&nbsp is&nbsp intended&nbsp and</code></td></tr>
+<tr><td><code><i>     6</i> </code></td><td><code>&nbsp &nbsp supplied&nbsp to&nbsp you,&nbsp the&nbsp Company's&nbsp customer,&nbsp for&nbsp use&nbsp solely&nbsp and</code></td></tr>
+<tr><td><code><i>     7</i> </code></td><td><code>&nbsp &nbsp exclusively&nbsp on&nbsp Microchip&nbsp PIC&nbsp Microcontroller&nbsp products.&nbsp The</code></td></tr>
+<tr><td><code><i>     8</i> </code></td><td><code>&nbsp &nbsp software&nbsp is&nbsp owned&nbsp by&nbsp the&nbsp Company&nbsp and/or&nbsp its&nbsp supplier,&nbsp and&nbsp is</code></td></tr>
+<tr><td><code><i>     9</i> </code></td><td><code>&nbsp &nbsp protected&nbsp under&nbsp applicable&nbsp copyright&nbsp laws.&nbsp All&nbsp rights&nbsp are&nbsp reserved.</code></td></tr>
+<tr><td><code><i>    10</i> </code></td><td><code>&nbsp &nbsp Any&nbsp use&nbsp in&nbsp violation&nbsp of&nbsp the&nbsp foregoing&nbsp restrictions&nbsp may&nbsp subject&nbsp the</code></td></tr>
+<tr><td><code><i>    11</i> </code></td><td><code>&nbsp &nbsp user&nbsp to&nbsp criminal&nbsp sanctions&nbsp under&nbsp applicable&nbsp laws,&nbsp as&nbsp well&nbsp as&nbsp to</code></td></tr>
+<tr><td><code><i>    12</i> </code></td><td><code>&nbsp &nbsp civil&nbsp liability&nbsp for&nbsp the&nbsp breach&nbsp of&nbsp the&nbsp terms&nbsp and&nbsp conditions&nbsp of&nbsp this</code></td></tr>
+<tr><td><code><i>    13</i> </code></td><td><code>&nbsp &nbsp license.</code></td></tr>
+<tr><td><code><i>    14</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    15</i> </code></td><td><code>&nbsp &nbsp THIS&nbsp SOFTWARE&nbsp IS&nbsp PROVIDED&nbsp IN&nbsp AN&nbsp "AS&nbsp IS"&nbsp CONDITION.&nbsp NO&nbsp WARRANTIES,</code></td></tr>
+<tr><td><code><i>    16</i> </code></td><td><code>&nbsp &nbsp WHETHER&nbsp EXPRESS,&nbsp IMPLIED&nbsp OR&nbsp STATUTORY,&nbsp INCLUDING,&nbsp BUT&nbsp NOT&nbsp LIMITED</code></td></tr>
+<tr><td><code><i>    17</i> </code></td><td><code>&nbsp &nbsp TO,&nbsp IMPLIED&nbsp WARRANTIES&nbsp OF&nbsp MERCHANTABILITY&nbsp AND&nbsp FITNESS&nbsp FOR&nbsp A</code></td></tr>
+<tr><td><code><i>    18</i> </code></td><td><code>&nbsp &nbsp PARTICULAR&nbsp PURPOSE&nbsp APPLY&nbsp TO&nbsp THIS&nbsp SOFTWARE.&nbsp THE&nbsp COMPANY&nbsp SHALL&nbsp NOT,</code></td></tr>
+<tr><td><code><i>    19</i> </code></td><td><code>&nbsp &nbsp IN&nbsp ANY&nbsp CIRCUMSTANCES,&nbsp BE&nbsp LIABLE&nbsp FOR&nbsp SPECIAL,&nbsp INCIDENTAL&nbsp OR</code></td></tr>
+<tr><td><code><i>    20</i> </code></td><td><code>&nbsp &nbsp CONSEQUENTIAL&nbsp DAMAGES,&nbsp FOR&nbsp ANY&nbsp REASON&nbsp WHATSOEVER.</code></td></tr>
+<tr><td><code><i>    21</i> </code></td><td><code>&nbsp &nbsp *******************************************************************/</code></td></tr>
+<tr><td><code><i>    22</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    23</i> </code></td><td><code>&nbsp /**&nbsp INCLUDES&nbsp *******************************************************/</code></td></tr>
+<tr><td><code><i>    24</i> </code></td><td><code>&nbsp #include&nbsp "usb.h"</code></td></tr>
+<tr><td><code><i>    25</i> </code></td><td><code>&nbsp //#include&nbsp "usb_device_hid.h"</code></td></tr>
+<tr><td><code><i>    26</i> </code></td><td><code>&nbsp #include&nbsp "usb_device_cdc.h"</code></td></tr>
+<tr><td><code><i>    27</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    28</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  string.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    29</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    30</i> </code></td><td><code>&nbsp #include&nbsp "system.h"</code></td></tr>
+<tr><td><code><i>    31</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    32</i> </code></td><td><code>&nbsp static&nbsp bool&nbsp buttonPressed;</code></td></tr>
+<tr><td><code><i>    33</i> </code></td><td><code>&nbsp static&nbsp char&nbsp buttonMessage[]&nbsp =&nbsp "Button&nbsp pressed.\r\n";</code></td></tr>
+<tr><td><code><i>    34</i> </code></td><td><code>&nbsp static&nbsp uint8_t&nbsp readBuffer[CDC_DATA_OUT_EP_SIZE];</code></td></tr>
+<tr><td><code><i>    35</i> </code></td><td><code>&nbsp static&nbsp uint8_t&nbsp writeBuffer[CDC_DATA_IN_EP_SIZE];</code></td></tr>
+<tr><td><code><i>    36</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    37</i> </code></td><td><code>&nbsp /**&nbsp FUNCTIONS&nbsp ******************************************************/</code></td></tr>
+<tr><td><code><i>    38</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    39</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>    40</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp void&nbsp APP_DeviceCustomHIDInitialize(void);</code></td></tr>
+<tr><td><code><i>    41</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    42</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Initializes&nbsp the&nbsp Custom&nbsp HID&nbsp demo&nbsp code</code></td></tr>
+<tr><td><code><i>    43</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    44</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp None</code></td></tr>
+<tr><td><code><i>    45</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    46</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp None</code></td></tr>
+<tr><td><code><i>    47</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    48</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp None</code></td></tr>
+<tr><td><code><i>    49</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    50</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>    51</i> </code></td><td><code>&nbsp void&nbsp APP_DeviceCustomHIDInitialize()</code></td></tr>
+<tr><td><code><i>    52</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>    53</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp CDCInitEP();</code></td></tr>
+<tr><td><code><i>    54</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    55</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>    56</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp line_coding.bCharFormat&nbsp =&nbsp 0;</code></td></tr>
+<tr><td><code><i>    57</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp line_coding.bDataBits&nbsp =&nbsp 8;</code></td></tr>
+<tr><td><code><i>    58</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp line_coding.bParityType&nbsp =&nbsp 0;</code></td></tr>
+<tr><td><code><i>    59</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp line_coding.dwDTERate&nbsp =&nbsp 9600;</code></td></tr>
+<tr><td><code><i>    60</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    61</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp buttonPressed&nbsp =&nbsp false;</code></td></tr>
+<tr><td><code><i>    62</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>    63</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    64</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>    65</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp void&nbsp APP_DeviceCustomHIDTasks(void);</code></td></tr>
+<tr><td><code><i>    66</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    67</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Keeps&nbsp the&nbsp Custom&nbsp HID&nbsp demo&nbsp running.</code></td></tr>
+<tr><td><code><i>    68</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    69</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp The&nbsp demo&nbsp should&nbsp have&nbsp been&nbsp initialized&nbsp and&nbsp started&nbsp via</code></td></tr>
+<tr><td><code><i>    70</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp the&nbsp APP_DeviceCustomHIDInitialize()&nbsp and&nbsp APP_DeviceCustomHIDStart()&nbsp demos</code></td></tr>
+<tr><td><code><i>    71</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp respectively.</code></td></tr>
+<tr><td><code><i>    72</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    73</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp None</code></td></tr>
+<tr><td><code><i>    74</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    75</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp None</code></td></tr>
+<tr><td><code><i>    76</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    77</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>    78</i> </code></td><td><code>&nbsp void&nbsp APP_DeviceCustomHIDTasks()</code></td></tr>
+<tr><td><code><i>    79</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>    80</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    81</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp /*&nbsp Check&nbsp to&nbsp see&nbsp if&nbsp there&nbsp is&nbsp a&nbsp transmission&nbsp in&nbsp progress,&nbsp if&nbsp there&nbsp isn't,&nbsp then</code></td></tr>
+<tr><td><code><i>    82</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp we&nbsp can&nbsp see&nbsp about&nbsp performing&nbsp an&nbsp echo&nbsp response&nbsp to&nbsp data&nbsp received.</code></td></tr>
+<tr><td><code><i>    83</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp */</code></td></tr>
+<tr><td><code><i>    84</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp if(&nbsp USBUSARTIsTxTrfReady()&nbsp ==&nbsp true)</code></td></tr>
+<tr><td><code><i>    85</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    86</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp uint8_t&nbsp i;</code></td></tr>
+<tr><td><code><i>    87</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp uint8_t&nbsp numBytesRead;</code></td></tr>
+<tr><td><code><i>    88</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    89</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp numBytesRead&nbsp =&nbsp getsUSBUSART(readBuffer,&nbsp sizeof(readBuffer));</code></td></tr>
+<tr><td><code><i>    90</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    91</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp For&nbsp every&nbsp byte&nbsp that&nbsp was&nbsp read...&nbsp */</code></td></tr>
+<tr><td><code><i>    92</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp for(i=0;&nbsp i&lsaquo  numBytesRead;&nbsp i++)</code></td></tr>
+<tr><td><code><i>    93</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    94</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp switch(readBuffer[i])</code></td></tr>
+<tr><td><code><i>    95</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    96</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp If&nbsp we&nbsp receive&nbsp new&nbsp line&nbsp or&nbsp line&nbsp feed&nbsp commands,&nbsp just&nbsp echo</code></td></tr>
+<tr><td><code><i>    97</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp them&nbsp direct.</code></td></tr>
+<tr><td><code><i>    98</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp */</code></td></tr>
+<tr><td><code><i>    99</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp 0x0A:</code></td></tr>
+<tr><td><code><i>   100</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp 0x0D:</code></td></tr>
+<tr><td><code><i>   101</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp writeBuffer[i]&nbsp =&nbsp readBuffer[i];</code></td></tr>
+<tr><td><code><i>   102</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   103</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   104</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp If&nbsp we&nbsp receive&nbsp something&nbsp else,&nbsp then&nbsp echo&nbsp it&nbsp plus&nbsp one</code></td></tr>
+<tr><td><code><i>   105</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp so&nbsp that&nbsp if&nbsp we&nbsp receive&nbsp 'a',&nbsp we&nbsp echo&nbsp 'b'&nbsp so&nbsp that&nbsp the</code></td></tr>
+<tr><td><code><i>   106</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp user&nbsp knows&nbsp that&nbsp it&nbsp isn't&nbsp the&nbsp echo&nbsp enabled&nbsp on&nbsp their</code></td></tr>
+<tr><td><code><i>   107</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp terminal&nbsp program.</code></td></tr>
+<tr><td><code><i>   108</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp */</code></td></tr>
+<tr><td><code><i>   109</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp default:</code></td></tr>
+<tr><td><code><i>   110</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp writeBuffer[i]&nbsp =&nbsp readBuffer[i]&nbsp +&nbsp 1;</code></td></tr>
+<tr><td><code><i>   111</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   112</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   113</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   114</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   115</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp if(numBytesRead&nbsp&rsaquo &nbsp 0)</code></td></tr>
+<tr><td><code><i>   116</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   117</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp /*&nbsp After&nbsp processing&nbsp all&nbsp of&nbsp the&nbsp received&nbsp data,&nbsp we&nbsp need&nbsp to&nbsp send&nbsp out</code></td></tr>
+<tr><td><code><i>   118</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp *&nbsp the&nbsp "echo"&nbsp data&nbsp now.</code></td></tr>
+<tr><td><code><i>   119</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp */</code></td></tr>
+<tr><td><code><i>   120</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp putUSBUSART(writeBuffer,numBytesRead);</code></td></tr>
+<tr><td><code><i>   121</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   122</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   123</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   124</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp CDCTxService();</code></td></tr>
+<tr><td><code><i>   125</i> </code></td><td><code>&nbsp }</code></BODY>
+</HTML>

@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <logicalFolder name="f1" displayName="app" projectFiles="true">
+        <logicalFolder name="system_config"
+                       displayName="system_config"
+                       projectFiles="true">
+          <logicalFolder name="picdem_fs_usb_k50"
+                         displayName="picdem_fs_usb_k50"
+                         projectFiles="true">
+            <itemPath>../src/system_config/picdem_fs_usb_k50/fixed_address_memory.h</itemPath>
+            <itemPath>../src/system_config/picdem_fs_usb_k50/io_mapping.h</itemPath>
+            <itemPath>../src/system_config/picdem_fs_usb_k50/system.h</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <itemPath>../src/system_config.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="bsp" displayName="bsp" projectFiles="true">
+        <logicalFolder name="low_pin_count_usb_development_kit"
+                       displayName="low_pin_count_usb_development_kit"
+                       projectFiles="true">
+          <logicalFolder name="pic16f1459" displayName="pic16f1459" projectFiles="true">
+            <itemPath>../bsp/low_pin_count_usb_development_kit/pic16f1459/adc.h</itemPath>
+            <itemPath>../bsp/low_pin_count_usb_development_kit/pic16f1459/buttons.h</itemPath>
+            <itemPath>../bsp/low_pin_count_usb_development_kit/pic16f1459/leds.h</itemPath>
+            <itemPath>../bsp/low_pin_count_usb_development_kit/pic16f1459/power.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="pic18f14k50" displayName="pic18f14k50" projectFiles="true">
+            <itemPath>../bsp/low_pin_count_usb_development_kit/pic18f14k50/adc.h</itemPath>
+            <itemPath>../bsp/low_pin_count_usb_development_kit/pic18f14k50/buttons.h</itemPath>
+            <itemPath>../bsp/low_pin_count_usb_development_kit/pic18f14k50/leds.h</itemPath>
+            <itemPath>../bsp/low_pin_count_usb_development_kit/pic18f14k50/power.h</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="f1" displayName="pic18F25K50" projectFiles="true">
+          <itemPath>../src/system_config/pic18f25K50/fixed_address_memory.h</itemPath>
+          <itemPath>../src/system_config/pic18f25K50/io_mapping.h</itemPath>
+          <itemPath>../src/system_config/pic18f25K50/system.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="pic18f_starter_kit"
+                       displayName="pic18f_starter_kit"
+                       projectFiles="true">
+          <itemPath>../bsp/pic18f_starter_kit/adc.h</itemPath>
+          <itemPath>../bsp/pic18f_starter_kit/buttons.h</itemPath>
+          <itemPath>../bsp/pic18f_starter_kit/leds_3.h</itemPath>
+          <itemPath>../bsp/pic18f_starter_kit/oled.h</itemPath>
+          <itemPath>../bsp/pic18f_starter_kit/power.h</itemPath>
+          <itemPath>../bsp/pic18f_starter_kit/soft_start.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="picdem_fs_usb"
+                       displayName="picdem_fs_usb"
+                       projectFiles="true">
+          <itemPath>../bsp/picdem_fs_usb/adc.h</itemPath>
+          <itemPath>../bsp/picdem_fs_usb/buttons.h</itemPath>
+          <itemPath>../bsp/picdem_fs_usb/leds.h</itemPath>
+          <itemPath>../bsp/picdem_fs_usb/power.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="picdem_fs_usb_k50"
+                       displayName="picdem_fs_usb_k50"
+                       projectFiles="true">
+          <itemPath>../bsp/picdem_fs_usb_k50/adc.h</itemPath>
+          <itemPath>../bsp/picdem_fs_usb_k50/buttons.h</itemPath>
+          <itemPath>../bsp/picdem_fs_usb_k50/leds.h</itemPath>
+          <itemPath>../bsp/picdem_fs_usb_k50/power.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="framework" displayName="framework" projectFiles="true">
+        <logicalFolder name="usb" displayName="usb" projectFiles="true">
+          <itemPath>../framework/usb/inc/usb.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_ch9.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_common.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_device.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_device_hid.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_hal.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_hal_dspic33e.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_hal_pic16f1.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_hal_pic18.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_hal_pic24.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_hal_pic24e.h</itemPath>
+          <itemPath>../framework/usb/inc/usb_hal_pic24f.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <itemPath>../src/mcp23s17.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="LinkerScript"
+                   displayName="Linker Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="f2" displayName="app" projectFiles="true">
+        <logicalFolder name="system_config"
+                       displayName="system_config"
+                       projectFiles="true">
+          <logicalFolder name="low_pin_count_usb_development_kit"
+                         displayName="low_pin_count_usb_development_kit"
+                         projectFiles="true">
+            <logicalFolder name="pic18f14k50" displayName="pic18f14k50" projectFiles="true">
+              <itemPath>../src/system_config/low_pin_count_usb_development_kit/pic18f14k50/system.c</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="pic18f25K50" displayName="pic18f25K50" projectFiles="true">
+            <itemPath>../src/system_config/pic18f25K50/system.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="pic18f_starter_kit"
+                         displayName="pic18f_starter_kit"
+                         projectFiles="true">
+            <itemPath>../src/system_config/pic18f_starter_kit/system.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="picdem_fs_usb_k50"
+                         displayName="picdem_fs_usb_k50"
+                         projectFiles="true">
+            <itemPath>../src/system_config/picdem_fs_usb_k50/system.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <itemPath>../src/main.c</itemPath>
+        <itemPath>../src/mcp23s17.c</itemPath>
+        <itemPath>../src/command.c</itemPath>
+        <itemPath>../src/command.h</itemPath>
+        <itemPath>../src/mcp23008/mcp23008.c</itemPath>
+        <itemPath>../src/mcp23008/mcp23008.h</itemPath>
+        <itemPath>../src/spi.c</itemPath>
+        <itemPath>../src/spi.h</itemPath>
+        <itemPath>../src/app_usb.c</itemPath>
+        <itemPath>../src/app_usb.h</itemPath>
+        <itemPath>../src/rom.c</itemPath>
+        <itemPath>../src/rom.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="bsp" displayName="bsp" projectFiles="true">
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="usb_mla" projectFiles="true">
+        <itemPath>../framework/usb/src/usb_device_generic.c</itemPath>
+        <itemPath>../framework/usb/src/usb_device.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="vendor" projectFiles="true">
+        <itemPath>../src/vendor/usb_config.h</itemPath>
+        <itemPath>../src/vendor/usb_descriptors.c</itemPath>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+      <itemPath>I:/console/firmware/MPLAB.X/MyConfig.mc3</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>../boards</Elem>
+    <Elem>../app_config</Elem>
+    <Elem>../bsp</Elem>
+    <Elem>../src</Elem>
+    <Elem>../bsp/pic18F25K50</Elem>
+    <Elem>../src/usb</Elem>
+    <Elem>../framework</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="18F25K50" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>PIC18F25K50</targetDevice>
+        <targetHeader></targetHeader>
+        <targetPluginBoard></targetPluginBoard>
+        <platformTool>PK3OBPlatformTool</platformTool>
+        <languageToolchain>XC8</languageToolchain>
+        <languageToolchainVersion>1.37</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+        <archiverTool>
+        </archiverTool>
+        <loading>
+          <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>true</parseOnProdLoad>
+          <alternateLoadableFile></alternateLoadableFile>
+        </loading>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeCustomizationPreStep></makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep>copy ${ImagePath} "../../firm.c.hex"</makeCustomizationPostStep>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+        <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
+        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+      </makeCustomizationType>
+      <item path="../bsp/low_pin_count_usb_development_kit/pic16f1459/adc.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/low_pin_count_usb_development_kit/pic16f1459/buttons.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/low_pin_count_usb_development_kit/pic16f1459/leds.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/low_pin_count_usb_development_kit/pic16f1459/power.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/low_pin_count_usb_development_kit/pic18f14k50/adc.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/low_pin_count_usb_development_kit/pic18f14k50/buttons.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/low_pin_count_usb_development_kit/pic18f14k50/leds.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/low_pin_count_usb_development_kit/pic18f14k50/power.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/pic18f_starter_kit/adc.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/pic18f_starter_kit/buttons.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/pic18f_starter_kit/leds_3.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/pic18f_starter_kit/oled.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/pic18f_starter_kit/power.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/pic18f_starter_kit/soft_start.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/picdem_fs_usb/adc.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/picdem_fs_usb/buttons.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/picdem_fs_usb/leds.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/picdem_fs_usb/power.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/picdem_fs_usb_k50/adc.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/picdem_fs_usb_k50/buttons.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/picdem_fs_usb_k50/leds.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../bsp/picdem_fs_usb_k50/power.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../framework/usb/inc/usb_hal_dspic33e.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../framework/usb/inc/usb_hal_pic16f1.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../framework/usb/inc/usb_hal_pic24.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../framework/usb/inc/usb_hal_pic24e.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../framework/usb/inc/usb_hal_pic24f.h" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../src/system_config/low_pin_count_usb_development_kit/pic18f14k50/system.c"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../src/system_config/pic18f_starter_kit/system.c"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../src/system_config/picdem_fs_usb_k50/fixed_address_memory.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../src/system_config/picdem_fs_usb_k50/io_mapping.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../src/system_config/picdem_fs_usb_k50/system.c"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="../src/system_config/picdem_fs_usb_k50/system.h"
+            ex="true"
+            overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <HI-TECH-COMP>
+        <property key="asmlist" value="true"/>
+        <property key="define-macros" value=""/>
+        <property key="extra-include-directories"
+                  value="../src;../bsp/pic18F25K50;../src/system_config/pic18F25K50;C:\Program Files (x86)\Microchip\xc8\v1.37\include\plib;..\framework\usb\inc;..\src\vendor"/>
+        <property key="identifier-length" value="255"/>
+        <property key="operation-mode" value="pro"/>
+        <property key="opt-xc8-compiler-strict_ansi" value="false"/>
+        <property key="optimization-assembler" value="true"/>
+        <property key="optimization-assembler-files" value="false"/>
+        <property key="optimization-debug" value="false"/>
+        <property key="optimization-global" value="true"/>
+        <property key="optimization-invariant-enable" value="false"/>
+        <property key="optimization-invariant-value" value="16"/>
+        <property key="optimization-level" value="9"/>
+        <property key="optimization-set" value="default"/>
+        <property key="optimization-speed" value="true"/>
+        <property key="preprocess-assembler" value="true"/>
+        <property key="undefine-macros" value=""/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="verbose" value="false"/>
+        <property key="warning-level" value="0"/>
+        <property key="what-to-do" value="ignore"/>
+      </HI-TECH-COMP>
+      <HI-TECH-LINK>
+        <property key="additional-options-checksum" value=""/>
+        <property key="additional-options-code-offset" value="0x1000"/>
+        <property key="additional-options-command-line" value=""/>
+        <property key="additional-options-errata" value=""/>
+        <property key="additional-options-extend-address" value="false"/>
+        <property key="additional-options-trace-type" value=""/>
+        <property key="additional-options-use-response-files" value="false"/>
+        <property key="backup-reset-condition-flags" value="false"/>
+        <property key="calibrate-oscillator" value="true"/>
+        <property key="calibrate-oscillator-value" value=""/>
+        <property key="clear-bss" value="true"/>
+        <property key="code-model-external" value="wordwrite"/>
+        <property key="code-model-rom" value="default,-0-FFF,-1006-1007,-1016-1017"/>
+        <property key="create-html-files" value="false"/>
+        <property key="data-model-ram" value=""/>
+        <property key="data-model-size-of-double" value="24"/>
+        <property key="data-model-size-of-float" value="24"/>
+        <property key="display-class-usage" value="false"/>
+        <property key="display-hex-usage" value="false"/>
+        <property key="display-overall-usage" value="true"/>
+        <property key="display-psect-usage" value="false"/>
+        <property key="fill-flash-options-addr" value=""/>
+        <property key="fill-flash-options-const" value=""/>
+        <property key="fill-flash-options-how" value="0"/>
+        <property key="fill-flash-options-inc-const" value="1"/>
+        <property key="fill-flash-options-increment" value=""/>
+        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-what" value="0"/>
+        <property key="format-hex-file-for-download" value="true"/>
+        <property key="initialize-data" value="true"/>
+        <property key="keep-generated-startup.as" value="false"/>
+        <property key="link-in-c-library" value="true"/>
+        <property key="link-in-peripheral-library" value="true"/>
+        <property key="managed-stack" value="false"/>
+        <property key="opt-xc8-linker-file" value="false"/>
+        <property key="opt-xc8-linker-link_startup" value="false"/>
+        <property key="opt-xc8-linker-serial" value=""/>
+        <property key="program-the-device-with-default-config-words" value="true"/>
+      </HI-TECH-LINK>
+      <ICD3PlatformTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="Freeze Peripherals" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="hwtoolclock.frcindebug" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="false"/>
+        <property key="memories.configurationmemory" value="false"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x7fff"/>
+        <property key="memories.programmemory.partition2" value="true"/>
+        <property key="memories.programmemory.partition2.end"
+                  value="${memories.programmemory.partition2.end.value}"/>
+        <property key="memories.programmemory.partition2.start"
+                  value="${memories.programmemory.partition2.start.value}"/>
+        <property key="memories.programmemory.start" value="0x0"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x7fff"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x0"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="5.0"/>
+      </ICD3PlatformTool>
+      <PICkit3PlatformTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="Freeze Peripherals" value="true"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="hwtoolclock.frcindebug" value="false"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x7fff"/>
+        <property key="memories.programmemory.partition2" value="true"/>
+        <property key="memories.programmemory.partition2.end"
+                  value="${memories.programmemory.partition2.end.value}"/>
+        <property key="memories.programmemory.partition2.start"
+                  value="${memories.programmemory.partition2.start.value}"/>
+        <property key="memories.programmemory.start" value="0x0"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmertogo.imagename" value=""/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.pgmspeed" value="2"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x7fff"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x0"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.testmodeentrymethod" value="VDDFirst"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="5.0"/>
+      </PICkit3PlatformTool>
+      <PK3OBPlatformTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.end" value="0x7fff"/>
+        <property key="memories.programmemory.start" value="0x0"/>
+        <property key="memories.userotp" value="true"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogramrange.end" value="0x3f"/>
+        <property key="programoptions.preserveprogramrange.start" value="0x0"/>
+        <property key="programoptions.usehighvoltageonmclr" value="false"/>
+        <property key="programoptions.uselvpprogramming" value="false"/>
+        <property key="voltagevalue" value="5.0"/>
+      </PK3OBPlatformTool>
+      <XC8-config-global>
+        <property key="advanced-elf" value="true"/>
+        <property key="output-file-format" value="-mcof,+elf"/>
+        <property key="stack-size-high" value="auto"/>
+        <property key="stack-size-low" value="auto"/>
+        <property key="stack-size-main" value="auto"/>
+        <property key="stack-type" value="compiled"/>
+      </XC8-config-global>
+    </conf>
+  </confs>
+</configurationDescriptor>

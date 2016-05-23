@@ -1,0 +1,243 @@
+<HTML>
+<HEAD>
+<TITLE>Listing of ../src/system_config/pic18f25K50/system.c</TITLE>
+<LINK rel=stylesheet href="udf_styles.css" type="text/css">
+</HEAD>
+<BODY>
+<table class="">
+<tr><td><code><i>     1</i> </code></td><td><code>&nbsp /********************************************************************</code></td></tr>
+<tr><td><code><i>     2</i> </code></td><td><code>&nbsp &nbsp Software&nbsp License&nbsp Agreement:</code></td></tr>
+<tr><td><code><i>     3</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>     4</i> </code></td><td><code>&nbsp &nbsp The&nbsp software&nbsp supplied&nbsp herewith&nbsp by&nbsp Microchip&nbsp Technology&nbsp Incorporated</code></td></tr>
+<tr><td><code><i>     5</i> </code></td><td><code>&nbsp &nbsp (the&nbsp "Company")&nbsp for&nbsp its&nbsp PIC(R)&nbsp Microcontroller&nbsp is&nbsp intended&nbsp and</code></td></tr>
+<tr><td><code><i>     6</i> </code></td><td><code>&nbsp &nbsp supplied&nbsp to&nbsp you,&nbsp the&nbsp Company's&nbsp customer,&nbsp for&nbsp use&nbsp solely&nbsp and</code></td></tr>
+<tr><td><code><i>     7</i> </code></td><td><code>&nbsp &nbsp exclusively&nbsp on&nbsp Microchip&nbsp PIC&nbsp Microcontroller&nbsp products.&nbsp The</code></td></tr>
+<tr><td><code><i>     8</i> </code></td><td><code>&nbsp &nbsp software&nbsp is&nbsp owned&nbsp by&nbsp the&nbsp Company&nbsp and/or&nbsp its&nbsp supplier,&nbsp and&nbsp is</code></td></tr>
+<tr><td><code><i>     9</i> </code></td><td><code>&nbsp &nbsp protected&nbsp under&nbsp applicable&nbsp copyright&nbsp laws.&nbsp All&nbsp rights&nbsp are&nbsp reserved.</code></td></tr>
+<tr><td><code><i>    10</i> </code></td><td><code>&nbsp &nbsp Any&nbsp use&nbsp in&nbsp violation&nbsp of&nbsp the&nbsp foregoing&nbsp restrictions&nbsp may&nbsp subject&nbsp the</code></td></tr>
+<tr><td><code><i>    11</i> </code></td><td><code>&nbsp &nbsp user&nbsp to&nbsp criminal&nbsp sanctions&nbsp under&nbsp applicable&nbsp laws,&nbsp as&nbsp well&nbsp as&nbsp to</code></td></tr>
+<tr><td><code><i>    12</i> </code></td><td><code>&nbsp &nbsp civil&nbsp liability&nbsp for&nbsp the&nbsp breach&nbsp of&nbsp the&nbsp terms&nbsp and&nbsp conditions&nbsp of&nbsp this</code></td></tr>
+<tr><td><code><i>    13</i> </code></td><td><code>&nbsp &nbsp license.</code></td></tr>
+<tr><td><code><i>    14</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    15</i> </code></td><td><code>&nbsp &nbsp THIS&nbsp SOFTWARE&nbsp IS&nbsp PROVIDED&nbsp IN&nbsp AN&nbsp "AS&nbsp IS"&nbsp CONDITION.&nbsp NO&nbsp WARRANTIES,</code></td></tr>
+<tr><td><code><i>    16</i> </code></td><td><code>&nbsp &nbsp WHETHER&nbsp EXPRESS,&nbsp IMPLIED&nbsp OR&nbsp STATUTORY,&nbsp INCLUDING,&nbsp BUT&nbsp NOT&nbsp LIMITED</code></td></tr>
+<tr><td><code><i>    17</i> </code></td><td><code>&nbsp &nbsp TO,&nbsp IMPLIED&nbsp WARRANTIES&nbsp OF&nbsp MERCHANTABILITY&nbsp AND&nbsp FITNESS&nbsp FOR&nbsp A</code></td></tr>
+<tr><td><code><i>    18</i> </code></td><td><code>&nbsp &nbsp PARTICULAR&nbsp PURPOSE&nbsp APPLY&nbsp TO&nbsp THIS&nbsp SOFTWARE.&nbsp THE&nbsp COMPANY&nbsp SHALL&nbsp NOT,</code></td></tr>
+<tr><td><code><i>    19</i> </code></td><td><code>&nbsp &nbsp IN&nbsp ANY&nbsp CIRCUMSTANCES,&nbsp BE&nbsp LIABLE&nbsp FOR&nbsp SPECIAL,&nbsp INCIDENTAL&nbsp OR</code></td></tr>
+<tr><td><code><i>    20</i> </code></td><td><code>&nbsp &nbsp CONSEQUENTIAL&nbsp DAMAGES,&nbsp FOR&nbsp ANY&nbsp REASON&nbsp WHATSOEVER.</code></td></tr>
+<tr><td><code><i>    21</i> </code></td><td><code>&nbsp &nbsp *******************************************************************/</code></td></tr>
+<tr><td><code><i>    22</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    23</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  xc.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    24</i> </code></td><td><code>&nbsp #include&nbsp "system.h"</code></td></tr>
+<tr><td><code><i>    25</i> </code></td><td><code>&nbsp #include&nbsp "system_config.h"</code></td></tr>
+<tr><td><code><i>    26</i> </code></td><td><code>&nbsp #include&nbsp "usb.h"</code></td></tr>
+<tr><td><code><i>    27</i> </code></td><td><code>&nbsp #include&nbsp "leds.h"</code></td></tr>
+<tr><td><code><i>    28</i> </code></td><td><code>&nbsp #include&nbsp "buttons.h"</code></td></tr>
+<tr><td><code><i>    29</i> </code></td><td><code>&nbsp #include&nbsp "adc.h"</code></td></tr>
+<tr><td><code><i>    30</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    31</i> </code></td><td><code>&nbsp /**&nbsp CONFIGURATION&nbsp Bits&nbsp **********************************************/</code></td></tr>
+<tr><td><code><i>    32</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp PLLSEL&nbsp&nbsp&nbsp =&nbsp PLL3X&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp PLL&nbsp Selection&nbsp (3x&nbsp clock&nbsp multiplier)</code></td></tr>
+<tr><td><code><i>    33</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CFGPLLEN&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp PLL&nbsp Enable&nbsp Configuration&nbsp bit&nbsp (PLL&nbsp Disabled&nbsp (firmware&nbsp controlled))</code></td></tr>
+<tr><td><code><i>    34</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CPUDIV&nbsp&nbsp&nbsp =&nbsp NOCLKDIV&nbsp&nbsp //&nbsp CPU&nbsp System&nbsp Clock&nbsp Postscaler&nbsp (CPU&nbsp uses&nbsp system&nbsp clock&nbsp (no&nbsp divide))</code></td></tr>
+<tr><td><code><i>    35</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp LS48MHZ&nbsp&nbsp =&nbsp SYS48X8&nbsp&nbsp&nbsp //&nbsp Low&nbsp Speed&nbsp USB&nbsp mode&nbsp with&nbsp 48&nbsp MHz&nbsp system&nbsp clock&nbsp (System&nbsp clock&nbsp at&nbsp 48&nbsp MHz,&nbsp USB&nbsp clock&nbsp divider&nbsp is&nbsp set&nbsp to&nbsp 8)</code></td></tr>
+<tr><td><code><i>    36</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp FOSC&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp INTOSCIO&nbsp&nbsp //&nbsp Oscillator&nbsp Selection&nbsp (Internal&nbsp oscillator)</code></td></tr>
+<tr><td><code><i>    37</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp PCLKEN&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Primary&nbsp Oscillator&nbsp Shutdown&nbsp (Primary&nbsp oscillator&nbsp shutdown&nbsp firmware&nbsp controlled)</code></td></tr>
+<tr><td><code><i>    38</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp FCMEN&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Fail-Safe&nbsp Clock&nbsp Monitor&nbsp (Fail-Safe&nbsp Clock&nbsp Monitor&nbsp disabled)</code></td></tr>
+<tr><td><code><i>    39</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp IESO&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Internal/External&nbsp Oscillator&nbsp Switchover&nbsp (Oscillator&nbsp Switchover&nbsp mode&nbsp disabled)</code></td></tr>
+<tr><td><code><i>    40</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp nPWRTEN&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Power-up&nbsp Timer&nbsp Enable&nbsp (Power&nbsp up&nbsp timer&nbsp disabled)</code></td></tr>
+<tr><td><code><i>    41</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp BOREN&nbsp&nbsp&nbsp&nbsp =&nbsp SBORDIS&nbsp&nbsp&nbsp //&nbsp Brown-out&nbsp Reset&nbsp Enable&nbsp (BOR&nbsp enabled&nbsp in&nbsp hardware&nbsp (SBOREN&nbsp is&nbsp ignored))</code></td></tr>
+<tr><td><code><i>    42</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp BORV&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp 190&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Brown-out&nbsp Reset&nbsp Voltage&nbsp (BOR&nbsp set&nbsp to&nbsp 1.9V&nbsp nominal)</code></td></tr>
+<tr><td><code><i>    43</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp nLPBOR&nbsp&nbsp&nbsp =&nbsp ON&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Low-Power&nbsp Brown-out&nbsp Reset&nbsp (Low-Power&nbsp Brown-out&nbsp Reset&nbsp enabled)</code></td></tr>
+<tr><td><code><i>    44</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WDTEN&nbsp&nbsp&nbsp&nbsp =&nbsp SWON&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Watchdog&nbsp Timer&nbsp Enable&nbsp bits&nbsp (WDT&nbsp controlled&nbsp by&nbsp firmware&nbsp (SWDTEN&nbsp enabled))</code></td></tr>
+<tr><td><code><i>    45</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WDTPS&nbsp&nbsp&nbsp&nbsp =&nbsp 32768&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Watchdog&nbsp Timer&nbsp Postscaler&nbsp (1:32768)</code></td></tr>
+<tr><td><code><i>    46</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CCP2MX&nbsp&nbsp&nbsp =&nbsp RC1&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp CCP2&nbsp MUX&nbsp bit&nbsp (CCP2&nbsp input/output&nbsp is&nbsp multiplexed&nbsp with&nbsp RC1)</code></td></tr>
+<tr><td><code><i>    47</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp PBADEN&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp PORTB&nbsp A/D&nbsp Enable&nbsp bit&nbsp (PORTB&lsaquo  5:0&rsaquo &nbsp pins&nbsp are&nbsp configured&nbsp as&nbsp digital&nbsp I/O&nbsp on&nbsp Reset)</code></td></tr>
+<tr><td><code><i>    48</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp T3CMX&nbsp&nbsp&nbsp&nbsp =&nbsp RC0&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Timer3&nbsp Clock&nbsp Input&nbsp MUX&nbsp bit&nbsp (T3CKI&nbsp function&nbsp is&nbsp on&nbsp RC0)</code></td></tr>
+<tr><td><code><i>    49</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp SDOMX&nbsp&nbsp&nbsp&nbsp =&nbsp RC7&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp SDO&nbsp Output&nbsp MUX&nbsp bit&nbsp (SDO&nbsp function&nbsp is&nbsp on&nbsp RC7)</code></td></tr>
+<tr><td><code><i>    50</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp MCLRE&nbsp&nbsp&nbsp&nbsp =&nbsp ON&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Master&nbsp Clear&nbsp Reset&nbsp Pin&nbsp Enable&nbsp (MCLR&nbsp pin&nbsp enabled;&nbsp RE3&nbsp input&nbsp disabled)</code></td></tr>
+<tr><td><code><i>    51</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp STVREN&nbsp&nbsp&nbsp =&nbsp ON&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Stack&nbsp Full/Underflow&nbsp Reset&nbsp (Stack&nbsp full/underflow&nbsp will&nbsp cause&nbsp Reset)</code></td></tr>
+<tr><td><code><i>    52</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp LVP&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Single-Supply&nbsp ICSP&nbsp Enable&nbsp bit&nbsp (Single-Supply&nbsp ICSP&nbsp disabled)</code></td></tr>
+<tr><td><code><i>    53</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp ICPRT&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Dedicated&nbsp In-Circuit&nbsp Debug/Programming&nbsp Port&nbsp Enable&nbsp (ICPORT&nbsp disabled)</code></td></tr>
+<tr><td><code><i>    54</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp XINST&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Extended&nbsp Instruction&nbsp Set&nbsp Enable&nbsp bit&nbsp (Instruction&nbsp set&nbsp extension&nbsp and&nbsp Indexed&nbsp Addressing&nbsp mode&nbsp disabled)</code></td></tr>
+<tr><td><code><i>    55</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CP0&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 0&nbsp Code&nbsp Protect&nbsp (Block&nbsp 0&nbsp is&nbsp not&nbsp code-protected)</code></td></tr>
+<tr><td><code><i>    56</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CP1&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 1&nbsp Code&nbsp Protect&nbsp (Block&nbsp 1&nbsp is&nbsp not&nbsp code-protected)</code></td></tr>
+<tr><td><code><i>    57</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CP2&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 2&nbsp Code&nbsp Protect&nbsp (Block&nbsp 2&nbsp is&nbsp not&nbsp code-protected)</code></td></tr>
+<tr><td><code><i>    58</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CP3&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 3&nbsp Code&nbsp Protect&nbsp (Block&nbsp 3&nbsp is&nbsp not&nbsp code-protected)</code></td></tr>
+<tr><td><code><i>    59</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CPB&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Boot&nbsp Block&nbsp Code&nbsp Protect&nbsp (Boot&nbsp block&nbsp is&nbsp not&nbsp code-protected)</code></td></tr>
+<tr><td><code><i>    60</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp CPD&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Data&nbsp EEPROM&nbsp Code&nbsp Protect&nbsp (Data&nbsp EEPROM&nbsp is&nbsp not&nbsp code-protected)</code></td></tr>
+<tr><td><code><i>    61</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WRT0&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 0&nbsp Write&nbsp Protect&nbsp (Block&nbsp 0&nbsp (0800-1FFFh)&nbsp is&nbsp not&nbsp write-protected)</code></td></tr>
+<tr><td><code><i>    62</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WRT1&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 1&nbsp Write&nbsp Protect&nbsp (Block&nbsp 1&nbsp (2000-3FFFh)&nbsp is&nbsp not&nbsp write-protected)</code></td></tr>
+<tr><td><code><i>    63</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WRT2&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 2&nbsp Write&nbsp Protect&nbsp (Block&nbsp 2&nbsp (04000-5FFFh)&nbsp is&nbsp not&nbsp write-protected)</code></td></tr>
+<tr><td><code><i>    64</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WRT3&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 3&nbsp Write&nbsp Protect&nbsp (Block&nbsp 3&nbsp (06000-7FFFh)&nbsp is&nbsp not&nbsp write-protected)</code></td></tr>
+<tr><td><code><i>    65</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WRTC&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Configuration&nbsp Registers&nbsp Write&nbsp Protect&nbsp (Configuration&nbsp registers&nbsp (300000-3000FFh)&nbsp are&nbsp not&nbsp write-protected)</code></td></tr>
+<tr><td><code><i>    66</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WRTB&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Boot&nbsp Block&nbsp Write&nbsp Protect&nbsp (Boot&nbsp block&nbsp (0000-7FFh)&nbsp is&nbsp not&nbsp write-protected)</code></td></tr>
+<tr><td><code><i>    67</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp WRTD&nbsp&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Data&nbsp EEPROM&nbsp Write&nbsp Protect&nbsp (Data&nbsp EEPROM&nbsp is&nbsp not&nbsp write-protected)</code></td></tr>
+<tr><td><code><i>    68</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp EBTR0&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 0&nbsp Table&nbsp Read&nbsp Protect&nbsp (Block&nbsp 0&nbsp is&nbsp not&nbsp protected&nbsp from&nbsp table&nbsp reads&nbsp executed&nbsp in&nbsp other&nbsp blocks)</code></td></tr>
+<tr><td><code><i>    69</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp EBTR1&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 1&nbsp Table&nbsp Read&nbsp Protect&nbsp (Block&nbsp 1&nbsp is&nbsp not&nbsp protected&nbsp from&nbsp table&nbsp reads&nbsp executed&nbsp in&nbsp other&nbsp blocks)</code></td></tr>
+<tr><td><code><i>    70</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp EBTR2&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 2&nbsp Table&nbsp Read&nbsp Protect&nbsp (Block&nbsp 2&nbsp is&nbsp not&nbsp protected&nbsp from&nbsp table&nbsp reads&nbsp executed&nbsp in&nbsp other&nbsp blocks)</code></td></tr>
+<tr><td><code><i>    71</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp EBTR3&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Block&nbsp 3&nbsp Table&nbsp Read&nbsp Protect&nbsp (Block&nbsp 3&nbsp is&nbsp not&nbsp protected&nbsp from&nbsp table&nbsp reads&nbsp executed&nbsp in&nbsp other&nbsp blocks)</code></td></tr>
+<tr><td><code><i>    72</i> </code></td><td><code>&nbsp #pragma&nbsp config&nbsp EBTRB&nbsp&nbsp&nbsp&nbsp =&nbsp OFF&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Boot&nbsp Block&nbsp Table&nbsp Read&nbsp Protect&nbsp (Boot&nbsp block&nbsp is&nbsp not&nbsp protected&nbsp from&nbsp table&nbsp reads&nbsp executed&nbsp in&nbsp other&nbsp blocks)</code></td></tr>
+<tr><td><code><i>    73</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    74</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    75</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>    76</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp void&nbsp SYSTEM_Initialize(&nbsp SYSTEM_STATE&nbsp state&nbsp )</code></td></tr>
+<tr><td><code><i>    77</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    78</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Initializes&nbsp the&nbsp system.</code></td></tr>
+<tr><td><code><i>    79</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    80</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp None</code></td></tr>
+<tr><td><code><i>    81</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    82</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp&nbsp SYSTEM_STATE&nbsp -&nbsp the&nbsp state&nbsp to&nbsp initialize&nbsp the&nbsp system&nbsp into</code></td></tr>
+<tr><td><code><i>    83</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    84</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp None</code></td></tr>
+<tr><td><code><i>    85</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    86</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>    87</i> </code></td><td><code>&nbsp void&nbsp SYSTEM_Initialize(&nbsp SYSTEM_STATE&nbsp state&nbsp )</code></td></tr>
+<tr><td><code><i>    88</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>    89</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp switch(state)</code></td></tr>
+<tr><td><code><i>    90</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    91</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp SYSTEM_STATE_USB_START:</code></td></tr>
+<tr><td><code><i>    92</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>    93</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Configure&nbsp oscillator&nbsp settings&nbsp for&nbsp clock&nbsp settings&nbsp compatible&nbsp with&nbsp USB</code></td></tr>
+<tr><td><code><i>    94</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //operation.&nbsp&nbsp Note:&nbsp Proper&nbsp settings&nbsp depends&nbsp on&nbsp USB&nbsp speed&nbsp (full&nbsp or&nbsp low).</code></td></tr>
+<tr><td><code><i>    95</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #if(USB_SPEED_OPTION&nbsp ==&nbsp USB_FULL_SPEED)</code></td></tr>
+<tr><td><code><i>    96</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp OSCTUNE&nbsp =&nbsp 0x80;&nbsp //3X&nbsp PLL&nbsp ratio&nbsp mode&nbsp selected</code></td></tr>
+<tr><td><code><i>    97</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp OSCCON&nbsp =&nbsp 0x70;&nbsp&nbsp //Switch&nbsp to&nbsp 16MHz&nbsp HFINTOSC</code></td></tr>
+<tr><td><code><i>    98</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp OSCCON2&nbsp =&nbsp 0x10;&nbsp //Enable&nbsp PLL,&nbsp SOSC,&nbsp PRI&nbsp OSC&nbsp drivers&nbsp turned&nbsp off</code></td></tr>
+<tr><td><code><i>    99</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp while(OSCCON2bits.PLLRDY&nbsp !=&nbsp 1);&nbsp&nbsp&nbsp //Wait&nbsp for&nbsp PLL&nbsp lock</code></td></tr>
+<tr><td><code><i>   100</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ACTCON&nbsp =&nbsp 0x90;&nbsp&nbsp //Enable&nbsp active&nbsp clock&nbsp tuning&nbsp for&nbsp USB&nbsp operation</code></td></tr>
+<tr><td><code><i>   101</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #endif</code></td></tr>
+<tr><td><code><i>   102</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   103</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp LED_Enable(LED_USB_DEVICE_STATE);</code></td></tr>
+<tr><td><code><i>   104</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp LED_Enable(LED_USB_DEVICE_HID_CUSTOM);</code></td></tr>
+<tr><td><code><i>   105</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   106</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp BUTTON_Enable(BUTTON_USB_DEVICE_HID_CUSTOM);</code></td></tr>
+<tr><td><code><i>   107</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   108</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ADC_SetConfiguration(ADC_CONFIGURATION_DEFAULT);</code></td></tr>
+<tr><td><code><i>   109</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ADC_Enable(ADC_CHANNEL_POTENTIOMETER);</code></td></tr>
+<tr><td><code><i>   110</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   111</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   112</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp SYSTEM_STATE_USB_SUSPEND:</code></td></tr>
+<tr><td><code><i>   113</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   114</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   115</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp SYSTEM_STATE_USB_RESUME:</code></td></tr>
+<tr><td><code><i>   116</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   117</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   118</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>   119</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   120</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   121</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   122</i> </code></td><td><code>&nbsp #if&nbsp defined(__XC8)</code></td></tr>
+<tr><td><code><i>   123</i> </code></td><td><code>&nbsp void&nbsp interrupt&nbsp SYS_InterruptHigh(void)</code></td></tr>
+<tr><td><code><i>   124</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>   125</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #if&nbsp defined(USB_INTERRUPT)</code></td></tr>
+<tr><td><code><i>   126</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp USBDeviceTasks();</code></td></tr>
+<tr><td><code><i>   127</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #endif</code></td></tr>
+<tr><td><code><i>   128</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>   129</i> </code></td><td><code>&nbsp #else</code></td></tr>
+<tr><td><code><i>   130</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp YourHighPriorityISRCode();</code></td></tr>
+<tr><td><code><i>   131</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp YourLowPriorityISRCode();</code></td></tr>
+<tr><td><code><i>   132</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   133</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //On&nbsp PIC18&nbsp devices,&nbsp addresses&nbsp 0x00,&nbsp 0x08,&nbsp and&nbsp 0x18&nbsp are&nbsp used&nbsp for</code></td></tr>
+<tr><td><code><i>   134</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //the&nbsp reset,&nbsp high&nbsp priority&nbsp interrupt,&nbsp and&nbsp low&nbsp priority&nbsp interrupt</code></td></tr>
+<tr><td><code><i>   135</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //vectors.&nbsp&nbsp However,&nbsp the&nbsp current&nbsp Microchip&nbsp USB&nbsp bootloader</code></td></tr>
+<tr><td><code><i>   136</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //examples&nbsp are&nbsp intended&nbsp to&nbsp occupy&nbsp addresses&nbsp 0x00-0x7FF&nbsp or</code></td></tr>
+<tr><td><code><i>   137</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //0x00-0xFFF&nbsp depending&nbsp on&nbsp which&nbsp bootloader&nbsp is&nbsp used.&nbsp&nbsp Therefore,</code></td></tr>
+<tr><td><code><i>   138</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //the&nbsp bootloader&nbsp code&nbsp remaps&nbsp these&nbsp vectors&nbsp to&nbsp new&nbsp locations</code></td></tr>
+<tr><td><code><i>   139</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //as&nbsp indicated&nbsp below.&nbsp&nbsp This&nbsp remapping&nbsp is&nbsp only&nbsp necessary&nbsp if&nbsp you</code></td></tr>
+<tr><td><code><i>   140</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //wish&nbsp to&nbsp program&nbsp the&nbsp hex&nbsp file&nbsp generated&nbsp from&nbsp this&nbsp project&nbsp with</code></td></tr>
+<tr><td><code><i>   141</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //the&nbsp USB&nbsp bootloader.&nbsp&nbsp If&nbsp no&nbsp bootloader&nbsp is&nbsp used,&nbsp edit&nbsp the</code></td></tr>
+<tr><td><code><i>   142</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //usb_config.h&nbsp file&nbsp and&nbsp comment&nbsp out&nbsp the&nbsp following&nbsp defines:</code></td></tr>
+<tr><td><code><i>   143</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //#define&nbsp PROGRAMMABLE_WITH_USB_HID_BOOTLOADER</code></td></tr>
+<tr><td><code><i>   144</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //#define&nbsp PROGRAMMABLE_WITH_USB_LEGACY_CUSTOM_CLASS_BOOTLOADER</code></td></tr>
+<tr><td><code><i>   145</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   146</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #if&nbsp defined(PROGRAMMABLE_WITH_USB_HID_BOOTLOADER)</code></td></tr>
+<tr><td><code><i>   147</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_RESET_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0x1000</code></td></tr>
+<tr><td><code><i>   148</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp 0x1008</code></td></tr>
+<tr><td><code><i>   149</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0x1018</code></td></tr>
+<tr><td><code><i>   150</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #elif&nbsp defined(PROGRAMMABLE_WITH_USB_MCHPUSB_BOOTLOADER)</code></td></tr>
+<tr><td><code><i>   151</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_RESET_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0x800</code></td></tr>
+<tr><td><code><i>   152</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp 0x808</code></td></tr>
+<tr><td><code><i>   153</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0x818</code></td></tr>
+<tr><td><code><i>   154</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #else</code></td></tr>
+<tr><td><code><i>   155</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_RESET_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0x00</code></td></tr>
+<tr><td><code><i>   156</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp 0x08</code></td></tr>
+<tr><td><code><i>   157</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp #define&nbsp REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0x18</code></td></tr>
+<tr><td><code><i>   158</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #endif</code></td></tr>
+<tr><td><code><i>   159</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   160</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #if&nbsp defined(PROGRAMMABLE_WITH_USB_HID_BOOTLOADER)||defined(PROGRAMMABLE_WITH_USB_MCHPUSB_BOOTLOADER)</code></td></tr>
+<tr><td><code><i>   161</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp extern&nbsp void&nbsp _startup&nbsp (void);&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp See&nbsp c018i.c&nbsp in&nbsp your&nbsp C18&nbsp compiler&nbsp dir</code></td></tr>
+<tr><td><code><i>   162</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #pragma&nbsp code&nbsp REMAPPED_RESET_VECTOR&nbsp =&nbsp REMAPPED_RESET_VECTOR_ADDRESS</code></td></tr>
+<tr><td><code><i>   163</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp _reset&nbsp (void)</code></td></tr>
+<tr><td><code><i>   164</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   165</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp _asm&nbsp goto&nbsp _startup&nbsp _endasm</code></td></tr>
+<tr><td><code><i>   166</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   167</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #endif</code></td></tr>
+<tr><td><code><i>   168</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   169</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #pragma&nbsp code&nbsp REMAPPED_HIGH_INTERRUPT_VECTOR&nbsp =&nbsp REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS</code></td></tr>
+<tr><td><code><i>   170</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp Remapped_High_ISR&nbsp (void)</code></td></tr>
+<tr><td><code><i>   171</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   172</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp _asm&nbsp goto&nbsp YourHighPriorityISRCode&nbsp _endasm</code></td></tr>
+<tr><td><code><i>   173</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   174</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #pragma&nbsp code&nbsp REMAPPED_LOW_INTERRUPT_VECTOR&nbsp =&nbsp REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS</code></td></tr>
+<tr><td><code><i>   175</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp Remapped_Low_ISR&nbsp (void)</code></td></tr>
+<tr><td><code><i>   176</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   177</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp _asm&nbsp goto&nbsp YourLowPriorityISRCode&nbsp _endasm</code></td></tr>
+<tr><td><code><i>   178</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   179</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   180</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #if&nbsp defined(PROGRAMMABLE_WITH_USB_HID_BOOTLOADER)||defined(PROGRAMMABLE_WITH_USB_MCHPUSB_BOOTLOADER)</code></td></tr>
+<tr><td><code><i>   181</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //Note:&nbsp If&nbsp this&nbsp project&nbsp is&nbsp built&nbsp while&nbsp one&nbsp of&nbsp the&nbsp bootloaders&nbsp has</code></td></tr>
+<tr><td><code><i>   182</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //been&nbsp defined,&nbsp but&nbsp then&nbsp the&nbsp output&nbsp hex&nbsp file&nbsp is&nbsp not&nbsp programmed&nbsp with</code></td></tr>
+<tr><td><code><i>   183</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //the&nbsp bootloader,&nbsp addresses&nbsp 0x08&nbsp and&nbsp 0x18&nbsp would&nbsp end&nbsp up&nbsp programmed&nbsp with&nbsp 0xFFFF.</code></td></tr>
+<tr><td><code><i>   184</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //As&nbsp a&nbsp result,&nbsp if&nbsp an&nbsp actual&nbsp interrupt&nbsp was&nbsp enabled&nbsp and&nbsp occured,&nbsp the&nbsp PC&nbsp would&nbsp jump</code></td></tr>
+<tr><td><code><i>   185</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //to&nbsp 0x08&nbsp (or&nbsp 0x18)&nbsp and&nbsp would&nbsp begin&nbsp executing&nbsp "0xFFFF"&nbsp (unprogrammed&nbsp space).&nbsp&nbsp This</code></td></tr>
+<tr><td><code><i>   186</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //executes&nbsp as&nbsp nop&nbsp instructions,&nbsp but&nbsp the&nbsp PC&nbsp would&nbsp eventually&nbsp reach&nbsp the&nbsp REMAPPED_RESET_VECTOR_ADDRESS</code></td></tr>
+<tr><td><code><i>   187</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //(0x1000&nbsp or&nbsp 0x800,&nbsp depending&nbsp upon&nbsp bootloader),&nbsp and&nbsp would&nbsp execute&nbsp the&nbsp "goto&nbsp _startup".&nbsp&nbsp This</code></td></tr>
+<tr><td><code><i>   188</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //would&nbsp effective&nbsp reset&nbsp the&nbsp application.</code></td></tr>
+<tr><td><code><i>   189</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   190</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //To&nbsp fix&nbsp this&nbsp situation,&nbsp we&nbsp should&nbsp always&nbsp deliberately&nbsp place&nbsp a</code></td></tr>
+<tr><td><code><i>   191</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //"goto&nbsp REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS"&nbsp at&nbsp address&nbsp 0x08,&nbsp and&nbsp a</code></td></tr>
+<tr><td><code><i>   192</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //"goto&nbsp REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS"&nbsp at&nbsp address&nbsp 0x18.&nbsp&nbsp When&nbsp the&nbsp output</code></td></tr>
+<tr><td><code><i>   193</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //hex&nbsp file&nbsp of&nbsp this&nbsp project&nbsp is&nbsp programmed&nbsp with&nbsp the&nbsp bootloader,&nbsp these&nbsp sections&nbsp do&nbsp not</code></td></tr>
+<tr><td><code><i>   194</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //get&nbsp bootloaded&nbsp (as&nbsp they&nbsp overlap&nbsp the&nbsp bootloader&nbsp space).&nbsp&nbsp If&nbsp the&nbsp output&nbsp hex&nbsp file&nbsp is&nbsp not</code></td></tr>
+<tr><td><code><i>   195</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //programmed&nbsp using&nbsp the&nbsp bootloader,&nbsp then&nbsp the&nbsp below&nbsp goto&nbsp instructions&nbsp do&nbsp get&nbsp programmed,</code></td></tr>
+<tr><td><code><i>   196</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //and&nbsp the&nbsp hex&nbsp file&nbsp still&nbsp works&nbsp like&nbsp normal.&nbsp&nbsp The&nbsp below&nbsp section&nbsp is&nbsp only&nbsp required&nbsp to&nbsp fix&nbsp this</code></td></tr>
+<tr><td><code><i>   197</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //scenario.</code></td></tr>
+<tr><td><code><i>   198</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #pragma&nbsp code&nbsp HIGH_INTERRUPT_VECTOR&nbsp =&nbsp 0x08</code></td></tr>
+<tr><td><code><i>   199</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp High_ISR&nbsp (void)</code></td></tr>
+<tr><td><code><i>   200</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   201</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp _asm&nbsp goto&nbsp REMAPPED_HIGH_INTERRUPT_VECTOR_ADDRESS&nbsp _endasm</code></td></tr>
+<tr><td><code><i>   202</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   203</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #pragma&nbsp code&nbsp LOW_INTERRUPT_VECTOR&nbsp =&nbsp 0x18</code></td></tr>
+<tr><td><code><i>   204</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp Low_ISR&nbsp (void)</code></td></tr>
+<tr><td><code><i>   205</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   206</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp _asm&nbsp goto&nbsp REMAPPED_LOW_INTERRUPT_VECTOR_ADDRESS&nbsp _endasm</code></td></tr>
+<tr><td><code><i>   207</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   208</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #endif&nbsp&nbsp&nbsp&nbsp&nbsp //end&nbsp of&nbsp "#if&nbsp defined(PROGRAMMABLE_WITH_USB_HID_BOOTLOADER)||defined(PROGRAMMABLE_WITH_USB_LEGACY_CUSTOM_CLASS_BOOTLOADER)"</code></td></tr>
+<tr><td><code><i>   209</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   210</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #pragma&nbsp code</code></td></tr>
+<tr><td><code><i>   211</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   212</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   213</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //These&nbsp are&nbsp your&nbsp actual&nbsp interrupt&nbsp handling&nbsp routines.</code></td></tr>
+<tr><td><code><i>   214</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #pragma&nbsp interrupt&nbsp YourHighPriorityISRCode</code></td></tr>
+<tr><td><code><i>   215</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp YourHighPriorityISRCode()</code></td></tr>
+<tr><td><code><i>   216</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   217</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Check&nbsp which&nbsp interrupt&nbsp flag&nbsp caused&nbsp the&nbsp interrupt.</code></td></tr>
+<tr><td><code><i>   218</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Service&nbsp the&nbsp interrupt</code></td></tr>
+<tr><td><code><i>   219</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Clear&nbsp the&nbsp interrupt&nbsp flag</code></td></tr>
+<tr><td><code><i>   220</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Etc.</code></td></tr>
+<tr><td><code><i>   221</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #if&nbsp defined(USB_INTERRUPT)</code></td></tr>
+<tr><td><code><i>   222</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp USBDeviceTasks();</code></td></tr>
+<tr><td><code><i>   223</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #endif</code></td></tr>
+<tr><td><code><i>   224</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   225</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }&nbsp&nbsp //This&nbsp return&nbsp will&nbsp be&nbsp a&nbsp "retfie&nbsp fast",&nbsp since&nbsp this&nbsp is&nbsp in&nbsp a&nbsp #pragma&nbsp interrupt&nbsp section</code></td></tr>
+<tr><td><code><i>   226</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp #pragma&nbsp interruptlow&nbsp YourLowPriorityISRCode</code></td></tr>
+<tr><td><code><i>   227</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp void&nbsp YourLowPriorityISRCode()</code></td></tr>
+<tr><td><code><i>   228</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   229</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Check&nbsp which&nbsp interrupt&nbsp flag&nbsp caused&nbsp the&nbsp interrupt.</code></td></tr>
+<tr><td><code><i>   230</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Service&nbsp the&nbsp interrupt</code></td></tr>
+<tr><td><code><i>   231</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Clear&nbsp the&nbsp interrupt&nbsp flag</code></td></tr>
+<tr><td><code><i>   232</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //Etc.</code></td></tr>
+<tr><td><code><i>   233</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   234</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }&nbsp&nbsp //This&nbsp return&nbsp will&nbsp be&nbsp a&nbsp "retfie",&nbsp since&nbsp this&nbsp is&nbsp in&nbsp a&nbsp #pragma&nbsp interruptlow&nbsp section</code></td></tr>
+<tr><td><code><i>   235</i> </code></td><td><code>&nbsp #endif</code></code></BODY>
+</HTML>

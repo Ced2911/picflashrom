@@ -1,0 +1,178 @@
+<HTML>
+<HEAD>
+<TITLE>Listing of ../bsp/pic18F25K50/adc.c</TITLE>
+<LINK rel=stylesheet href="udf_styles.css" type="text/css">
+</HEAD>
+<BODY>
+<table class="">
+<tr><td><code><i>     1</i> </code></td><td><code>&nbsp /********************************************************************</code></td></tr>
+<tr><td><code><i>     2</i> </code></td><td><code>&nbsp &nbsp Software&nbsp License&nbsp Agreement:</code></td></tr>
+<tr><td><code><i>     3</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>     4</i> </code></td><td><code>&nbsp &nbsp The&nbsp software&nbsp supplied&nbsp herewith&nbsp by&nbsp Microchip&nbsp Technology&nbsp Incorporated</code></td></tr>
+<tr><td><code><i>     5</i> </code></td><td><code>&nbsp &nbsp (the&nbsp "Company")&nbsp for&nbsp its&nbsp PIC(R)&nbsp Microcontroller&nbsp is&nbsp intended&nbsp and</code></td></tr>
+<tr><td><code><i>     6</i> </code></td><td><code>&nbsp &nbsp supplied&nbsp to&nbsp you,&nbsp the&nbsp Company's&nbsp customer,&nbsp for&nbsp use&nbsp solely&nbsp and</code></td></tr>
+<tr><td><code><i>     7</i> </code></td><td><code>&nbsp &nbsp exclusively&nbsp on&nbsp Microchip&nbsp PIC&nbsp Microcontroller&nbsp products.&nbsp The</code></td></tr>
+<tr><td><code><i>     8</i> </code></td><td><code>&nbsp &nbsp software&nbsp is&nbsp owned&nbsp by&nbsp the&nbsp Company&nbsp and/or&nbsp its&nbsp supplier,&nbsp and&nbsp is</code></td></tr>
+<tr><td><code><i>     9</i> </code></td><td><code>&nbsp &nbsp protected&nbsp under&nbsp applicable&nbsp copyright&nbsp laws.&nbsp All&nbsp rights&nbsp are&nbsp reserved.</code></td></tr>
+<tr><td><code><i>    10</i> </code></td><td><code>&nbsp &nbsp Any&nbsp use&nbsp in&nbsp violation&nbsp of&nbsp the&nbsp foregoing&nbsp restrictions&nbsp may&nbsp subject&nbsp the</code></td></tr>
+<tr><td><code><i>    11</i> </code></td><td><code>&nbsp &nbsp user&nbsp to&nbsp criminal&nbsp sanctions&nbsp under&nbsp applicable&nbsp laws,&nbsp as&nbsp well&nbsp as&nbsp to</code></td></tr>
+<tr><td><code><i>    12</i> </code></td><td><code>&nbsp &nbsp civil&nbsp liability&nbsp for&nbsp the&nbsp breach&nbsp of&nbsp the&nbsp terms&nbsp and&nbsp conditions&nbsp of&nbsp this</code></td></tr>
+<tr><td><code><i>    13</i> </code></td><td><code>&nbsp &nbsp license.</code></td></tr>
+<tr><td><code><i>    14</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    15</i> </code></td><td><code>&nbsp &nbsp THIS&nbsp SOFTWARE&nbsp IS&nbsp PROVIDED&nbsp IN&nbsp AN&nbsp "AS&nbsp IS"&nbsp CONDITION.&nbsp NO&nbsp WARRANTIES,</code></td></tr>
+<tr><td><code><i>    16</i> </code></td><td><code>&nbsp &nbsp WHETHER&nbsp EXPRESS,&nbsp IMPLIED&nbsp OR&nbsp STATUTORY,&nbsp INCLUDING,&nbsp BUT&nbsp NOT&nbsp LIMITED</code></td></tr>
+<tr><td><code><i>    17</i> </code></td><td><code>&nbsp &nbsp TO,&nbsp IMPLIED&nbsp WARRANTIES&nbsp OF&nbsp MERCHANTABILITY&nbsp AND&nbsp FITNESS&nbsp FOR&nbsp A</code></td></tr>
+<tr><td><code><i>    18</i> </code></td><td><code>&nbsp &nbsp PARTICULAR&nbsp PURPOSE&nbsp APPLY&nbsp TO&nbsp THIS&nbsp SOFTWARE.&nbsp THE&nbsp COMPANY&nbsp SHALL&nbsp NOT,</code></td></tr>
+<tr><td><code><i>    19</i> </code></td><td><code>&nbsp &nbsp IN&nbsp ANY&nbsp CIRCUMSTANCES,&nbsp BE&nbsp LIABLE&nbsp FOR&nbsp SPECIAL,&nbsp INCIDENTAL&nbsp OR</code></td></tr>
+<tr><td><code><i>    20</i> </code></td><td><code>&nbsp &nbsp CONSEQUENTIAL&nbsp DAMAGES,&nbsp FOR&nbsp ANY&nbsp REASON&nbsp WHATSOEVER.</code></td></tr>
+<tr><td><code><i>    21</i> </code></td><td><code>&nbsp &nbsp *******************************************************************/</code></td></tr>
+<tr><td><code><i>    22</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    23</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  adc.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    24</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  stdint.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    25</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  stdbool.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    26</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  xc.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    27</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    28</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  adc.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    29</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    30</i> </code></td><td><code>&nbsp #define&nbsp PIN_ANALOG&nbsp&nbsp&nbsp&nbsp 1</code></td></tr>
+<tr><td><code><i>    31</i> </code></td><td><code>&nbsp #define&nbsp PIN_DIGITAL&nbsp&nbsp&nbsp 0</code></td></tr>
+<tr><td><code><i>    32</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    33</i> </code></td><td><code>&nbsp #define&nbsp PIN_INPUT&nbsp&nbsp&nbsp&nbsp&nbsp 1</code></td></tr>
+<tr><td><code><i>    34</i> </code></td><td><code>&nbsp #define&nbsp PIN_OUTPUT&nbsp&nbsp&nbsp&nbsp 0</code></td></tr>
+<tr><td><code><i>    35</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    36</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>    37</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp ADC_ReadPercentage(ADC_CHANNEL&nbsp channel);</code></td></tr>
+<tr><td><code><i>    38</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    39</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Reads&nbsp the&nbsp requested&nbsp ADC&nbsp channel&nbsp and&nbsp returns&nbsp the&nbsp percentage&nbsp </code></td></tr>
+<tr><td><code><i>    40</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp of&nbsp that&nbsp conversions&nbsp result&nbsp (0-100%).</code></td></tr>
+<tr><td><code><i>    41</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    42</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp channel&nbsp is&nbsp configured&nbsp via&nbsp the&nbsp ADCConfigure()&nbsp function</code></td></tr>
+<tr><td><code><i>    43</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    44</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp ADC_CHANNEL&nbsp channel&nbsp -&nbsp enumeration&nbsp of&nbsp the&nbsp ADC&nbsp channels</code></td></tr>
+<tr><td><code><i>    45</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp available&nbsp in&nbsp this&nbsp demo.&nbsp&nbsp They&nbsp should&nbsp be&nbsp meaningful&nbsp names&nbsp and&nbsp </code></td></tr>
+<tr><td><code><i>    46</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp not&nbsp the&nbsp names&nbsp of&nbsp the&nbsp ADC&nbsp pins&nbsp on&nbsp the&nbsp device&nbsp (as&nbsp the&nbsp demo&nbsp code&nbsp </code></td></tr>
+<tr><td><code><i>    47</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp may&nbsp be&nbsp ported&nbsp to&nbsp other&nbsp boards).</code></td></tr>
+<tr><td><code><i>    48</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp i.e.&nbsp ADC_ReadPercentage(ADC_CHANNEL_POTENTIOMETER);</code></td></tr>
+<tr><td><code><i>    49</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    50</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp uint8_t&nbsp indicating&nbsp the&nbsp percentage&nbsp of&nbsp the&nbsp result&nbsp 0-100%&nbsp or</code></td></tr>
+<tr><td><code><i>    51</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0xFF&nbsp for&nbsp an&nbsp error</code></td></tr>
+<tr><td><code><i>    52</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    53</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>    54</i> </code></td><td><code>&nbsp uint8_t&nbsp ADC_ReadPercentage</code></td></tr>
+<tr><td><code><i>    55</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp (ADC_CHANNEL&nbsp channel)&nbsp {</code></td></tr>
+<tr><td><code><i>    56</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp uint8_t&nbsp percent;</code></td></tr>
+<tr><td><code><i>    57</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    58</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp switch(channel)</code></td></tr>
+<tr><td><code><i>    59</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    60</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp ADC_CHANNEL_0:</code></td></tr>
+<tr><td><code><i>    61</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>    62</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp default:</code></td></tr>
+<tr><td><code><i>    63</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return&nbsp 0xFF;</code></td></tr>
+<tr><td><code><i>    64</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>    65</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>    66</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp //A&nbsp very&nbsp crude&nbsp percentage&nbsp calculation</code></td></tr>
+<tr><td><code><i>    67</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp percent&nbsp =&nbsp (ADC_Read10bit(channel)&nbsp /&nbsp 10);</code></td></tr>
+<tr><td><code><i>    68</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    69</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp if(percent&nbsp&rsaquo &nbsp 100)</code></td></tr>
+<tr><td><code><i>    70</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    71</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp percent&nbsp =&nbsp 100;</code></td></tr>
+<tr><td><code><i>    72</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>    73</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp return&nbsp percent;</code></td></tr>
+<tr><td><code><i>    74</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>    75</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    76</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>    77</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp ADC_Read10bit(ADC_CHANNEL&nbsp channel);</code></td></tr>
+<tr><td><code><i>    78</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    79</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Reads&nbsp the&nbsp requested&nbsp ADC&nbsp channel&nbsp and&nbsp returns&nbsp the&nbsp 10-bit</code></td></tr>
+<tr><td><code><i>    80</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp representation&nbsp of&nbsp this&nbsp data.</code></td></tr>
+<tr><td><code><i>    81</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    82</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp channel&nbsp is&nbsp configured&nbsp via&nbsp the&nbsp ADCConfigure()&nbsp function</code></td></tr>
+<tr><td><code><i>    83</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    84</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp ADC_CHANNEL&nbsp channel&nbsp -&nbsp enumeration&nbsp of&nbsp the&nbsp ADC&nbsp channels</code></td></tr>
+<tr><td><code><i>    85</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp available&nbsp in&nbsp this&nbsp demo.&nbsp&nbsp They&nbsp should&nbsp be&nbsp meaningful&nbsp names&nbsp and</code></td></tr>
+<tr><td><code><i>    86</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp not&nbsp the&nbsp names&nbsp of&nbsp the&nbsp ADC&nbsp pins&nbsp on&nbsp the&nbsp device&nbsp (as&nbsp the&nbsp demo&nbsp code</code></td></tr>
+<tr><td><code><i>    87</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp may&nbsp be&nbsp ported&nbsp to&nbsp other&nbsp boards).</code></td></tr>
+<tr><td><code><i>    88</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp i.e.&nbsp -&nbsp ADCReadPercentage(ADC_CHANNEL_POTENTIOMETER);</code></td></tr>
+<tr><td><code><i>    89</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    90</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp uint16_t&nbsp the&nbsp right&nbsp adjusted&nbsp 10-bit&nbsp representation&nbsp of&nbsp the&nbsp ADC</code></td></tr>
+<tr><td><code><i>    91</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp channel&nbsp conversion&nbsp or&nbsp 0xFFFF&nbsp for&nbsp an&nbsp error.</code></td></tr>
+<tr><td><code><i>    92</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    93</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>    94</i> </code></td><td><code>&nbsp uint16_t&nbsp ADC_Read10bit(ADC_CHANNEL&nbsp channel)</code></td></tr>
+<tr><td><code><i>    95</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>    96</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp uint16_t&nbsp result;</code></td></tr>
+<tr><td><code><i>    97</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    98</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp switch(channel)</code></td></tr>
+<tr><td><code><i>    99</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   100</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp ADC_CHANNEL_0:</code></td></tr>
+<tr><td><code><i>   101</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   102</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp default:</code></td></tr>
+<tr><td><code><i>   103</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return&nbsp 0xFFFF;</code></td></tr>
+<tr><td><code><i>   104</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   105</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   106</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp ADCON0bits.CHS&nbsp =&nbsp channel;</code></td></tr>
+<tr><td><code><i>   107</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   108</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp ADCON0bits.GO&nbsp =&nbsp 1;&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Start&nbsp AD&nbsp conversion</code></td></tr>
+<tr><td><code><i>   109</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp while(ADCON0bits.NOT_DONE);&nbsp&nbsp&nbsp&nbsp&nbsp //&nbsp Wait&nbsp for&nbsp conversion</code></td></tr>
+<tr><td><code><i>   110</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   111</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp result&nbsp =&nbsp ADRESH;</code></td></tr>
+<tr><td><code><i>   112</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp result&nbsp&lsaquo &lsaquo  =8;</code></td></tr>
+<tr><td><code><i>   113</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp result&nbsp |=&nbsp ADRESL;</code></td></tr>
+<tr><td><code><i>   114</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   115</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp return&nbsp result;</code></td></tr>
+<tr><td><code><i>   116</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>   117</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   118</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>   119</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp bool&nbsp ADC_Enable(ADC_CHANNEL&nbsp channel,&nbsp ADC_CONFIGURATION&nbsp configuration);</code></td></tr>
+<tr><td><code><i>   120</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   121</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Configures&nbsp the&nbsp ADC&nbsp module&nbsp to&nbsp specified&nbsp setting</code></td></tr>
+<tr><td><code><i>   122</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   123</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp none</code></td></tr>
+<tr><td><code><i>   124</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   125</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp ADC_CHANNEL&nbsp channel&nbsp -&nbsp the&nbsp channel&nbsp to&nbsp enable</code></td></tr>
+<tr><td><code><i>   126</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ADC_CONFIGURATION&nbsp configuration&nbsp -&nbsp the&nbsp mode&nbsp in&nbsp which&nbsp to&nbsp run&nbsp the&nbsp ADC</code></td></tr>
+<tr><td><code><i>   127</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   128</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp bool&nbsp -&nbsp true&nbsp if&nbsp successfully&nbsp configured.&nbsp&nbsp false&nbsp otherwise.</code></td></tr>
+<tr><td><code><i>   129</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   130</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>   131</i> </code></td><td><code>&nbsp bool&nbsp ADC_Enable(ADC_CHANNEL&nbsp channel)</code></td></tr>
+<tr><td><code><i>   132</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>   133</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp switch(channel)</code></td></tr>
+<tr><td><code><i>   134</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   135</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp ADC_CHANNEL_0:</code></td></tr>
+<tr><td><code><i>   136</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp TRISAbits.TRISA0&nbsp =&nbsp PIN_INPUT;</code></td></tr>
+<tr><td><code><i>   137</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ANSELAbits.ANSA0&nbsp =&nbsp PIN_ANALOG;</code></td></tr>
+<tr><td><code><i>   138</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return&nbsp true;</code></td></tr>
+<tr><td><code><i>   139</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   140</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp default:</code></td></tr>
+<tr><td><code><i>   141</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return&nbsp false;</code></td></tr>
+<tr><td><code><i>   142</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   143</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>   144</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   145</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>   146</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp bool&nbsp ADC_SetConfiguration(ADC_CONFIGURATION&nbsp configuration)</code></td></tr>
+<tr><td><code><i>   147</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   148</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Configures&nbsp the&nbsp ADC&nbsp module&nbsp to&nbsp specified&nbsp setting</code></td></tr>
+<tr><td><code><i>   149</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   150</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp none</code></td></tr>
+<tr><td><code><i>   151</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   152</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp ADC_CONFIGURATION&nbsp configuration&nbsp -&nbsp the&nbsp mode&nbsp in&nbsp which&nbsp to&nbsp run&nbsp the&nbsp ADC</code></td></tr>
+<tr><td><code><i>   153</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   154</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp bool&nbsp -&nbsp true&nbsp if&nbsp successfully&nbsp configured.&nbsp&nbsp false&nbsp otherwise.</code></td></tr>
+<tr><td><code><i>   155</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>   156</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>   157</i> </code></td><td><code>&nbsp bool&nbsp ADC_SetConfiguration(ADC_CONFIGURATION&nbsp configuration)</code></td></tr>
+<tr><td><code><i>   158</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>   159</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp if(configuration&nbsp ==&nbsp ADC_CONFIGURATION_DEFAULT)</code></td></tr>
+<tr><td><code><i>   160</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   161</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ADCON1=0;</code></td></tr>
+<tr><td><code><i>   162</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ADCON2=0xBE;</code></td></tr>
+<tr><td><code><i>   163</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ADCON0=0x01;</code></td></tr>
+<tr><td><code><i>   164</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   165</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return&nbsp true;</code></td></tr>
+<tr><td><code><i>   166</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   167</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   168</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp return&nbsp false;</code></td></tr>
+<tr><td><code><i>   169</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>   170</i> </code></td><td><code>&nbsp </code></code></BODY>
+</HTML>

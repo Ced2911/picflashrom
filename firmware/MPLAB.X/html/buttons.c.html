@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>Listing of ../bsp/pic18F25K50/buttons.c</TITLE>
+<LINK rel=stylesheet href="udf_styles.css" type="text/css">
+</HEAD>
+<BODY>
+<table class="">
+<tr><td><code><i>     1</i> </code></td><td><code>&nbsp /********************************************************************</code></td></tr>
+<tr><td><code><i>     2</i> </code></td><td><code>&nbsp &nbsp Software&nbsp License&nbsp Agreement:</code></td></tr>
+<tr><td><code><i>     3</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>     4</i> </code></td><td><code>&nbsp &nbsp The&nbsp software&nbsp supplied&nbsp herewith&nbsp by&nbsp Microchip&nbsp Technology&nbsp Incorporated</code></td></tr>
+<tr><td><code><i>     5</i> </code></td><td><code>&nbsp &nbsp (the&nbsp "Company")&nbsp for&nbsp its&nbsp PIC(R)&nbsp Microcontroller&nbsp is&nbsp intended&nbsp and</code></td></tr>
+<tr><td><code><i>     6</i> </code></td><td><code>&nbsp &nbsp supplied&nbsp to&nbsp you,&nbsp the&nbsp Company's&nbsp customer,&nbsp for&nbsp use&nbsp solely&nbsp and</code></td></tr>
+<tr><td><code><i>     7</i> </code></td><td><code>&nbsp &nbsp exclusively&nbsp on&nbsp Microchip&nbsp PIC&nbsp Microcontroller&nbsp products.&nbsp The</code></td></tr>
+<tr><td><code><i>     8</i> </code></td><td><code>&nbsp &nbsp software&nbsp is&nbsp owned&nbsp by&nbsp the&nbsp Company&nbsp and/or&nbsp its&nbsp supplier,&nbsp and&nbsp is</code></td></tr>
+<tr><td><code><i>     9</i> </code></td><td><code>&nbsp &nbsp protected&nbsp under&nbsp applicable&nbsp copyright&nbsp laws.&nbsp All&nbsp rights&nbsp are&nbsp reserved.</code></td></tr>
+<tr><td><code><i>    10</i> </code></td><td><code>&nbsp &nbsp Any&nbsp use&nbsp in&nbsp violation&nbsp of&nbsp the&nbsp foregoing&nbsp restrictions&nbsp may&nbsp subject&nbsp the</code></td></tr>
+<tr><td><code><i>    11</i> </code></td><td><code>&nbsp &nbsp user&nbsp to&nbsp criminal&nbsp sanctions&nbsp under&nbsp applicable&nbsp laws,&nbsp as&nbsp well&nbsp as&nbsp to</code></td></tr>
+<tr><td><code><i>    12</i> </code></td><td><code>&nbsp &nbsp civil&nbsp liability&nbsp for&nbsp the&nbsp breach&nbsp of&nbsp the&nbsp terms&nbsp and&nbsp conditions&nbsp of&nbsp this</code></td></tr>
+<tr><td><code><i>    13</i> </code></td><td><code>&nbsp &nbsp license.</code></td></tr>
+<tr><td><code><i>    14</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    15</i> </code></td><td><code>&nbsp &nbsp THIS&nbsp SOFTWARE&nbsp IS&nbsp PROVIDED&nbsp IN&nbsp AN&nbsp "AS&nbsp IS"&nbsp CONDITION.&nbsp NO&nbsp WARRANTIES,</code></td></tr>
+<tr><td><code><i>    16</i> </code></td><td><code>&nbsp &nbsp WHETHER&nbsp EXPRESS,&nbsp IMPLIED&nbsp OR&nbsp STATUTORY,&nbsp INCLUDING,&nbsp BUT&nbsp NOT&nbsp LIMITED</code></td></tr>
+<tr><td><code><i>    17</i> </code></td><td><code>&nbsp &nbsp TO,&nbsp IMPLIED&nbsp WARRANTIES&nbsp OF&nbsp MERCHANTABILITY&nbsp AND&nbsp FITNESS&nbsp FOR&nbsp A</code></td></tr>
+<tr><td><code><i>    18</i> </code></td><td><code>&nbsp &nbsp PARTICULAR&nbsp PURPOSE&nbsp APPLY&nbsp TO&nbsp THIS&nbsp SOFTWARE.&nbsp THE&nbsp COMPANY&nbsp SHALL&nbsp NOT,</code></td></tr>
+<tr><td><code><i>    19</i> </code></td><td><code>&nbsp &nbsp IN&nbsp ANY&nbsp CIRCUMSTANCES,&nbsp BE&nbsp LIABLE&nbsp FOR&nbsp SPECIAL,&nbsp INCIDENTAL&nbsp OR</code></td></tr>
+<tr><td><code><i>    20</i> </code></td><td><code>&nbsp &nbsp CONSEQUENTIAL&nbsp DAMAGES,&nbsp FOR&nbsp ANY&nbsp REASON&nbsp WHATSOEVER.</code></td></tr>
+<tr><td><code><i>    21</i> </code></td><td><code>&nbsp &nbsp *******************************************************************/</code></td></tr>
+<tr><td><code><i>    22</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    23</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  xc.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    24</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  stdbool.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    25</i> </code></td><td><code>&nbsp #include&nbsp&lsaquo  buttons.h&rsaquo  </code></td></tr>
+<tr><td><code><i>    26</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    27</i> </code></td><td><code>&nbsp /***&nbsp Button&nbsp Definitions&nbsp *********************************************/</code></td></tr>
+<tr><td><code><i>    28</i> </code></td><td><code>&nbsp //&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp S1&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp MCLR&nbsp reset</code></td></tr>
+<tr><td><code><i>    29</i> </code></td><td><code>&nbsp #define&nbsp S2_PORT&nbsp&nbsp PORTBbits.RB4&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp //AN11</code></td></tr>
+<tr><td><code><i>    30</i> </code></td><td><code>&nbsp #define&nbsp S3_PORT&nbsp&nbsp PORTBbits.RB5&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>    31</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    32</i> </code></td><td><code>&nbsp #define&nbsp S2_TRIS&nbsp&nbsp TRISBbits.TRISB4</code></td></tr>
+<tr><td><code><i>    33</i> </code></td><td><code>&nbsp #define&nbsp S3_TRIS&nbsp&nbsp TRISBbits.TRISB5</code></td></tr>
+<tr><td><code><i>    34</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    35</i> </code></td><td><code>&nbsp #define&nbsp S2_ANSEL&nbsp ANSELBbits.ANSB4</code></td></tr>
+<tr><td><code><i>    36</i> </code></td><td><code>&nbsp #define&nbsp S3_ANSEL&nbsp ANSELBbits.ANSB5</code></td></tr>
+<tr><td><code><i>    37</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    38</i> </code></td><td><code>&nbsp #define&nbsp BUTTON_PRESSED&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0</code></td></tr>
+<tr><td><code><i>    39</i> </code></td><td><code>&nbsp #define&nbsp BUTTON_NOT_PRESSED&nbsp&nbsp 1</code></td></tr>
+<tr><td><code><i>    40</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    41</i> </code></td><td><code>&nbsp #define&nbsp PIN_INPUT&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 1</code></td></tr>
+<tr><td><code><i>    42</i> </code></td><td><code>&nbsp #define&nbsp PIN_OUTPUT&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0</code></td></tr>
+<tr><td><code><i>    43</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    44</i> </code></td><td><code>&nbsp #define&nbsp PIN_DIGITAL&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 0</code></td></tr>
+<tr><td><code><i>    45</i> </code></td><td><code>&nbsp #define&nbsp PIN_ANALOG&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp 1</code></td></tr>
+<tr><td><code><i>    46</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    47</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>    48</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp bool&nbsp BUTTON_IsPressed(BUTTON&nbsp button);</code></td></tr>
+<tr><td><code><i>    49</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    50</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Returns&nbsp the&nbsp current&nbsp state&nbsp of&nbsp the&nbsp requested&nbsp button</code></td></tr>
+<tr><td><code><i>    51</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    52</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp button&nbsp configured&nbsp via&nbsp BUTTON_SetConfiguration()</code></td></tr>
+<tr><td><code><i>    53</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    54</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp BUTTON&nbsp button&nbsp -&nbsp enumeration&nbsp of&nbsp the&nbsp buttons&nbsp available&nbsp in</code></td></tr>
+<tr><td><code><i>    55</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp this&nbsp demo.&nbsp&nbsp They&nbsp should&nbsp be&nbsp meaningful&nbsp names&nbsp and&nbsp not&nbsp the&nbsp names&nbsp </code></td></tr>
+<tr><td><code><i>    56</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp of&nbsp the&nbsp buttons&nbsp on&nbsp the&nbsp silkscreen&nbsp on&nbsp the&nbsp board&nbsp (as&nbsp the&nbsp demo&nbsp </code></td></tr>
+<tr><td><code><i>    57</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp code&nbsp may&nbsp be&nbsp ported&nbsp to&nbsp other&nbsp boards).</code></td></tr>
+<tr><td><code><i>    58</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp i.e.&nbsp -&nbsp ButtonIsPressed(BUTTON_SEND_MESSAGE);</code></td></tr>
+<tr><td><code><i>    59</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    60</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp TRUE&nbsp if&nbsp pressed;&nbsp FALSE&nbsp if&nbsp not&nbsp pressed.</code></td></tr>
+<tr><td><code><i>    61</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    62</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>    63</i> </code></td><td><code>&nbsp bool&nbsp BUTTON_IsPressed(BUTTON&nbsp button)</code></td></tr>
+<tr><td><code><i>    64</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>    65</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp switch(button)</code></td></tr>
+<tr><td><code><i>    66</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>    67</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp BUTTON_S2:</code></td></tr>
+<tr><td><code><i>    68</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return&nbsp (&nbsp (S2_PORT&nbsp ==&nbsp BUTTON_PRESSED)&nbsp ?&nbsp true&nbsp :&nbsp false);</code></td></tr>
+<tr><td><code><i>    69</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>    70</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp BUTTON_S3:</code></td></tr>
+<tr><td><code><i>    71</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return&nbsp (&nbsp (S3_PORT&nbsp ==&nbsp BUTTON_PRESSED)&nbsp ?&nbsp true&nbsp :&nbsp false);</code></td></tr>
+<tr><td><code><i>    72</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    73</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp BUTTON_NONE:</code></td></tr>
+<tr><td><code><i>    74</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp return&nbsp false;</code></td></tr>
+<tr><td><code><i>    75</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>    76</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>    77</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp return&nbsp false;</code></td></tr>
+<tr><td><code><i>    78</i> </code></td><td><code>&nbsp }</code></td></tr>
+<tr><td><code><i>    79</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>    80</i> </code></td><td><code>&nbsp /*********************************************************************</code></td></tr>
+<tr><td><code><i>    81</i> </code></td><td><code>&nbsp *&nbsp Function:&nbsp void&nbsp BUTTON_Enable(BUTTON&nbsp button);</code></td></tr>
+<tr><td><code><i>    82</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    83</i> </code></td><td><code>&nbsp *&nbsp Overview:&nbsp Returns&nbsp the&nbsp current&nbsp state&nbsp of&nbsp the&nbsp requested&nbsp button</code></td></tr>
+<tr><td><code><i>    84</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    85</i> </code></td><td><code>&nbsp *&nbsp PreCondition:&nbsp button&nbsp configured&nbsp via&nbsp BUTTON_SetConfiguration()</code></td></tr>
+<tr><td><code><i>    86</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    87</i> </code></td><td><code>&nbsp *&nbsp Input:&nbsp BUTTON&nbsp button&nbsp -&nbsp enumeration&nbsp of&nbsp the&nbsp buttons&nbsp available&nbsp in</code></td></tr>
+<tr><td><code><i>    88</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp this&nbsp demo.&nbsp&nbsp They&nbsp should&nbsp be&nbsp meaningful&nbsp names&nbsp and&nbsp not&nbsp the&nbsp names</code></td></tr>
+<tr><td><code><i>    89</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp of&nbsp the&nbsp buttons&nbsp on&nbsp the&nbsp silkscreen&nbsp on&nbsp the&nbsp board&nbsp (as&nbsp the&nbsp demo</code></td></tr>
+<tr><td><code><i>    90</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp code&nbsp may&nbsp be&nbsp ported&nbsp to&nbsp other&nbsp boards).</code></td></tr>
+<tr><td><code><i>    91</i> </code></td><td><code>&nbsp *&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp i.e.&nbsp -&nbsp ButtonIsPressed(BUTTON_SEND_MESSAGE);</code></td></tr>
+<tr><td><code><i>    92</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    93</i> </code></td><td><code>&nbsp *&nbsp Output:&nbsp None</code></td></tr>
+<tr><td><code><i>    94</i> </code></td><td><code>&nbsp *</code></td></tr>
+<tr><td><code><i>    95</i> </code></td><td><code>&nbsp ********************************************************************/</code></td></tr>
+<tr><td><code><i>    96</i> </code></td><td><code>&nbsp void&nbsp BUTTON_Enable(BUTTON&nbsp button)</code></td></tr>
+<tr><td><code><i>    97</i> </code></td><td><code>&nbsp {</code></td></tr>
+<tr><td><code><i>    98</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp switch(button)</code></td></tr>
+<tr><td><code><i>    99</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp {</code></td></tr>
+<tr><td><code><i>   100</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp BUTTON_S2:</code></td></tr>
+<tr><td><code><i>   101</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp S2_TRIS&nbsp =&nbsp PIN_INPUT;</code></td></tr>
+<tr><td><code><i>   102</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp S2_ANSEL&nbsp =&nbsp PIN_DIGITAL;</code></td></tr>
+<tr><td><code><i>   103</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   104</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </code></td></tr>
+<tr><td><code><i>   105</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp BUTTON_S3:</code></td></tr>
+<tr><td><code><i>   106</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp S3_TRIS&nbsp =&nbsp PIN_INPUT;</code></td></tr>
+<tr><td><code><i>   107</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp S3_ANSEL&nbsp =&nbsp PIN_DIGITAL;</code></td></tr>
+<tr><td><code><i>   108</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   109</i> </code></td><td><code>&nbsp </code></td></tr>
+<tr><td><code><i>   110</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp case&nbsp BUTTON_NONE:</code></td></tr>
+<tr><td><code><i>   111</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp break;</code></td></tr>
+<tr><td><code><i>   112</i> </code></td><td><code>&nbsp &nbsp&nbsp&nbsp&nbsp }</code></td></tr>
+<tr><td><code><i>   113</i> </code></td><td><code>&nbsp }</code></code></BODY>
+</HTML>
