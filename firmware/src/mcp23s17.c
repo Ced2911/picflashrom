@@ -17,8 +17,8 @@
 
 #ifdef PROTO_FAIL
 #if 1
-#define CSL {PORTBbits.RB2 = 0;}
-#define CSH {PORTBbits.RB2 = 1;}
+#define CSL {PORTCbits.RC6 = 0;}
+#define CSH {PORTCbits.RC6 = 1;}
 #else
 #define CSL {LATB = LATB & 0xFB;}
 #define CSH {LATB = LATB | 0x3; }
@@ -34,8 +34,8 @@
 
 void SPI_Init() {  
     TRISBbits.TRISB1 = 0; // clock pin output
-    TRISBbits.TRISB0 = 1; // SDI pin input
-    TRISBbits.TRISB2 = 0;//Pin CS
+    //TRISBbits.TRISB0 = 1; // SDI pin input
+    TRISCbits.RC6 = 0;//Pin CS
     
     SSPSTAT &= 0x3F; 
     SSPCON1 = 0x00; 

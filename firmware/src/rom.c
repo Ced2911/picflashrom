@@ -26,7 +26,7 @@
 #define SECTOR_SIZE_4K             4096
 
 #define MCP_DATA_ADDR   0
-#define MCP_ADDR_HIGH   1
+#define MCP_ADDR_HIGH   0
 
 //#define SET_ADDR_H(addr)    {MCP_Write(MCP_ADDR_HIGH, GPIOA, addr>>6); MCP_Write(MCP_ADDR_HIGH, GPIOB, addr>>14);}
 #define SET_ADDR_H(addr)    {MCP_Write16AB(MCP_ADDR_HIGH, GPIOA, addr>>6, addr>>14);}
@@ -37,22 +37,19 @@
 
 #define CE_L_OE_H {PORTC = (PORTC & 0xFC) | 0x2 ;}
 #define CE_H_OE_H {PORTC = PORTC | 0x03;}
+
 #define CE_L    {PORTCbits.RC0 = 0;}
 #define CE_H    {PORTCbits.RC0 = 1;}
 #define OE_L    {PORTCbits.RC1 = 0;}
 #define OE_H    {PORTCbits.RC1 = 1;}
+#define WE_L    {PORTCbits.RC2 = 0;}
+#define WE_H    {PORTCbits.RC2 = 1;}
 
 
 #define DELAY_P { __delay_us(1); }
 #define DELAY_CMD_X { __delay_us(2); }
 #define DELAY_TWP   { __delay_us(1); }
 #define OUTB(x) { LATA = x;}
-
-// SST ! Ced config !!
-#define WE_L {LATBbits.LB0 = 0;}
-#define WE_H {LATBbits.LB0 = 1;}
-
-#define PORT_DATA   PORTA
 
 //#define DELAY_TACC  { __delay_us(2);} // OKAY
 //#define DELAY_CS    { __delay_us(1);} // OKAY
@@ -64,6 +61,8 @@
 #define DELAY_BYTE_WRITE { __delay_us(1);} // OKAY
 
 #define MAX_EEPROM_READ    0x40
+
+#define PORT_DATA PORTA
 
 static void PORT_INIT() {
     INTCON2bits.RBPU = 0;
@@ -82,6 +81,7 @@ static void PORT_INIT() {
     TRISCbits.RC7 = 0;
     TRISCbits.RC0 = 0;
     TRISCbits.RC1 = 0;
+    TRISCbits.RC2 = 0;
 
     ANSELA = 0;
     ANSELB = 0;
@@ -109,7 +109,6 @@ inline void rom_finish_write() {
 void rom_init() {
     SPI_Init();
     MCP_Init(MCP_ADDR_HIGH);
-    MCP_Init(MCP_DATA_ADDR);
 
     //MCP23008_Init();
     PORT_INIT();
@@ -474,10 +473,5 @@ void rom_identify(uint8_t * in) {
 
     rom_start_read();
     rom_read(&in[2], 0, 0xF);
-    
-    
-    
-    MCP_Write(MCP_ADDR_HIGH, GPIOA, 0xFF);
-    MCP_Write(MCP_ADDR_HIGH, GPIOB, 0xFF);
 }
 
