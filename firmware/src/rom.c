@@ -38,12 +38,12 @@
 #define CE_L_OE_H {PORTC = (PORTC & 0xFC) | 0x2 ;}
 #define CE_H_OE_H {PORTC = PORTC | 0x03;}
 
-#define CE_L    {PORTCbits.RC0 = 0;}
-#define CE_H    {PORTCbits.RC0 = 1;}
-#define OE_L    {PORTCbits.RC1 = 0;}
-#define OE_H    {PORTCbits.RC1 = 1;}
-#define WE_L    {PORTCbits.RC2 = 0;}
-#define WE_H    {PORTCbits.RC2 = 1;}
+#define CE_L    {LATCbits.LC0 = 0;}
+#define CE_H    {LATCbits.LC0 = 1;}
+#define OE_L    {LATCbits.LC1 = 0;}
+#define OE_H    {LATCbits.LC1 = 1;}
+#define WE_L    {LATCbits.LC2 = 0;}
+#define WE_H    {LATCbits.LC2 = 1;}
 
 
 #define DELAY_P { __delay_us(1); }

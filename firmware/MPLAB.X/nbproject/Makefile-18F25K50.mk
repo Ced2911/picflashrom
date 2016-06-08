@@ -73,7 +73,7 @@ FIXDEPS=fixDeps
 
 # The following macros may be used in the pre and post step lines
 Device=PIC18F25K50
-ProjectDir="I:\console\firmware\MPLAB.X"
+ProjectDir="I:\console\github\firmware\MPLAB.X"
 ConfName=18F25K50
 ImagePath="dist\18F25K50\${IMAGE_TYPE}\MPLAB.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
 ImageDir="dist\18F25K50\${IMAGE_TYPE}"

@@ -15,19 +15,8 @@
 
 #define PROTO_FAIL
 
-#ifdef PROTO_FAIL
-#if 1
 #define CSL {PORTCbits.RC6 = 0;}
 #define CSH {PORTCbits.RC6 = 1;}
-#else
-#define CSL {LATB = LATB & 0xFB;}
-#define CSH {LATB = LATB | 0x3; }
-#endif
-#else
-#define CSL {PORTCbits.RC6 = 1;}
-#define CSH {PORTCbits.RC6 = 1;}
-#endif
-
 
 
 // Violet/XX/bleu/gris/blanc

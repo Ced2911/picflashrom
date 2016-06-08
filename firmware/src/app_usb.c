@@ -188,7 +188,7 @@ void ProcessIO(void) {
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
                     rom_identify(in);
-                    rom_identify(&in[0x10]);
+                   // rom_identify(&in[0x10]);
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     rqCmd = 0;
