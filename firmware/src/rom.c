@@ -46,6 +46,10 @@
 #define WE_H    {LATCbits.LC2 = 1;}
 
 
+#define CE  0
+#define OE  1
+#define WE  2
+
 #define DELAY_P { __delay_us(1); }
 #define DELAY_CMD_X { __delay_us(2); }
 #define DELAY_TWP   { __delay_us(1); }
@@ -63,6 +67,10 @@
 #define MAX_EEPROM_READ    0x40
 
 #define PORT_DATA PORTA
+
+static void set_control(uint8_t ctrl) {
+    LATC = (PORTC & 0xF8) | (ctrl & 0x7);
+}
 
 static void PORT_INIT() {
     INTCON2bits.RBPU = 0;
@@ -397,7 +405,7 @@ void SST39xx_rom_write(uint8_t * in, uint32_t addr, uint8_t len) {
  * @param addr
  * @param len
  */
-void SST39xx_rom_write(uint8_t * in, uint32_t addr, uint8_t len) {
+void rom_write(uint8_t * in, uint32_t addr, uint8_t len) {
     uint8_t p = 0;
     uint8_t toggle_bit = 0;
     uint8_t * buf = in;
@@ -423,7 +431,7 @@ void SST39xx_rom_write(uint8_t * in, uint32_t addr, uint8_t len) {
 
 #endif
 
-void SST39xx_rom_erase(uint8_t * in) {
+void rom_erase(uint8_t * in) {
     rom_start_write();
 
     _START_C()

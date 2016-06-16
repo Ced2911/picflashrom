@@ -43,9 +43,11 @@ MAIN_RETURN main(void)
 
     while(1)
     {
-        SYSTEM_Tasks();
+        //SYSTEM_Tasks();
         
+#ifdef USB_POLLING
         USBDeviceTasks();
+#endif
         ProcessIO(); 
 
     }//end while

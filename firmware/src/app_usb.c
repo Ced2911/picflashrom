@@ -94,6 +94,9 @@ static void App_VendorReportComplete(void) {
     ((uint8_t *) & rqArg1)[0] = AppVendorRequest[4];
 
     rqPendingCmd = 0;
+    
+    // Cancel pending operation
+    AppState = IDLE;
 }
 
 void APP_USBCheckVendorRequest() {
@@ -120,7 +123,7 @@ void ProcessIO(void) {
             case SST39_WRITE:
                 if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
                     USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
-                    SST39xx_rom_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    rom_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
                     
                     // not busy anymore
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
@@ -176,7 +179,7 @@ void ProcessIO(void) {
             case SST39_ERASE:
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
-                    SST39xx_rom_erase(in);
+                    rom_erase(in);
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     rqCmd = 0;
@@ -288,7 +291,7 @@ void old_ProcessIO(void) {
             case SST39_ERASE:
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
-                    SST39xx_rom_erase(in);
+                    rom_erase(in);
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     AppState = IDLE;
@@ -307,7 +310,7 @@ void old_ProcessIO(void) {
 
                 cmd_op_addr = PacketFromPC.address;
                 cmd_op_size = PacketFromPC.size;
-                SST39xx_rom_write((uint8_t *) PacketFromPC.byte, cmd_op_addr, cmd_op_size);
+                rom_write((uint8_t *) PacketFromPC.byte, cmd_op_addr, cmd_op_size);
                 //USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketFromPC, USBGEN_EP_SIZE);
                 AppState = IDLE;
             }
