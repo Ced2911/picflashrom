@@ -42,6 +42,9 @@
     <ClCompile Include="src\test.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\rom_tools.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\hidapi\hidapi\hidapi.h">
@@ -60,6 +63,9 @@
       <Filter>Fichiers sources</Filter>
     </ClInclude>
     <ClInclude Include="src\debug.h">
+      <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rom_tools.h">
       <Filter>Fichiers sources</Filter>
     </ClInclude>
   </ItemGroup>

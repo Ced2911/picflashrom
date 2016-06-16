@@ -2,6 +2,34 @@
 
 #include "hidapi.h"
 #include "ccrwrom.h"
+#include <atomic>
+
+template <typename  T> struct atomic_value {
+	std::atomic<T> value;
+
+	atomic_value() : value(0) {}
+
+	void increment() {
+		++value;
+	}
+
+	void decrement() {
+		--value;
+	}
+
+	void add(T a) {
+		value += a;
+	}
+
+	void reset() {
+		value = 0;
+	}
+
+	T get() {
+		return value.load();
+	}
+};
+
 
 //Bootloader Command From Host - Switch() State Variable Choices
 #define QUERY_DEVICE                0x02    //Command that the host uses to learn about the device (what regions can be programmed, and what type of memory is the region)
@@ -38,3 +66,6 @@ void cmd_erase();
 void cmd_read_id(uint8_t * out);
 
 void cmd_query(uint8_t * in);
+
+
+extern atomic_value<uint32_t> cmd_position;

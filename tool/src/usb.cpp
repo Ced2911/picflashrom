@@ -18,18 +18,18 @@ hid_device * usb_c::connect() {
 
 			// Read the Manufacturer String
 			if (hid_get_manufacturer_string(hid_handle, wstr, MAX_STR) == 0) {
-				DBGPrintf(L"Manufacturer String: %s\n", wstr);
+				output::debug("Manufacturer String: %s\n", wstr);
 			}
 
 			// Read the Product String
 			if (hid_get_product_string(hid_handle, wstr, MAX_STR) == 0) {
-				DBGPrintf(L"Product String: %s\n", wstr);
+				output::debug("Product String: %s\n", wstr);
 			}
 
 			return hid_handle;
 		}
 	}
-	DBGPrintf(L"Error device not found....\n");
+	output::debug("Error device not found....\n");
 	return NULL;
 }
 
@@ -39,11 +39,11 @@ uint32_t usb_c::write(uint8_t * in, uint32_t size) {
 	while (res < 1) {
 		res = hid_write(hid_handle, in, size);
 		if (res == -1 ) {
-			DBGPrintf(L"usb_write error...\n");
+			output::debug("usb_write error...\n");
 			return 0;
 		}
 		if (retries == 0) {
-			DBGPrintf(L"usb_write error timeout...\n");
+			output::debug("usb_write error timeout...\n");
 			return 0;
 		}
 		if (res < 1) {
@@ -61,11 +61,11 @@ uint32_t usb_c::read(uint8_t * out, uint32_t size) {
 	while (res < 1) {
 		res = hid_read(hid_handle, out, size);
 		if (res == -1) {
-			DBGPrintf(L"usb_read error...\n");
+			output::debug("usb_read error...\n");
 			return 0;
 		}
 		if (retries == 0) {
-			DBGPrintf(L"usb_read error timeout...\n");
+			output::debug("usb_read error timeout...\n");
 			return 0;
 		}
 		if (res < 1) {
@@ -127,7 +127,7 @@ libusb_device_handle * libusb_c::connect() {
 		libusb_free_device_list(list, 1);
 
 	}
-	DBGPrintf(L"Error device not found....\n");
+	output::debug("Error device not found....\n");
 	return NULL;
 }
 
@@ -140,7 +140,7 @@ uint32_t libusb_c::cmd(uint8_t command, uint32_t arg0, uint32_t arg1) {
 	res = libusb_control_transfer(libusb_handle, LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_OUT, command, 0, 0, (uint8_t*)data, sizeof(data), 10000);
 
 	if (res != sizeof(data)) {
-		DBGPrintf(L"usb_cmd error... %d\n", res);
+		output::debug("usb_cmd error... %d\n", res);
 		return 0;
 	}
 
@@ -153,7 +153,7 @@ uint32_t libusb_c::write(uint8_t * in, uint32_t size) {
 	res = libusb_bulk_transfer(libusb_handle, 0x01, in, size, &transfered, 10000);
 
 	if (res != 0) {
-		DBGPrintf(L"usb_write error...\n");
+		output::debug("usb_write error...\n");
 		return 0;
 	}
 
@@ -166,7 +166,7 @@ uint32_t libusb_c::read(uint8_t * out, uint32_t size) {
 	res = libusb_bulk_transfer(libusb_handle, 0x81, out, size, &transfered, 10000);
 
 	if (res != 0) {
-		DBGPrintf(L"usb_read error...\n");
+		output::debug("usb_read error...\n");
 		return 0;
 	}
 	return (uint32_t)transfered;

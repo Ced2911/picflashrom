@@ -80,6 +80,7 @@ public:
 		return read(pkt.bytes, size);
 	}
 	libusb_device_handle * connect();
+
 	void close();
 };
 

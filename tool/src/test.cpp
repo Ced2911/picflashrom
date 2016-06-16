@@ -21,7 +21,7 @@ int rom_debug_write(const char * filename, uint32_t size) {
 
 		// now flash !
 		if (cmd_write_rom(data, size) == -1) {
-			fprintf(stdout, "error will writing %s.\r\n", filename);
+			output::error("error will writing %s.\r\n", filename);
 			return -1;
 		}
 		fclose(fd);
@@ -33,21 +33,21 @@ int rom_debug_write(const char * filename, uint32_t size) {
 		for (int i = 0; i < size; i++) {
 			if (data[i] != verif[i]) {
 
-				fprintf(stdout, "error at %08x\r\n", i);
+				output::error("error at %08x\r\n", i);
 
-				fprintf(stdout, "read\r\n");
-				hexdump(&verif[i & 0xFFF0], DUMP_SIZE);
+				output::error("read\r\n");
+				hexdump(&verif[i], DUMP_SIZE);
 
-				fprintf(stdout, "source\r\n");
-				hexdump(&data[i & 0xFFF0], DUMP_SIZE);
+				output::error("source\r\n");
+				hexdump(&data[i], DUMP_SIZE);
 				return -1;
 			}
 		}
-		fprintf(stdout, "test ok\r\n");
+		output::error("test ok\r\n");
 		return 0;
 	}
 	else {
-		fprintf(stdout, "Can not open %s for reading.\r\n", filename);
+		output::error("Can not open %s for reading.\r\n", filename);
 	}
 	return -1;
 }

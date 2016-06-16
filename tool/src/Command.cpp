@@ -5,7 +5,6 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
-
 #include "Command.h"
 #include "usb.h"
 #include "debug.h"
@@ -19,21 +18,24 @@ void cmd_bootloader() {
 
 uint32_t cmd_read_rom(uint8_t * out, uint32_t size) {
 	uint8_t * p = out;
+	cmd_position.reset();
 
-	cclock elapsed;
 	usb.cmd(PROM_BULK_READ, 0, size);
 
 	for (uint32_t i = 0; i < size; i += USB_PACKET_SIZE, p += USB_PACKET_SIZE) {
 		if (usb.read(p, sizeof(usb_packet_w_t)) == 0) {
 			// Error !
-			puts("Usb error\r\n");
+			output::error("Usb error\r\n");
 		}
+#ifdef _DEBUG
 		if (i == 0) {
 			hexdump(p, USB_PACKET_SIZE);
 		}
+#endif
+
+		cmd_position.add(USB_PACKET_SIZE);
 	}
 
-	cout << " Time elapsed: " << elapsed.elapsed() << " ms" << endl;
 	return 0;
 }
 
@@ -42,8 +44,7 @@ uint32_t cmd_write_rom(uint8_t * in, uint32_t size) {
 	usb_packet_w_t read = { 0 };
 	uint32_t rem = size;
 	uint32_t w_address = 0;
-
-	cclock elapsed;
+	cmd_position.reset();
 
 	usb.cmd(JEDEC_WRITE, 0, size);
 
@@ -55,17 +56,16 @@ uint32_t cmd_write_rom(uint8_t * in, uint32_t size) {
 
 		if (usb.read(read, sizeof(usb_packet_w_t)) == 0) {
 			// Error !
-			puts("Usb error\r\n");
+			output::error("Usb error\r\n");
 		}
 
 		rem -= w_size;
 		w_address += w_size;
 		p += w_size;
+		cmd_position.add(w_size);
+
 	} while (w_address < size);
-
-
-	cout << " Time elapsed: " << elapsed.elapsed() << " ms" << endl;
-
+	
 	return 0;
 }
 
@@ -95,3 +95,7 @@ void cmd_query(uint8_t * in) {
 	usb.cmd(QUERY_DEVICE);
 	usb.read(in, sizeof(usb_packet_w_t));
 }
+
+
+
+atomic_value<uint32_t> cmd_position;

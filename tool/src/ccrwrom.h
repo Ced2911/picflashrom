@@ -15,7 +15,14 @@
 #define ARRAY_SIZE(array) \
     (sizeof(array) / sizeof(array[0]))
 
-
+namespace output {
+	void error(const char * str, ...);
+	void warning(const char * str, ...);
+	void debug(const char * str, ...);
+	void info(const char * str, ...);
+	void success(const char * str, ...);
+	void print(const char * str, ...);
+}
 
 
 
