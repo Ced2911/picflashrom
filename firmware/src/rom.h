@@ -19,10 +19,16 @@ void rom_read_16(uint8_t * out, uint32_t addr, uint8_t len);
 /* generic write */
 void rom_erase(uint8_t * out);
 void rom_write(uint8_t * out, uint32_t addr, uint8_t len);
+void rom_write_8_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 void rom_write_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 
 /* generic ID */
 void rom_identify(uint8_t * in);
+
+/** work in 8bit but need 16bit command*/
+void rom_erase_8_16(uint8_t * out);
+void rom_write_8_16(uint8_t * out, uint32_t addr, uint8_t len) ;
+void rom_identify_8_16(uint8_t * in);
 
 
 #endif	/* ROM_H */

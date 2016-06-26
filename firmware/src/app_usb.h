@@ -35,8 +35,11 @@
 #define PROM_BULK_WRITE             0x44    // write prom
 #define PROM_WRITE_FINISHED         0x45    // write erom
 #define PROM_ID                     0x50    // read id
-#define SST39_ERASE                 0x60    // erase erom
-#define SST39_WRITE                 0x62    // write erom
+#define PROM_ID_8_16                0x51    // read id
+#define ROM_ERASE                   0x60    // erase erom
+#define ROM_ERASE_8_16              0x61    // erase erom
+#define ROM_WRITE                   0x70    // write erom
+#define ROM_WRITE_8_16              0x71    // write erom
 #define CMD_AA                      0xAA
 #define CMD_AB                      0xAB
 #define CMD_AC                      0xAC

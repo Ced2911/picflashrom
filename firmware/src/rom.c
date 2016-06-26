@@ -68,6 +68,9 @@
 
 #define PORT_DATA PORTA
 
+
+ #define  AddrConv(X)   ((X<<1)+!(X&0x1))
+
 static void set_control(uint8_t ctrl) {
     LATC = (PORTC & 0xF8) | (ctrl & 0x7);
 }
@@ -150,10 +153,19 @@ static __inline void rom_write_8(uint32_t addr, uint8_t b) {
 static void rom_send_command_8(uint8_t cmd) {
     rom_start_write();
     OE_H
-
+            
     rom_write_8(0x5555, 0xAA);
     rom_write_8(0x2AAA, 0x55);
     rom_write_8(0x5555, cmd);
+}
+
+static void rom_send_command_8_16(uint8_t cmd) {
+    rom_start_write();
+    OE_H
+
+    rom_write_8(0xAAA, 0xAA);
+    rom_write_8(0x555, 0x55);
+    rom_write_8(0xAAA, cmd);
 }
 
 
@@ -219,6 +231,7 @@ __delay_ms(20); \
 #define DELAY_1s() {\
     DELAY_200ms();DELAY_200ms();DELAY_200ms();DELAY_200ms();DELAY_200ms();\
 }
+
 
 
 void rom_read(uint8_t * out, uint32_t addr, uint8_t len) {
@@ -308,96 +321,6 @@ static inline void JEDEC_WRITE_8(uint32_t addr, uint8_t b) {
     DELAY_BYTE_WRITE
 }
 
-#if 0 // MCP23s17 slowdown everything !
-/**
- * http://ww1.microchip.com/downloads/en/DeviceDoc/20005022C.pdf
- *
- * @param in
- * @param addr
- * @param len
- */
-void SST39xx_rom_write(uint8_t * in, uint32_t addr, uint8_t len) {
-    uint8_t p = 0;
-    uint8_t toggle_bit = 0;
-    uint8_t * buf = in;
-
-    rom_start_write();
-    
-#if 0
-
-    for (p = 0; p < len; p++, addr++, buf++) {
-        _START_C()
-        rom_send_command_8(0xA0);
-
-        rom_write_8(addr, *buf);
-
-        DELAY_BYTE_WRITE;
-
-        rom_start_read();
-        WE_H
-        CSH
-
-    }
-    
-#else
-    
-    WE_H
-    CSH
-            
-    for (p = 0; p < len; p+=8) {
-        rom_send_command_8(0xA0);
-        rom_write_8(addr++, *buf++);
-        DELAY_BYTE_WRITE;
-        WE_H
-        CSH
-        
-        rom_send_command_8(0xA0);
-        rom_write_8(addr++, *buf++);
-        DELAY_BYTE_WRITE;
-        WE_H
-        CSH
-
-        rom_send_command_8(0xA0);
-        rom_write_8(addr++, *buf++);
-        DELAY_BYTE_WRITE;
-        WE_H
-        CSH
-
-        rom_send_command_8(0xA0);
-        rom_write_8(addr++, *buf++);
-        DELAY_BYTE_WRITE;
-        WE_H
-        CSH
-
-        rom_send_command_8(0xA0);
-        rom_write_8(addr++, *buf++);
-        DELAY_BYTE_WRITE;
-        WE_H
-        CSH
-
-        rom_send_command_8(0xA0);
-        rom_write_8(addr++, *buf++);
-        DELAY_BYTE_WRITE;
-        WE_H
-        CSH
-
-        rom_send_command_8(0xA0);
-        rom_write_8(addr++, *buf++);
-        DELAY_BYTE_WRITE;
-        WE_H
-        CSH
-
-        rom_send_command_8(0xA0);
-        rom_write_8(addr++, *buf++);
-        DELAY_BYTE_WRITE;
-        WE_H
-        CSH
-    }
-    
-#endif
-}
-#else
-
 /**
  * http://ww1.microchip.com/downloads/en/DeviceDoc/20005022C.pdf
  *
@@ -429,7 +352,6 @@ void rom_write(uint8_t * in, uint32_t addr, uint8_t len) {
     }
 }
 
-#endif
 
 void rom_erase(uint8_t * in) {
     rom_start_write();
@@ -442,17 +364,6 @@ void rom_erase(uint8_t * in) {
     rom_start_read();
     WE_H
     CSH
-
-    DELAY_1s();
-#if 0
-    Check_Toggle_Ready();
-    _READ8(0, in[0]);
-    _READ8(1, in[1]);
-    _READ8(2, in[2]);
-    _READ8(3, in[3]);
-    _READ8(4, in[4]);
-    _READ8(5, in[5]);
-#endif
     
     
     MCP_Write(MCP_ADDR_HIGH, GPIOA, 0x00);
@@ -464,9 +375,9 @@ void rom_identify(uint8_t * in) {
 
     _START_C()
 
-    rom_send_command_8(0xF0);
-    
+    rom_send_command_8(0xF0);    
     rom_send_command_8(0x90);
+    
     DELAY_CMD_X
 
     rom_start_read();
@@ -480,6 +391,78 @@ void rom_identify(uint8_t * in) {
     DELAY_CMD_X
 
     rom_start_read();
-    rom_read(&in[2], 0, 0xF);
+}
+
+
+void rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t len) {
+    uint8_t p = 0;
+    uint8_t toggle_bit = 0;
+    uint8_t * buf = in;
+    
+    rom_start_write();
+
+    _START_C()
+    OE_H
+    for (p = 0; p < len; p++, addr++, buf++) {
+        //_START_C()
+        rom_write_8(AddrConv(0x555), 0xAA);
+        rom_write_8(AddrConv(0xAAA), 0x55);
+        rom_write_8(AddrConv(0x555), 0xA0);
+
+        //rom_write_8(addr, *buf);
+        rom_write_8(addr, 0x29);
+        DELAY_BYTE_WRITE;
+        DELAY_BYTE_WRITE;
+        DELAY_BYTE_WRITE;
+    }
+}
+
+void rom_erase_8_16(uint8_t * in) {
+    rom_start_write();
+
+    _START_C()
+    OE_H
+
+    rom_write_8(0, 0xF0);   
+
+    rom_write_8(AddrConv(0x555), 0xAA);
+    rom_write_8(AddrConv(0xAAA), 0x55);
+    rom_write_8(AddrConv(0x555), 0x80);
+    rom_write_8(AddrConv(0x555), 0xAA);
+    rom_write_8(AddrConv(0xAAA), 0x55);
+    rom_write_8(AddrConv(0x555), 0x10);
+    
+    rom_write_8(0, 0xF0);
+}
+
+
+void rom_identify_8_16(uint8_t * in) {
+    rom_start_write();
+
+    _START_C()
+    OE_H
+
+    rom_write_8(0, 0xF0);   
+
+    rom_write_8(AddrConv(0x555), 0xAA);
+    rom_write_8(AddrConv(0xAAA), 0x55);
+    rom_write_8(AddrConv(0x555), 0x90);
+    
+    rom_start_read();
+
+    // manufacturer id
+    _READ8(AddrConv(0), in[0]);
+    // device id
+    _READ8(AddrConv(1), in[1]);
+    
+    // Security Sector Factory 
+    _READ8(AddrConv(3), in[2]);
+    
+    // Sector Protect Verify
+    _READ8(AddrConv(3), in[3]);
+    _READ8(AddrConv(4), in[4]);
+    
+    rom_start_write();
+    rom_write_8(0, 0xF0);
 }
 

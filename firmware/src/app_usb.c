@@ -104,8 +104,10 @@ void APP_USBCheckVendorRequest() {
         case TO_BOOLOADER:
         case QUERY_DEVICE:
         case PROM_BULK_READ:
-        case SST39_ERASE:
-        case SST39_WRITE:
+        case ROM_ERASE:
+        case ROM_WRITE:
+        case ROM_ERASE_8_16:
+        case ROM_WRITE_8_16:
         case PROM_ID:
             rqPendingCmd = SetupPkt.bRequest;
             USBEP0Receive((uint8_t*) & AppVendorRequest, SetupPkt.wLength, &App_VendorReportComplete);
@@ -120,7 +122,23 @@ void ProcessIO(void) {
 
     if (AppState == PENDING_OPERATION) {
         switch (rqCmd) {
-            case SST39_WRITE:
+            case ROM_WRITE_8_16:
+                if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
+                    USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
+                    rom_write_8_16((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    
+                    // not busy anymore
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+            
+                    cmd_op_addr += USB_PACKET_SIZE;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;
+            case ROM_WRITE:
                 if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
                     USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
                     rom_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
@@ -175,11 +193,22 @@ void ProcessIO(void) {
                     rom_init();  
                 }
                 break;
-                
-            case SST39_ERASE:
+                                
+            case ROM_ERASE:
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
                     rom_erase(in);
+
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+                    rqCmd = 0;
+                    AppState = IDLE;
+                }
+                break;
+                
+            case ROM_ERASE_8_16:
+                if (!USBHandleBusy(USBGenericInHandle)) {
+                    uint8_t * in = (uint8_t*) & PacketToPC;
+                    rom_erase_8_16(in);
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     rqCmd = 0;
@@ -191,7 +220,7 @@ void ProcessIO(void) {
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
                     rom_identify(in);
-                   // rom_identify(&in[0x10]);
+                    rom_identify_8_16(&in[0x10]);
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     rqCmd = 0;
@@ -199,7 +228,15 @@ void ProcessIO(void) {
                 }
                 break;
                 
-            case SST39_WRITE:
+            case ROM_WRITE:
+                cmd_op_addr = rqArg0;
+                cmd_op_size = rqArg1;
+                
+                AppState = PENDING_OPERATION;
+                
+                break;
+                
+            case ROM_WRITE_8_16:
                 cmd_op_addr = rqArg0;
                 cmd_op_size = rqArg1;
                 
@@ -213,119 +250,6 @@ void ProcessIO(void) {
                 
                 AppState = PENDING_OPERATION;    
                 
-                break;
-        }
-    }
-}
-
-void old_ProcessIO(void) {
-
-    if ((USBDeviceState < CONFIGURED_STATE) || (USBSuspendControl == 1)) return;
-
-    if (AppState == IDLE) {
-
-        if (!USBHandleBusy(USBGenericOutHandle)) {
-            USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
-            AppState = NOT_IDLE;
-            memset(&PacketToPC, 0, USB_PACKET_SIZE);
-        }
-    }
-    else if (AppState == CMD_READ_IN_PROGRESS) {
-        if (!USBHandleBusy(USBGenericInHandle)) {
-            rom_read((uint8_t *) & PacketToPC, cmd_op_addr, USB_PACKET_SIZE);
-            USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
-            cmd_op_addr += USB_PACKET_SIZE;
-            if (cmd_op_addr >= cmd_op_size) {
-                AppState = IDLE;
-                cmd_op_addr = 0;
-                cmd_op_size = 0;
-            }
-        }
-    }
-#if 0 // crash ...
-    else if (AppState == CMD_WRITE_IN_PROGRESS) {
-        if (!USBHandleBusy(USBGenericOutHandle)) {
-            USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
-            SST39xx_rom_write((uint8_t *) OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
-
-            cmd_op_addr += USB_PACKET_SIZE;
-            if (cmd_op_addr >= cmd_op_size) {
-                AppState = IDLE;
-                cmd_op_addr = 0;
-                cmd_op_size = 0;
-            }
-        }
-    }
-#endif
-    else {
-        switch (PacketFromPC.Command) //Data arrived, check what kind of command might be in the packet of data.
-        {
-            case TO_BOOLOADER:
-                cmd_bootloader();
-                break;
-
-            case QUERY_DEVICE:
-                if (!USBHandleBusy(USBGenericInHandle)) {
-                    memset(&PacketToPC, 0, USB_PACKET_SIZE);
-                    PacketToPC.Command = QUERY_DEVICE;
-                    PacketToPC.BytesPerAddress = 0x29;
-                    PacketToPC.PacketDataFieldSize = REQUEST_DATA_BLOCK_SIZE;
-
-                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
-                    AppState = IDLE;
-
-                    // time for init
-                    rom_init();
-                }
-                break;
-
-            case PROM_BULK_READ:
-                //PacketFromPC.RomSize = 0x100000;
-                //PacketFromPC.RomAddress = 0;
-                cmd_op_addr = PacketFromPC.RomAddress;
-                cmd_op_size = PacketFromPC.RomSize;
-                rom_start_read();
-                AppState = CMD_READ_IN_PROGRESS;
-                break;
-
-            case SST39_ERASE:
-                if (!USBHandleBusy(USBGenericInHandle)) {
-                    uint8_t * in = (uint8_t*) & PacketToPC;
-                    rom_erase(in);
-
-                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
-                    AppState = IDLE;
-                }
-                break;
-#if 0 // crash
-            case SST39_WRITE:
-                cmd_op_addr = PacketFromPC.address;
-                cmd_op_size = PacketFromPC.size;
-                AppState = CMD_WRITE_IN_PROGRESS;
-                break;
-#else
-            case SST39_WRITE:
-                //if (!USBHandleBusy(USBGenericInHandle)) 
-            {
-
-                cmd_op_addr = PacketFromPC.address;
-                cmd_op_size = PacketFromPC.size;
-                rom_write((uint8_t *) PacketFromPC.byte, cmd_op_addr, cmd_op_size);
-                //USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketFromPC, USBGEN_EP_SIZE);
-                AppState = IDLE;
-            }
-                break;
-#endif
-
-            case PROM_ID:
-                if (!USBHandleBusy(USBGenericInHandle)) {
-                    uint8_t * in = (uint8_t*) & PacketToPC;
-                    rom_identify(in);
-                    rom_identify(&in[0x10]);
-
-                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
-                    AppState = IDLE;
-                }
                 break;
         }
     }
