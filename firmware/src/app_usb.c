@@ -96,6 +96,10 @@ static void App_VendorReportComplete(void) {
     rqPendingCmd = 0;
     
     // Cancel pending operation
+    if (AppState == PENDING_OPERATION) {
+        //cmd_op_addr = 0;
+        //rom_init(); 
+    }
     AppState = IDLE;
 }
 

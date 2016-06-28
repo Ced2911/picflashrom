@@ -28,7 +28,8 @@ void SPI_Init() {
     
     SSPSTAT &= 0x3F; 
     SSPCON1 = 0x00; 
-    SSPCON1 |= 0x00; // SPI_FOSC_4 
+    //SSPCON1 |= 0x00; // SPI_FOSC_4 
+    //SSPCON1 |= 0x02; // SPI_FOSC_4 
     SSPSTAT |= 0x80; // MODE_00
     
     SSPSTATbits.CKE = 1; //     
@@ -36,7 +37,9 @@ void SPI_Init() {
 }
 
 void MCP_Init(unsigned char slave_addr) {
-    MCP_Write(slave_addr, IOCONA, 0x18); // HAEN 
+    //MCP_Write(slave_addr, IOCONA, 0x18); // HAEN 
+    MCP_Write(slave_addr, IOCONA, 0x00); // HAEN 
+    MCP_Write(slave_addr, IOCONB, 0x00); // HAEN 
     MCP_Write(slave_addr, IODIRA, 0xff); // GPIO As Output
     MCP_Write(slave_addr, IODIRB, 0xff); // GPIO As Output
     MCP_Write(slave_addr, GPPUA, 0x00); // Disable Pull-up Resistor

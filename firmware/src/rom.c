@@ -28,8 +28,8 @@
 #define MCP_DATA_ADDR   0
 #define MCP_ADDR_HIGH   0
 
-//#define SET_ADDR_H(addr)    {MCP_Write(MCP_ADDR_HIGH, GPIOA, addr>>6); MCP_Write(MCP_ADDR_HIGH, GPIOB, addr>>14);}
-#define SET_ADDR_H(addr)    {MCP_Write16AB(MCP_ADDR_HIGH, GPIOA, addr>>6, addr>>14);}
+#define SET_ADDR_H(addr)    {MCP_Write(MCP_ADDR_HIGH, GPIOA, addr>>6); MCP_Write(MCP_ADDR_HIGH, GPIOB, addr>>14);}
+//#define SET_ADDR_H(addr)    {MCP_Write16AB(MCP_ADDR_HIGH, GPIOA, addr>>6, addr>>14);}
 #define SET_ADDR_L(addr)    {LATB = (LATB & 3) | ((addr<<2)&0xFC);}
 
 #define CSL {PORTC = PORTC & 0xFC;}
@@ -68,8 +68,52 @@
 
 #define PORT_DATA PORTA
 
+#define  AddrConv(X)   ((X<<1)+!(X&0x1))
 
- #define  AddrConv(X)   ((X<<1)+!(X&0x1))
+
+
+#define DELAY_100ms() { \
+__delay_ms(20); \
+__delay_ms(20); \
+__delay_ms(20); \
+__delay_ms(20); \
+__delay_ms(20); \
+}
+
+#define DELAY_200ms() { \
+    DELAY_100ms(); DELAY_100ms(); \
+}
+
+#define DELAY_1s() {\
+    DELAY_200ms();DELAY_200ms();DELAY_200ms();DELAY_200ms();DELAY_200ms();\
+}
+
+
+#define _READ8(a, x) \
+{ \
+    WE_H \
+    CSH \
+    SET_ADDR_H(a);  \
+    SET_ADDR_L(a);  \
+    CSL; \
+    x = PORT_DATA;\
+    CSH; \
+}
+
+#define _READ_TOGGLE(x) \
+{ \
+    WE_H \
+    CSL; \
+    x = PORT_DATA;\
+    CSH; \
+}
+
+#define _START_C() { \
+    OE_L;   \
+    CE_H;   \
+    WE_H;   \
+    OE_H;   \
+}
 
 static void set_control(uint8_t ctrl) {
     LATC = (PORTC & 0xF8) | (ctrl & 0x7);
@@ -174,71 +218,11 @@ static void rom_send_command_8_16(uint8_t cmd) {
 }
 
 
-#define _READ8(a, x) \
-{ \
-    WE_H \
-    CSH \
-    SET_ADDR_H(a);  \
-    SET_ADDR_L(a);  \
-    CSL; \
-    x = PORT_DATA;\
-    CSH; \
-}
-
-#define _READ_TOGGLE(x) \
-{ \
-    WE_H \
-    CSL; \
-    x = PORT_DATA;\
-    CSH; \
-}
-
-#define _START_C() { \
-    OE_L;   \
-    CE_H;   \
-    WE_H;   \
-    OE_H;   \
-}
-
 void rom_identify(uint8_t * in);
 
-void Check_Toggle_Ready() {
-    BYTE Loop = 1;
-    BYTE PreData;
-    BYTE CurrData;
-    unsigned long TimeOut = 0;
 
-    _READ_TOGGLE(PreData);
-    PreData = PreData & 0x40;
-    while ((TimeOut < 0x07FFFFFF) && (Loop)) {
-        _READ_TOGGLE(CurrData);
-        CurrData = CurrData & 0x40;
-        if (PreData == CurrData)
-            Loop = 0; /* ready to exit the while loop */
-        PreData = CurrData;
-        TimeOut++;
-    }
-}
-
-
-#define DELAY_100ms() { \
-__delay_ms(20); \
-__delay_ms(20); \
-__delay_ms(20); \
-__delay_ms(20); \
-__delay_ms(20); \
-}
-
-#define DELAY_200ms() { \
-    DELAY_100ms(); DELAY_100ms(); \
-}
-
-#define DELAY_1s() {\
-    DELAY_200ms();DELAY_200ms();DELAY_200ms();DELAY_200ms();DELAY_200ms();\
-}
-
-void rom_reset_status() {    
-    OE_H;
+void rom_reset_status() {  
+    _START_C()
     rom_start_write();
     rom_write_8(0, 0xF0); 
     rom_start_read();
@@ -305,6 +289,9 @@ void rom_write(uint8_t * in, uint32_t addr, uint8_t len) {
 
 
 void rom_erase(uint8_t * in) {
+    rom_erase_8_16(in);
+    return;
+    
     rom_start_write();
 
     _START_C()
@@ -333,9 +320,9 @@ void rom_identify(uint8_t * in) {
 
     rom_start_read();
 
-    _READ8(0, in[0]);
-    _READ8(1, in[1]);
-
+    for(int i=0;i<0;i++) 
+        _READ8(i, in[i]);
+    
     _START_C()
 
     rom_send_command_8(0xF0);
@@ -345,57 +332,28 @@ void rom_identify(uint8_t * in) {
 }
 
 
-static uint8_t op_data_toggle( void )
-{
-    uint8_t tog_status1, tog_status2;
-    int t = 0xFFFF;    
-    while( t-- > 0 ) {
-        
-        _READ8(0, tog_status2);
-        _READ8(0, tog_status1);
-
-        if( (tog_status1 & 0x0040) == (tog_status2 & 0x0040) )
-            return 0;
-
-        if( (tog_status2 & 0x0020) != 0x0020 )
-           continue;
-
-        _READ8(0, tog_status1);
-        _READ8(0, tog_status2);
-
-        if( (tog_status2 & 0x0040) == (tog_status1 & 0x0040) )
-            return 0;
-        else {
-            return 1;
-        }
-    }
-    return -2;
-}
-
-
-
 static __inline void rom_write_8_test(uint32_t addr, uint8_t b) {
+    TRISA = 0x00;
+    LATA = b;
     OE_H;
-    CE_H;
     SET_ADDR_H(addr);
     SET_ADDR_L(addr);
-    OUTB(b);
+    DELAY_CS;
 
     // adress and data already set !
-    WE_L;
     CE_L;
-    DELAY_CS;
-    CE_H;
+    WE_L;
+    { __delay_us(10);}
     WE_H;
+    CE_H;
+    { __delay_us(10);}
 }
 
 
-void rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t len) {
+void rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len) {
     uint8_t p = 0;
-    uint8_t toggle_bit = 0;
     uint8_t * buf = in;
-    uint8_t j = 0;
-    uint8_t val = 0;
+    uint8_t len = 0x40;
         
     rom_reset_status();
 
@@ -404,20 +362,11 @@ void rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t len) {
     OE_H
     
     for (p = 0; p < len; p++, addr++, buf++) {
-        rom_write_8(AddrConv(0x555), 0xAA);
-        rom_write_8(AddrConv(0xAAA), 0x55);
-        rom_write_8(AddrConv(0x555), 0xA0);
+        rom_write_8_test(AddrConv(0x555), 0xAA);
+        rom_write_8_test(AddrConv(0xAAA), 0x55);
+        rom_write_8_test(AddrConv(0x555), 0xA0);
 
         rom_write_8(addr, *buf); 
-        
-        // adress and data already set !
-        CE_L;
-        WE_L;
-        // ....    
-        LATA = 0x55;
-        PORTA = 0x55;
-        WE_H;
-        CE_H;
     }
     
     
@@ -438,8 +387,6 @@ void rom_erase_8_16(uint8_t * in) {
     rom_write_8(AddrConv(0x555), 0xAA);
     rom_write_8(AddrConv(0xAAA), 0x55);
     rom_write_8(AddrConv(0x555), 0x10);
-    
-    rom_write_8(0, 0xF0);
 }
 
 
@@ -476,6 +423,6 @@ void rom_identify_8_16(uint8_t * in) {
     rom_write_8(0, 0xF0);
     
     SET_ADDR_H(0);
-    SET_ADDR_L(0);
+    SET_ADDR_L(0);    
 }
 

@@ -9,6 +9,7 @@
 #define	SPI_H
 
 void SPI1_Initialize(void);
+inline void SPI1_Write8bit(uint8_t data);
 uint8_t SPI1_Exchange8bit(uint8_t data);
 uint8_t SPI1_Exchange8bitBuffer(uint8_t *dataIn, uint8_t bufLen, uint8_t *dataOut);
 bool SPI1_IsBufferFull(void);

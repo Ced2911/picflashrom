@@ -25,10 +25,20 @@ void SPI1_Initialize(void)
     SSP1STAT = 0x40;
     
     // SSPEN enabled; WCOL no_collision; CKP Idle:Low, Active:High; SSPM FOSC/4; SSPOV no_overflow; 
-    SSP1CON1 = 0x20;
+    SSP1CON1 = 0x22;
     
     // SSP1ADD 0; 
     SSP1ADD = 0x00;
+}
+
+inline void SPI1_Write8bit(uint8_t data)
+{
+    // Clear the Write Collision flag, to allow writing
+    SSP1CON1bits.WCOL = 0;
+
+    SSP1BUF = data;
+
+    while(SSP1STATbits.BF == SPI_RX_IN_PROGRESS);
 }
 
 uint8_t SPI1_Exchange8bit(uint8_t data)
