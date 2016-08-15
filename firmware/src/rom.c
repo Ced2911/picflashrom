@@ -248,8 +248,10 @@ void rom_read(uint8_t * out, uint32_t addr, uint8_t len) {
     for (p = 0; p < len; p++, addr++, buf++) {
         SET_ADDR_L(addr);
         CSL;
+        NOP();
         *buf = PORT_DATA;
         CSH;
+        NOP();
     }
 }
 
@@ -337,41 +339,29 @@ void rom_identify(uint8_t * in) {
     rom_start_read();
 }
 
+#if 0
 
 static __inline void rom_write_8_test(uint32_t addr, uint8_t b) {
     TRISA = 0x00;
     OE_H;
     
-    PORTA = b;
-    LATA = b;
     SET_ADDR_H(addr);
     SET_ADDR_L(addr);
     
-    NOP();
-
-    // adress and data already set !
-    CE_L;
-    WE_L;
-    { __delay_us(40);}
-    
-    NOP();
-    NOP();
-        
-    { __delay_us(40);}
-    
     PORTA = b;
     LATA = b;
-    { __delay_us(40);}
+    
+    NOP();
+
+    CE_L;
+    WE_L;
     
     NOP();
     NOP();
-    
-    { __delay_us(40);}
     
     WE_H;
     CE_H;
     
-    { __delay_us(40);}
     NOP();
 }
 
@@ -381,27 +371,67 @@ void rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len) {
     uint8_t * buf = in;
     uint8_t len = 0x40;
         
-    rom_reset_status();
+    rom_start_write();
 
     _START_C()
-    rom_start_write();
     OE_H
+
+    rom_write_8(0, 0xF0);   
     
     for (p = 0; p < len; p++, addr++, buf++) {
-        if (*buf == 0) {
-            continue;
-        }
         rom_write_8_test(AddrConv(0x555), 0xAA);
         rom_write_8_test(AddrConv(0xAAA), 0x55);
         rom_write_8_test(AddrConv(0x555), 0xA0);
 
-        rom_write_8_test(addr, *buf); 
-        { __delay_us(40);}
+        //rom_write_8(addr, *buf); 
+        
+        rom_write_8_test(addr, 0x3); 
+        
+        __delay_us(50);
+    }
+}
+#else
+
+static __inline void rom_write_8_test(uint32_t addr, uint8_t b) {
+    TRISA = 0x00;
+    LATA = b;
+    OE_H;
+    SET_ADDR_H(addr);
+    SET_ADDR_L(addr);
+    DELAY_CS;
+
+    // adress and data already set !
+    CE_L;
+    WE_L;
+    { __delay_us(10);}
+    WE_H;
+    CE_H;
+    { __delay_us(10);}
+}
+
+
+void rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len) {
+    uint8_t p = 0;
+    uint8_t * buf = in;
+    uint8_t len = 0x40;
+        
+    _START_C()
+    OE_H
+
+    rom_write_8(0, 0xF0); 
+    
+    for (p = 0; p < len; p++, addr++, buf++) {
+        rom_write_8_test(AddrConv(0x555), 0xAA);
+        rom_write_8_test(AddrConv(0xAAA), 0x55);
+        rom_write_8_test(AddrConv(0x555), 0xA0);
+
+        rom_write_8(addr, *buf); 
     }
     
     
     rom_write_8(0, 0xF0);
 }
+#endif
 
 void rom_erase_8_16(uint8_t * in) {
     rom_start_write();
@@ -437,8 +467,10 @@ void rom_identify_8_16(uint8_t * in) {
             
     SET_ADDR_H(0);
     
-    for(int i=0;i<8;i++) 
-        _READ8(AddrConv(i), in[i]);
+    _READ8(0, in[0]);
+    _READ8(2, in[1]);
+    _READ8(6, in[2]);
+    _READ8(4, in[3]);
     
     rom_start_write();
     rom_write_8(0, 0xF0);
