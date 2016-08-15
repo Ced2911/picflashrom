@@ -28,9 +28,11 @@
 #define MCP_DATA_ADDR   0
 #define MCP_ADDR_HIGH   0
 
-#define SET_ADDR_H(addr)    {MCP_Write(MCP_ADDR_HIGH, GPIOA, addr>>6); MCP_Write(MCP_ADDR_HIGH, GPIOB, addr>>14);}
-//#define SET_ADDR_H(addr)    {MCP_Write16AB(MCP_ADDR_HIGH, GPIOA, addr>>6, addr>>14);}
-#define SET_ADDR_L(addr)    {LATB = (LATB & 3) | ((addr<<2)&0xFC);}
+//#define SET_ADDR_H(addr)    {MCP_Write(MCP_ADDR_HIGH, GPIOA, addr>>6); MCP_Write(MCP_ADDR_HIGH, GPIOB, addr>>14);}
+//#define SET_ADDR_H(addr)    
+#define SET_ADDR_H(addr)    {MCP_Write16AB(MCP_ADDR_HIGH, GPIOA, addr>>6, addr>>14);}
+//#define SET_ADDR_L(addr)    {LATB = (LATB & 3) | ((addr<<2)&0xFC); LATBbits.LB4 = 1;}
+#define SET_ADDR_L(addr)    {LATB = (LATB & 3) | ((addr<<2)&0xFC); }
 
 #define CSL {PORTC = PORTC & 0xFC;}
 #define CSH {PORTC = PORTC | 0x03;}
@@ -120,7 +122,9 @@ static void set_control(uint8_t ctrl) {
 }
 
 static void PORT_INIT() {
-    INTCON2bits.RBPU = 0;
+    INTCON = 0;     
+    INTCON2 = 0;    
+    INTCON3 = 0;
     LATA = 0x00;
     LATB = 0x00;
     LATC = 0x00;
@@ -162,6 +166,9 @@ inline void rom_finish_write() {
 }
 
 void rom_init() {
+    // PORT_INIT();
+   //  return;
+             
     SPI_Init();
     MCP_Init(MCP_ADDR_HIGH);
 
@@ -234,10 +241,9 @@ void rom_read(uint8_t * out, uint32_t addr, uint8_t len) {
     uint8_t * buf = out;
 
     rom_reset_status();
-    
     WE_H;
     CSH;
-    SET_ADDR_H(addr);       
+    SET_ADDR_H(addr); 
     
     for (p = 0; p < len; p++, addr++, buf++) {
         SET_ADDR_L(addr);
@@ -320,7 +326,7 @@ void rom_identify(uint8_t * in) {
 
     rom_start_read();
 
-    for(int i=0;i<0;i++) 
+    for(int i=0;i<8;i++) 
         _READ8(i, in[i]);
     
     _START_C()
@@ -334,19 +340,39 @@ void rom_identify(uint8_t * in) {
 
 static __inline void rom_write_8_test(uint32_t addr, uint8_t b) {
     TRISA = 0x00;
-    LATA = b;
     OE_H;
+    
+    PORTA = b;
+    LATA = b;
     SET_ADDR_H(addr);
     SET_ADDR_L(addr);
-    DELAY_CS;
+    
+    NOP();
 
     // adress and data already set !
     CE_L;
     WE_L;
-    { __delay_us(10);}
+    { __delay_us(40);}
+    
+    NOP();
+    NOP();
+        
+    { __delay_us(40);}
+    
+    PORTA = b;
+    LATA = b;
+    { __delay_us(40);}
+    
+    NOP();
+    NOP();
+    
+    { __delay_us(40);}
+    
     WE_H;
     CE_H;
-    { __delay_us(10);}
+    
+    { __delay_us(40);}
+    NOP();
 }
 
 
@@ -362,11 +388,15 @@ void rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len) {
     OE_H
     
     for (p = 0; p < len; p++, addr++, buf++) {
+        if (*buf == 0) {
+            continue;
+        }
         rom_write_8_test(AddrConv(0x555), 0xAA);
         rom_write_8_test(AddrConv(0xAAA), 0x55);
         rom_write_8_test(AddrConv(0x555), 0xA0);
 
-        rom_write_8(addr, *buf); 
+        rom_write_8_test(addr, *buf); 
+        { __delay_us(40);}
     }
     
     
@@ -398,31 +428,34 @@ void rom_identify_8_16(uint8_t * in) {
 
     rom_write_8(0, 0xF0);   
 
-    rom_write_8(AddrConv(0x555), 0xAA);
-    rom_write_8(AddrConv(0xAAA), 0x55);
-    rom_write_8(AddrConv(0x555), 0x90);
+    rom_write_8(AddrConv(0x5555), 0xAA);
+    rom_write_8(AddrConv(0xAAAA), 0x55);
+    rom_write_8(AddrConv(0x5555), 0x90);
     
     rom_start_read();
             
             
     SET_ADDR_H(0);
-
-    // manufacturer id
-    _READ8(AddrConv(0), in[0]);
-    // device id
-    _READ8(AddrConv(1), in[1]);
     
-    // Security Sector Factory 
-    _READ8(AddrConv(3), in[2]);
-    
-    // Sector Protect Verify
-    _READ8(AddrConv(3), in[3]);
-    _READ8(AddrConv(4), in[4]);
+    for(int i=0;i<8;i++) 
+        _READ8(AddrConv(i), in[i]);
     
     rom_start_write();
     rom_write_8(0, 0xF0);
     
     SET_ADDR_H(0);
     SET_ADDR_L(0);    
+    
+    
+    TRISA = 0x00;
+    OE_H
+    LATA = 0x00;
+    PORTA = 0x00;
+    SET_ADDR_H(0xFFFFFFF);
+    SET_ADDR_L(0xFFFFFFF);
+    
+    
+    SET_ADDR_H(0);
+    SET_ADDR_L(0);
 }
 
