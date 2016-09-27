@@ -19,6 +19,9 @@
  */
 
 #include <xc.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 #include "rom.h"
 #include "mcp23s17.h"
 #include "system_config.h"
@@ -487,7 +490,15 @@ void rom_identify_8_16(uint8_t * in) {
     SET_ADDR_L(0xFFFFFFF);
     
     
-    SET_ADDR_H(0);
-    SET_ADDR_L(0);
+    //SET_ADDR_H(0);
+    //SET_ADDR_L(0);
 }
 
+
+void rom_custom(uint8_t data, uint32_t addr) {
+    SET_ADDR_H(addr);
+    SET_ADDR_L(addr);
+    
+    PORTA = data;
+    
+}

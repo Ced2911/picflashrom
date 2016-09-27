@@ -30,6 +30,6 @@ void rom_erase_8_16(uint8_t * out);
 void rom_write_8_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 void rom_identify_8_16(uint8_t * in);
 
-
+void rom_custom(uint8_t data, uint32_t addr);
 #endif	/* ROM_H */
 

@@ -1,6 +1,5 @@
 #include <xc.h>
 #include "mcp23008.h"
-#include <plib/i2c.h>
                
 
 #define MCP23008_ADDRESS  0x20

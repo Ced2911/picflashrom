@@ -255,6 +255,14 @@ void ProcessIO(void) {
                 AppState = PENDING_OPERATION;    
                 
                 break;
+                
+                
+            case CMD_DBG:                
+                rom_custom(rqArg0, rqArg1);
+                
+                rqCmd = 0;
+                AppState = IDLE;
+                break;
         }
     }
 }

@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <plib/spi.h>
+#include "spi.h"
 #include "mcp23s17.h"
 
 // MCP23S17 SPI Slave Device
