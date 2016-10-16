@@ -47,11 +47,16 @@ template <typename  T> struct atomic_value {
 #define PROM_BULK_WRITE             0x44    // write prom
 #define PROM_WRITE_FINISHED         0x45    // write erom
 #define PROM_ID                     0x50    // read id
-#define JEDEC_ERASE                 0x60    // erase erom
-#define JEDEC_WRITE                 0x62    // write erom
+#define PROM_ID_8_16                0x51    // read id
+#define ROM_ERASE                   0x60    // erase erom
+#define ROM_ERASE_8_16              0x61    // erase erom
+#define ROM_WRITE                   0x70    // write erom
+#define ROM_WRITE_8_16              0x71    // write erom
+#define ROM_WRITE_UNLOCKED_AMD      0x72    // write erom
 #define CMD_AA                      0xAA
 #define CMD_AB                      0xAB
 #define CMD_AC                      0xAC
+#define CMD_DBG                     0xDB    // DBG COMMAND
 
 hid_device * usb_connect();
 
@@ -61,11 +66,21 @@ uint32_t usb_read(uint8_t * out, uint32_t size);
 void cmd_bootloader();
 
 uint32_t cmd_read_rom(uint8_t * out, uint32_t size);
+uint32_t cmd_read_rom_16(uint16_t * out, uint32_t size);
+
 uint32_t cmd_write_rom(uint8_t * in, uint32_t size);
+uint32_t cmd_write_rom_8_16(uint8_t * in, uint32_t size);
+uint32_t cmd_write_rom_16(uint16_t * in, uint32_t size);
+uint32_t cmd_write_rom_amd_unlocked(uint8_t * in, uint32_t size);
 void cmd_erase();
+void cmd_erase_8_16();
+void cmd_erase_16();
+
+// Common
 void cmd_read_id(uint8_t * out);
 
 void cmd_query(uint8_t * in);
+void cmd_dbg_data(uint8_t data, uint32_t addr);
 
 
 extern atomic_value<uint32_t> cmd_position;

@@ -39,24 +39,31 @@ uint32_t cmd_read_rom(uint8_t * out, uint32_t size) {
 	return 0;
 }
 
-uint32_t cmd_write_rom(uint8_t * in, uint32_t size) {
+
+static uint32_t _cmd_write_rom(uint8_t cmd, uint8_t * in, uint32_t size) {
 	uint8_t * p = in;
 	usb_packet_w_t read = { 0 };
 	uint32_t rem = size;
 	uint32_t w_address = 0;
 	cmd_position.reset();
 
-	usb.cmd(JEDEC_WRITE, 0, size);
+	usb.cmd(cmd, 0, size);
+	//usb.cmd(ROM_WRITE_8_16, 0, size);
 
 	do {
 		uint32_t w_size = min(rem, USB_PACKET_SIZE);
 		if (usb.write(p, sizeof(usb_packet_w_t)) == 0) {
+			output::error("Usb error\r\n");
 			return -1;
 		}
 
 		if (usb.read(read, sizeof(usb_packet_w_t)) == 0) {
 			// Error !
 			output::error("Usb error\r\n");
+		}
+		if (read.w_command != 0) {
+			output::error("prog error %20x\r\n", read.w_command);
+			return w_address;
 		}
 
 		rem -= w_size;
@@ -65,30 +72,39 @@ uint32_t cmd_write_rom(uint8_t * in, uint32_t size) {
 		cmd_position.add(w_size);
 
 	} while (w_address < size);
-	
+
 	return 0;
 }
 
+uint32_t cmd_write_rom(uint8_t * in, uint32_t size) {
+	return _cmd_write_rom(ROM_WRITE, in, size);
+}
+
+uint32_t cmd_write_rom_8_16(uint8_t * in, uint32_t size) {
+	return _cmd_write_rom(ROM_WRITE_8_16, in, size);
+}
+
+uint32_t cmd_write_rom_amd_unlocked(uint8_t * in, uint32_t size) {
+	return _cmd_write_rom(ROM_WRITE_UNLOCKED_AMD, in, size);
+}
+
 void cmd_read_id(uint8_t * out) {
-	usb_packet_w_t packet = { 0 };
 	usb.cmd(PROM_ID);
-	usb.read(packet, sizeof(usb_packet_w_t));
+	usb.read(out, sizeof(usb_packet_w_t));
 
-	hexdump(packet.bytes, USB_PACKET_SIZE);
-
-	out[0] = packet.bytes[0];
-	out[1] = packet.bytes[1];
+	hexdump(out, USB_PACKET_SIZE);
 }
 
 void cmd_erase() {
 	usb_packet_w_t packet = { 0 };
-	usb.cmd(JEDEC_ERASE);
-
+	usb.cmd(ROM_ERASE);
 	usb.read(packet, sizeof(usb_packet_w_t));
+}
 
-	if (packet.command == JEDEC_ERASE) {
-		// OK !
-	}
+void cmd_erase_8_16() {
+	usb_packet_w_t packet = { 0 };
+	usb.cmd(ROM_ERASE_8_16);
+	usb.read(packet, sizeof(usb_packet_w_t));
 }
 
 void cmd_query(uint8_t * in) {
@@ -96,6 +112,9 @@ void cmd_query(uint8_t * in) {
 	usb.read(in, sizeof(usb_packet_w_t));
 }
 
+void cmd_dbg_data(uint8_t data, uint32_t addr) {
+	usb.cmd(CMD_DBG, data, addr);
+}
 
 
 atomic_value<uint32_t> cmd_position;

@@ -36,6 +36,7 @@ enum ARG_COMMAND {
 	ARG_WRITE,
 #if _DEBUG
 	ARG_DBG,
+	ARG_DBG_DATA
 #endif
 };
 
@@ -65,7 +66,10 @@ static command_available_t commands[] = {
 	{ "size",    required_argument, 0, 's', "Size to read/write in bytes" },
 	{ "M",    required_argument, 0, 'm', "Size to read/write in megabit" },
 #if _DEBUG
-	{ "debug",    required_argument, 0, 'd', "Debug cmd..." },
+	{ "debug",    required_argument, 0, 'W', "Debug write cmd..." },
+	{ "debug",    required_argument, 0, 'G', "Debug cmd addr/data" },
+	{ "debug_addr",    required_argument, 0, 'A', "Debug addr" },
+	{ "debug_data",    required_argument, 0, 'D', "Debug data" },
 #endif
 	{ NULL, NULL, NULL, NULL, NULL }
 };
@@ -117,6 +121,16 @@ static void progress_barr(char *label, int step, int total)
 	printf(" %3d%%\r", percent);
 }
 
+static uint32_t file_size(const char * filename) {
+	FILE * fd = fopen(filename, "rb");
+	uint32_t s = 0;
+	if (fd) {
+		fseek(fd, 0, SEEK_END);
+		s = ftell(fd);
+	}
+	fclose(fd);
+	return s;
+}
 
 static void rom_read(const char * filename, uint32_t size) {
 	uint8_t * data = new uint8_t[size];
@@ -155,35 +169,54 @@ static void rom_read(const char * filename, uint32_t size) {
 	//delete[] data;
 }
 
-static int rom_write(const char * filename, uint32_t size) {
+uint32_t _cmd_write_rom(const rom_t * rom, uint8_t * in, uint32_t size) {
+	if (rom && rom->feature & FEAT_FAST_WRITE_AMD) {
+		output::error("cmd_write_rom_amd_unlocked\r\n");
+		return cmd_write_rom_amd_unlocked(in, size);
+	}
+	else if (rom && rom->feature & FEAT_COMMAND_16_BIT) {
+		output::error("cmd_write_rom_8_16\r\n");
+		return cmd_write_rom_8_16(in, size);
+	}
+	else {
+		output::error("cmd_write_rom\r\n");
+		return cmd_write_rom(in, size);
+	}
+}
+
+static int rom_write(const char * filename, uint32_t size, const rom_t * rom = NULL) {
+	uint32_t status = 0;
 	uint8_t * data = new uint8_t[size];
 	FILE * fd = fopen(filename, "rb");
 	if (fd) {
 		fread(data, size, 1, fd);
 
 		// Erase the chip first
-		cmd_erase();
+		//cmd_erase();
 
 
 		// run in thread
 		cclock elapsed;
 		std::chrono::milliseconds span(100);
-		std::future<uint32_t> write = std::async(cmd_write_rom, data, size);
+		std::future<uint32_t> write = std::async(_cmd_write_rom, rom, data, size);
 		float percent = 0;
 		output::info("Writing %s\r\n", filename);
 
 		while (write.wait_for(span) == std::future_status::timeout) {
 			progress_barr("Writing: ", cmd_position.get(), size);
 		}
-
+		status = write.get();
 		// Finished
-		if (write.get() == 0) {
+		if (status == 0) {
 			// 100%
 			progress_barr("Writing: ", size, size);
 
 			if (verbose_flag) {
 				output::info("\r\nTime elapsed %f\r\n", elapsed.elapsed());
 			}
+		}
+		else {
+			output::info("Error writing at 0x%x\r\n", status);
 		}
 		fclose(fd);
 		return 0;
@@ -193,6 +226,17 @@ static int rom_write(const char * filename, uint32_t size) {
 	}
 	return -1;
 	//delete[] data;
+}
+
+static int rom_erase(const rom_t * rom = NULL) {
+	if (rom != NULL && (rom->feature &FEAT_COMMAND_16_BIT)) {
+		output::debug("cmd_erase_8_16.\r\n");
+		cmd_erase_8_16();
+	} else {
+		output::debug("cmd_erase.\r\n");
+		cmd_erase();
+	}
+	return 0;
 }
 
 
@@ -218,16 +262,21 @@ int main(int argc, char* argv[])
 	app_name = std::tr2::sys::path(argv[0]).filename().generic_string();
 	build_opt_lg();
 
+#ifdef _DEBUG
+	int dbg_addr = 0;
+	int dbg_data = 0;
+#endif
+
+
+#if 0
+	split_rom_16_8("Castlevania - Bloodlines (USA).md", "castleA.8bit.out", "castleB.8bit.out");
+	swap_rom("Gradius III (Japan).sfc", "Gradius III (Japan).sfc.sw");
+	return 0;
+#endif
 
 	//while ((c = getopt(argc, argv, "bier:w:s:m:d:")) != -1)
 	while ((c = getopt_long(argc, argv, optlg, commands, &option_index)) != -1)
 		switch (c) {
-		case 'd':
-			command = ARG_DBG;
-			if (optarg) {
-				strcpy(filename, optarg);
-			}
-			break;
 		case 's':
 			//size = atoi(optarg) * 128 * 1024;
 			size = atoi(optarg);
@@ -258,6 +307,27 @@ int main(int argc, char* argv[])
 				strcpy(filename, optarg);
 			}
 			break;
+#ifdef _DEBUG
+		case 'W':
+			command = ARG_DBG;
+			if (optarg) {
+				strcpy(filename, optarg);
+			}
+			break;
+		case 'G':
+			command = ARG_DBG_DATA;
+			break;
+
+		case 'D':
+			dbg_data = strtoul(optarg, NULL, 16);
+			break;
+
+		case 'A':
+			dbg_addr = strtoul(optarg, NULL, 16);
+			break;
+
+#endif // DEBUG
+
 		}
 
 	if (command == ARG_HELP) {
@@ -270,6 +340,15 @@ int main(int argc, char* argv[])
 			if (buf[0x01] == 0x29) {
 
 			}
+
+			// Identify rom
+			cmd_read_id(buf);
+			rom = romdb_identify(buf);
+			if (rom) {
+				output::info("Known chip: %s - %s\r\n", rom->manufacturer, rom->name);
+			}
+			// tmp hack
+			//rom = romdb_identify(0xC2, 0xA8);
 			switch (command) {
 			case ARG_BOOTLOADER:
 				cmd_bootloader();
@@ -278,24 +357,14 @@ int main(int argc, char* argv[])
 
 			case ARG_ID:
 				// Identify rom
-				cmd_read_id(buf);
-				rom = romdb_identify(buf[0], buf[1]);
-				if (rom) {
-					output::info(rom->manufacturer);
-					output::info(rom->name);
-				}
-				else {
+				if (!rom) {
 					output::warning("Unknown chip\r\n");
 				}
 
 				break;
 			case ARG_READ:
-				if (size == 0) {
-					cmd_read_id(buf);
-					rom = romdb_identify(buf[0], buf[1]);
-					if (rom) {
-						size = rom->size;
-					}
+				if (size == 0 && rom != NULL) {
+					size = rom->size;
 				}
 				if (size > 0) {
 					rom_read(filename, size);
@@ -304,20 +373,17 @@ int main(int argc, char* argv[])
 
 				break;
 			case ARG_ERASE:
-				cmd_erase();
+				rom_erase(rom);
 				output::success("Chip erased\r\n");
 				break;
 			case ARG_WRITE:
-				//size = 0x40;
-				if (size == 0) {
-					cmd_read_id(buf);
-					rom = romdb_identify(buf[0], buf[1]);
-					if (rom) {
-						size = rom->size;
-					}
+				if (size == 0 && rom != NULL) {
+					//size = rom->size;
+					size = min(file_size(filename), rom->size);
 				}
-				if (size > 0) {
-					if (rom_write(filename, size) == 0) {
+
+				if (size > 0 && rom != NULL) {
+					if (rom_write(filename, size, rom) == 0) {
 						output::success("Chip written\r\n");
 					}
 					else {
@@ -326,10 +392,18 @@ int main(int argc, char* argv[])
 				}
 				break;
 
+#ifdef _DEBUG
 			case ARG_DBG:
 				rom_debug_write(filename, size);
 				break;
+
+			case ARG_DBG_DATA:
+				dbg_addr = -1;
+				output::success("send cmd_dbg_data %02x %08x\r\n", dbg_data, dbg_addr);
+				cmd_dbg_data(dbg_data, dbg_addr);
+				break;
 			}
+#endif
 		}
 		else {
 			output::error("No device connected\r\n");

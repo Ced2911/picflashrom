@@ -112,6 +112,7 @@ void APP_USBCheckVendorRequest() {
         case ROM_WRITE:
         case ROM_ERASE_8_16:
         case ROM_WRITE_8_16:
+        case ROM_WRITE_UNLOCKED_AMD:
         case PROM_ID:
             rqPendingCmd = SetupPkt.bRequest;
             USBEP0Receive((uint8_t*) & AppVendorRequest, SetupPkt.wLength, &App_VendorReportComplete);
@@ -126,10 +127,29 @@ void ProcessIO(void) {
 
     if (AppState == PENDING_OPERATION) {
         switch (rqCmd) {
+            case ROM_WRITE_UNLOCKED_AMD:
+                if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
+                    USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
+                    uint8_t status = amd_unlock_rom_write_8_16((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    PacketToPC.Command = status;
+                    
+                    // not busy anymore
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+            
+                    cmd_op_addr += USB_PACKET_SIZE;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        amd_unlock_write_end();
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;
             case ROM_WRITE_8_16:
                 if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
                     USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
-                    rom_write_8_16((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    uint8_t status = rom_write_8_16((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    PacketToPC.Command = status;
                     
                     // not busy anymore
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
@@ -145,7 +165,8 @@ void ProcessIO(void) {
             case ROM_WRITE:
                 if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
                     USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
-                    rom_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    uint8_t status = rom_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    PacketToPC.Command = status;
                     
                     // not busy anymore
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
@@ -246,6 +267,17 @@ void ProcessIO(void) {
                 
                 AppState = PENDING_OPERATION;
                 
+                break;
+                
+                
+            case ROM_WRITE_UNLOCKED_AMD:                
+                cmd_op_addr = rqArg0;
+                cmd_op_size = rqArg1;
+                
+                AppState = PENDING_OPERATION;
+                
+                // send unlock cmd
+                amd_unlock_write_start();
                 break;
                 
             case PROM_BULK_READ:
