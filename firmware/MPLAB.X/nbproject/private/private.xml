@@ -3,7 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/I:/console/github/firmware/framework/usb/src/usb_device.c</file>
             <file>file:/I:/console/github/firmware/src/rom.c</file>
+            <file>file:/I:/console/github/firmware/src/app_usb.c</file>
+            <file>file:/I:/console/github/firmware/src/mcp23s17.c</file>
+            <file>file:/I:/console/github/firmware/src/rom.h</file>
+            <file>file:/I:/console/github/firmware/src/command.c</file>
+            <file>file:/I:/console/github/firmware/src/app_usb.h</file>
+            <file>file:/I:/console/github/firmware/src/command.h</file>
         </group>
     </open-files>
 </project-private>

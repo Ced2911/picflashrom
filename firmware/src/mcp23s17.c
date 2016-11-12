@@ -65,7 +65,9 @@ void MCP_Write16AB(unsigned char slave_addr, unsigned char port, unsigned char a
     SPI1_Exchange8bit(SPI_SLAVE_ID | ((slave_addr << 1) & 0x0E) | SPI_SLAVE_WRITE);
     SPI1_Exchange8bit(port);
     SPI1_Exchange8bit(a);
-    SPI1_Exchange8bit(b);
+    if (b) {
+        SPI1_Exchange8bit(b);        
+    }
     
     CSH;
 }

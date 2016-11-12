@@ -60,6 +60,10 @@ static uint32_t rqArg1 = 0;
 
 volatile uint8_t AppVendorRequest[USB_EP0_BUFF_SIZE];
 
+// Page buffer data
+uint8_t pgData[0x160];
+uint8_t *currentPgData = &pgData;
+
 /** FUNCTIONS ******************************************************/
 
 void APP_USBInitialize() {
@@ -113,6 +117,7 @@ void APP_USBCheckVendorRequest() {
         case ROM_ERASE_8_16:
         case ROM_WRITE_8_16:
         case ROM_WRITE_UNLOCKED_AMD:
+        case ROM_WRITE_PAGE_8_16:
         case PROM_ID:
             rqPendingCmd = SetupPkt.bRequest;
             USBEP0Receive((uint8_t*) & AppVendorRequest, SetupPkt.wLength, &App_VendorReportComplete);
@@ -147,7 +152,7 @@ void ProcessIO(void) {
                 break;
             case ROM_WRITE_8_16:
                 if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
-                    USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
+                    USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);                    
                     uint8_t status = rom_write_8_16((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
                     PacketToPC.Command = status;
                     
@@ -156,8 +161,42 @@ void ProcessIO(void) {
             
                     cmd_op_addr += USB_PACKET_SIZE;
                     if (cmd_op_addr >= cmd_op_size) {
+                        rom_reset();
                         AppState = IDLE; 
                         rqCmd = 0;   
+                    }
+                }
+                
+                break;
+            case ROM_WRITE_PAGE_8_16:
+                if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
+                    const uint32_t pgSize = 0x100;                    
+                    USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
+                    for(int i = 0; i < 0x40; i++) {
+                        *currentPgData++ = OUTPacket.Contents[i];
+                    }
+                    
+                    if (currentPgData >= (pgData+pgSize)) {                    
+                        uint8_t status = rom_page_write_8_16((uint8_t *) &pgData, cmd_op_addr, pgSize);
+                        OUTPacket.Command = status;
+                        // reset page data ptr
+                        currentPgData = pgData;   
+                        cmd_op_addr += pgSize;
+                    } else {
+                        OUTPacket.Command = ROM_OK;     
+                    }
+                    
+                    // not busy anymore
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
+            
+                   // cmd_op_addr += USB_PACKET_SIZE;
+                   // 
+                    if (cmd_op_addr >= cmd_op_size) {
+                        rom_reset();
+                        AppState = IDLE; 
+                        rqCmd = 0; 
+                        // reset page data ptr
+                        currentPgData = pgData;
                     }
                 }
                 
@@ -244,8 +283,14 @@ void ProcessIO(void) {
             case PROM_ID:
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
+                    
+                    rom_reset();                    
                     rom_identify(in);
+                    
+                    rom_reset();
                     rom_identify_8_16(&in[0x10]);
+                    
+                    rom_reset();
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     rqCmd = 0;
@@ -262,13 +307,15 @@ void ProcessIO(void) {
                 break;
                 
             case ROM_WRITE_8_16:
+            case ROM_WRITE_PAGE_8_16:
                 cmd_op_addr = rqArg0;
                 cmd_op_size = rqArg1;
                 
+                rom_reset();
+                
                 AppState = PENDING_OPERATION;
                 
-                break;
-                
+                break;                
                 
             case ROM_WRITE_UNLOCKED_AMD:                
                 cmd_op_addr = rqArg0;
@@ -283,17 +330,23 @@ void ProcessIO(void) {
             case PROM_BULK_READ:
                 cmd_op_addr = rqArg0;
                 cmd_op_size = rqArg1;
+                        
+                rom_reset();
                 
                 AppState = PENDING_OPERATION;    
                 
                 break;
                 
                 
-            case CMD_DBG:                
-                rom_custom(rqArg0, rqArg1);
-                
-                rqCmd = 0;
-                AppState = IDLE;
+            case CMD_DBG:    
+                if (!USBHandleBusy(USBGenericInHandle)) {  
+                    uint8_t * in = (uint8_t*) & PacketToPC;    
+                    rom_write_8_16(in, 0, 0x40);
+                    rom_custom(rqArg0, rqArg1);
+
+                    rqCmd = 0;
+                    AppState = IDLE;
+                }
                 break;
         }
     }

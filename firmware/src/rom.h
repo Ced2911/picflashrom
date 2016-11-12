@@ -34,11 +34,12 @@ uint8_t rom_write_8_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 uint8_t rom_identify_8_16(uint8_t * in);
 
 uint8_t rom_custom(uint8_t data, uint32_t addr);
-
+uint8_t rom_reset();
 /* vendor specific */
 void amd_unlock_write_start();
 void amd_unlock_write_end();
 uint8_t amd_unlock_rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len);
+uint8_t rom_page_write_8_16(uint8_t * in, uint32_t _addr, uint8_t _len);
 
 #endif	/* ROM_H */
 

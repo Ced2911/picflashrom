@@ -41,6 +41,7 @@
 #define ROM_WRITE                   0x70    // write erom
 #define ROM_WRITE_8_16              0x71    // write erom
 #define ROM_WRITE_UNLOCKED_AMD      0x72    // write erom
+#define ROM_WRITE_PAGE_8_16         0x73    // write page
 #define CMD_DBG                     0xDB    // DBG COMMAND
 #define CMD_AA                      0xAA
 #define CMD_AB                      0xAB

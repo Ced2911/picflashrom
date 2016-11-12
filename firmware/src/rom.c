@@ -105,6 +105,16 @@ __delay_ms(20); \
     CSH; \
 }
 
+#define _READ8LOW(a, x) \
+{ \
+    WE_H \
+    CSH \
+    SET_ADDR_L(a);  \
+    CSL; \
+    x = PORT_DATA;\
+    CSH; \
+}
+
 #define _READ_TOGGLE(x) \
 { \
     WE_H \
@@ -192,6 +202,23 @@ void rom_init() {
 
 // Ok cmd
 
+static __inline void rom_write_8_l(uint32_t addr, uint8_t b) {
+    TRISA = 0x00;
+    OE_H
+    LATA = b;
+    SET_ADDR_L(addr);
+    
+    // adress and data already set !
+    CE_L;
+    WE_L;
+    
+    __nop();
+    __nop();
+    
+    WE_H;
+    CE_H;
+}
+
 static __inline void rom_write_8(uint32_t addr, uint8_t b) {
     TRISA = 0x00;
     OE_H
@@ -203,9 +230,10 @@ static __inline void rom_write_8(uint32_t addr, uint8_t b) {
     // adress and data already set !
     CE_L;
     WE_L;
-    // ....    
-    LATA = b;
-    PORTA = b;
+    
+    __nop();    
+    __nop();    
+    
     WE_H;
     CE_H;
 }
@@ -223,9 +251,9 @@ static void rom_send_command_8_16(uint8_t cmd) {
     rom_start_write();
     OE_H
 
-    rom_write_8(0xAAA, 0xAA);
-    rom_write_8(0x555, 0x55);
-    rom_write_8(0xAAA, cmd);
+    rom_write_8(0xAAAA, 0xAA);
+    rom_write_8(0x5555, 0x55);
+    rom_write_8(0xAAAA, cmd);
 }
 
 void rom_reset_status() {
@@ -255,15 +283,6 @@ uint8_t rom_read(uint8_t * out, uint32_t addr, uint8_t len) {
 
 
     return ROM_OK;
-}
-
-static inline void JEDEC_WRITE_8(uint32_t addr, uint8_t b) {
-    _START_C()
-
-    //rom_jedec_clear();
-    rom_send_command_8(0xA0);
-    rom_write_8(addr, b);
-    DELAY_BYTE_WRITE
 }
 
 /**
@@ -301,9 +320,6 @@ uint8_t rom_write(uint8_t * in, uint32_t addr, uint8_t len) {
 }
 
 uint8_t rom_erase(uint8_t * in) {
-    rom_erase_8_16(in);
-    return;
-
     rom_start_write();
 
     _START_C()
@@ -321,10 +337,7 @@ uint8_t rom_erase(uint8_t * in) {
 
 uint8_t rom_identify(uint8_t * in) {
     rom_start_write();
-
-    _START_C()
-
-    rom_send_command_8(0xF0);
+    
     rom_send_command_8(0x90);
 
     DELAY_CMD_X
@@ -424,31 +437,21 @@ uint8_t mx_rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len) {
     uint8_t p = 0;
     uint8_t * buf = in;
     uint8_t len = 0x40;
-
-    _START_C()
-    OE_H
-
-    rom_write_8(0, 0xF0);
+    
+    rom_reset();
 
     for (p = 0; p < len; p++, addr++, buf++) {
-        rom_write_8_test(AddrConv(0x555), 0xAA);
-        rom_write_8_test(AddrConv(0xAAA), 0x55);
-        rom_write_8_test(AddrConv(0x555), 0xA0);
+        rom_write_8(AddrConv(0x5555), 0xAA);
+        rom_write_8(AddrConv(0xAAAA), 0x55);
+        rom_write_8(AddrConv(0x5555), 0xA0);
 
         rom_write_8(addr, *buf);
     }
-
-
-    rom_write_8(0, 0xF0);
-
 
     return ROM_OK;
 }
 
 void amd_unlock_write_start() {
-    _START_C()
-    OE_H
-
     // reset
     rom_write_8(0, 0xF0);
 
@@ -486,24 +489,78 @@ uint8_t amd_unlock_rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len) {
     return ROM_OK;
 }
 
+
+uint8_t rom_reset() {    
+    rom_start_write();
+    rom_write_8(AddrConv(0x5555), 0xAA);
+    rom_write_8(AddrConv(0xAAAA), 0x55);
+    rom_write_8(AddrConv(0x5555), 0xF0);
+}
+
+uint8_t mx_rom_page_write_verify() {
+    __delay_us(100);
+    uint8_t status = 0;
+        
+    TRISA = 0xFF;
+    
+    do {
+        _READ_TOGGLE(status);
+    } while((status & 0x80)!=0x80);
+        
+    return (status & 0x10) ? ROM_ERROR:ROM_OK;
+}
+
+uint8_t rom_page_write_8_16(uint8_t * in, uint32_t _addr, uint8_t _len) {
+    uint32_t p = 0;
+    uint8_t * buf = in;
+    uint32_t len = 0x100;
+    uint32_t addr = _addr;
+    
+    uint8_t haddr = (addr>>6) & 0xFF;
+    
+    rom_write_8(AddrConv(0x5555), 0xAA);
+    rom_write_8(AddrConv(0xAAAA), 0x55);
+    rom_write_8(AddrConv(0x5555), 0xA0);
+    
+    MCP_Write16AB(MCP_ADDR_HIGH, GPIOA, addr>>6, addr>>14);
+
+    for (p = 0; p < len; p++, addr++, buf++) {
+        rom_write_8_l(addr, *buf);
+        uint8_t spaddr = addr>>6;
+        if (haddr != spaddr) {
+            MCP_Write(MCP_ADDR_HIGH, GPIOA, spaddr);
+            haddr = spaddr;
+        }
+    }
+    
+    __delay_us(200);
+    
+    uint8_t verify = mx_rom_page_write_verify();
+    if (true ||verify == ROM_OK) {
+        // Reset ..
+        rom_write_8(AddrConv(0x5555), 0xAA);
+        rom_write_8(AddrConv(0xAAAA), 0x55);
+        rom_write_8(AddrConv(0x5555), 0x50);
+    }
+    
+    //return verify;
+    return ROM_OK;
+}
+
 uint8_t rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len) {
     return mx_rom_write_8_16(in, addr, 0x40);
+    //return rom_page_write_8_16(in, addr, 0x40);
 }
 
 uint8_t rom_erase_8_16(uint8_t * in) {
     rom_start_write();
 
-    _START_C()
-    OE_H
-
-    rom_write_8(0, 0xF0);
-
-    rom_write_8(AddrConv(0x555), 0xAA);
-    rom_write_8(AddrConv(0xAAA), 0x55);
-    rom_write_8(AddrConv(0x555), 0x80);
-    rom_write_8(AddrConv(0x555), 0xAA);
-    rom_write_8(AddrConv(0xAAA), 0x55);
-    rom_write_8(AddrConv(0x555), 0x10);
+    rom_write_8(AddrConv(0x5555), 0xAA);
+    rom_write_8(AddrConv(0xAAAA), 0x55);
+    rom_write_8(AddrConv(0x5555), 0x80);
+    rom_write_8(AddrConv(0x5555), 0xAA);
+    rom_write_8(AddrConv(0xAAAA), 0x55);
+    rom_write_8(AddrConv(0x5555), 0x10);
 
     return ROM_OK;
 }
@@ -511,42 +568,20 @@ uint8_t rom_erase_8_16(uint8_t * in) {
 uint8_t rom_identify_8_16(uint8_t * in) {
     rom_start_write();
 
-    _START_C()
-    OE_H
-
-    rom_write_8(0, 0xF0);
-
+    // ID
+    rom_start_write();
     rom_write_8(AddrConv(0x5555), 0xAA);
     rom_write_8(AddrConv(0xAAAA), 0x55);
     rom_write_8(AddrConv(0x5555), 0x90);
 
     rom_start_read();
 
-
     SET_ADDR_H(0);
 
-    _READ8(0, in[0]);
-    _READ8(2, in[1]);
-    _READ8(6, in[2]);
-    _READ8(4, in[3]);
-
-    rom_start_write();
-    rom_write_8(0, 0xF0);
-
-    SET_ADDR_H(0);
-    SET_ADDR_L(0);
-
-
-    TRISA = 0x00;
-    OE_H
-    LATA = 0x00;
-    PORTA = 0x00;
-    SET_ADDR_H(0xFFFFFFF);
-    SET_ADDR_L(0xFFFFFFF);
-
-
-    //SET_ADDR_H(0);
-    //SET_ADDR_L(0);
+    _READ8LOW(0, in[0]);
+    _READ8LOW(2, in[1]);
+    _READ8LOW(6, in[2]);
+    _READ8LOW(4, in[3]);
 
     return ROM_OK;
 }
