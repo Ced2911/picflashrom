@@ -36,6 +36,8 @@ extern void ProcessIO(void);
 
 MAIN_RETURN main(void)
 {
+
+    
     SYSTEM_Initialize(SYSTEM_STATE_USB_START);
     
     USBDeviceInit();

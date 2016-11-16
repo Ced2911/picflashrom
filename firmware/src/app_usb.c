@@ -1,25 +1,3 @@
-/********************************************************************
- Software License Agreement:
-
- The software supplied herewith by Microchip Technology Incorporated
- (the "Company") for its PIC(R) Microcontroller is intended and
- supplied to you, the Company's customer, for use solely and
- exclusively on Microchip PIC Microcontroller products. The
- software is owned by the Company and/or its supplier, and is
- protected under applicable copyright laws. All rights are reserved.
- Any use in violation of the foregoing restrictions may subject the
- user to criminal sanctions under applicable laws, as well as to
- civil liability for the breach of the terms and conditions of this
- license.
-
- THIS SOFTWARE IS PROVIDED IN AN "AS IS" CONDITION. NO WARRANTIES,
- WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
- IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
- CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *******************************************************************/
-
 /** INCLUDES *******************************************************/
 #include "usb.h"
 #include "usb_device_generic.h"
@@ -27,6 +5,9 @@
 #include <string.h>
 #include "system.h"
 #include "rom.h"
+
+
+void cmd_bootloader();
 
 extern volatile CTRL_TRF_SETUP SetupPkt;
 
@@ -161,7 +142,7 @@ void ProcessIO(void) {
             
                     cmd_op_addr += USB_PACKET_SIZE;
                     if (cmd_op_addr >= cmd_op_size) {
-                        rom_reset();
+                        rom_reset_8();
                         AppState = IDLE; 
                         rqCmd = 0;   
                     }
@@ -192,7 +173,7 @@ void ProcessIO(void) {
                    // cmd_op_addr += USB_PACKET_SIZE;
                    // 
                     if (cmd_op_addr >= cmd_op_size) {
-                        rom_reset();
+                        rom_reset_8_16();
                         AppState = IDLE; 
                         rqCmd = 0; 
                         // reset page data ptr
@@ -204,7 +185,7 @@ void ProcessIO(void) {
             case ROM_WRITE:
                 if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
                     USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
-                    uint8_t status = rom_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    uint8_t status = rom_write_8((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
                     PacketToPC.Command = status;
                     
                     // not busy anymore
@@ -222,7 +203,7 @@ void ProcessIO(void) {
             case PROM_BULK_READ:
                 
                 if (!USBHandleBusy(USBGenericInHandle)) {
-                    rom_read((uint8_t *) & PacketToPC, cmd_op_addr, USB_PACKET_SIZE);
+                    rom_read_8((uint8_t *) & PacketToPC, cmd_op_addr, USB_PACKET_SIZE);
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     cmd_op_addr += USB_PACKET_SIZE;
                     if (cmd_op_addr >= cmd_op_size) {
@@ -261,7 +242,7 @@ void ProcessIO(void) {
             case ROM_ERASE:
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
-                    rom_erase(in);
+                    rom_erase_8(in);
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     rqCmd = 0;
@@ -284,13 +265,11 @@ void ProcessIO(void) {
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
                     
-                    rom_reset();                    
-                    rom_identify(in);
+                    rom_reset_8();                    
+                    rom_identify_8(in);
                     
-                    rom_reset();
+                    rom_reset_8();
                     rom_identify_8_16(&in[0x10]);
-                    
-                    rom_reset();
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     rqCmd = 0;
@@ -302,6 +281,8 @@ void ProcessIO(void) {
                 cmd_op_addr = rqArg0;
                 cmd_op_size = rqArg1;
                 
+                rom_reset_8();
+                
                 AppState = PENDING_OPERATION;
                 
                 break;
@@ -311,7 +292,7 @@ void ProcessIO(void) {
                 cmd_op_addr = rqArg0;
                 cmd_op_size = rqArg1;
                 
-                rom_reset();
+                rom_reset_8_16();
                 
                 AppState = PENDING_OPERATION;
                 
@@ -320,6 +301,8 @@ void ProcessIO(void) {
             case ROM_WRITE_UNLOCKED_AMD:                
                 cmd_op_addr = rqArg0;
                 cmd_op_size = rqArg1;
+                
+                rom_reset_8_16();
                 
                 AppState = PENDING_OPERATION;
                 
@@ -331,7 +314,7 @@ void ProcessIO(void) {
                 cmd_op_addr = rqArg0;
                 cmd_op_size = rqArg1;
                         
-                rom_reset();
+                rom_reset_8();
                 
                 AppState = PENDING_OPERATION;    
                 

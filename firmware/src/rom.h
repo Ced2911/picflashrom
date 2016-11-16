@@ -16,17 +16,17 @@ void rom_start_read();
 void rom_start_write();
 
 /* generic read */
-uint8_t rom_read(uint8_t * out, uint32_t addr, uint8_t len);
+uint8_t rom_read_8(uint8_t * out, uint32_t addr, uint8_t len);
 uint8_t rom_read_16(uint8_t * out, uint32_t addr, uint8_t len);
 
 /* generic write */
-uint8_t rom_erase(uint8_t * out);
-uint8_t rom_write(uint8_t * out, uint32_t addr, uint8_t len);
+uint8_t rom_erase_8(uint8_t * out);
+uint8_t rom_write_8(uint8_t * out, uint32_t addr, uint8_t len);
 uint8_t rom_write_8_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 uint8_t rom_write_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 
 /* generic ID */
-uint8_t rom_identify(uint8_t * in);
+uint8_t rom_identify_8(uint8_t * in);
 
 /** work in 8bit but need 16bit command*/
 uint8_t rom_erase_8_16(uint8_t * out);
@@ -34,7 +34,8 @@ uint8_t rom_write_8_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 uint8_t rom_identify_8_16(uint8_t * in);
 
 uint8_t rom_custom(uint8_t data, uint32_t addr);
-uint8_t rom_reset();
+uint8_t rom_reset_8();
+uint8_t rom_reset_8_16();
 /* vendor specific */
 void amd_unlock_write_start();
 void amd_unlock_write_end();
