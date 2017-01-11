@@ -88,8 +88,8 @@ uint8_t ROM_FUNC_NAME(reset, ROM_SUFFIX)() {
     write_8(AddrConv(0x5555), 0xF0);
 #else
     // Start write
-    TRISA = 0x00
-            TRISD = 0x00;
+    TRISA = 0x00;
+    TRISD = 0x00;
 
     write_16(AddrConv(0x5555), 0xAAAA);
     write_16(AddrConv(0xAAAA), 0x5555);
@@ -155,7 +155,7 @@ uint8_t ROM_FUNC_NAME(write, ROM_SUFFIX)(uint8_t * in, uint32_t addr, uint8_t _l
         write_16(AddrConv(0xAAAA), 0x5555);
         write_16(AddrConv(0x5555), 0xA0A0);
 
-        write_16(addr, (*buf++ << 16) || (*buf++));
+        //write_16(addr, (*buf++ << 16) || (*buf++));
 #endif
     }
 

@@ -92,7 +92,8 @@ void APP_USBCheckVendorRequest() {
     switch (SetupPkt.bRequest) {
         case TO_BOOLOADER:
         case QUERY_DEVICE:
-        case PROM_BULK_READ:
+        case ROM_READ_8:
+        case ROM_READ_16:
         case ROM_ERASE:
         case ROM_WRITE:
         case ROM_ERASE_8_16:
@@ -100,6 +101,17 @@ void APP_USBCheckVendorRequest() {
         case ROM_WRITE_UNLOCKED_AMD:
         case ROM_WRITE_PAGE_8_16:
         case PROM_ID:
+        case SNES_SRAM_READ:
+        case SNES_ROM_READ:
+        case SNES_SRAM_WRITE:
+        case GENESIS_SRAM_WRITE:
+        case GENESIS_SRAM_READ:
+        case GENESIS_ROM_READ:
+        case GENESIS_ROM_WRITE:
+        case GENESIS_ROM_ERASE:
+            if (USBHandleBusy(USBGenericInHandle)) {
+                USBCancelIO(USBGEN_EP_NUM);
+            }
             rqPendingCmd = SetupPkt.bRequest;
             USBEP0Receive((uint8_t*) & AppVendorRequest, SetupPkt.wLength, &App_VendorReportComplete);
             break;
@@ -200,7 +212,26 @@ void ProcessIO(void) {
                 
                 break;
                 
-            case PROM_BULK_READ:
+                
+            case GENESIS_ROM_WRITE:
+                if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
+                    USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
+                    uint8_t status = genesis_rom_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    PacketToPC.Command = status;
+                    
+                    // not busy anymore
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+            
+                    cmd_op_addr += USB_PACKET_SIZE>>1;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;
+                
+            case ROM_READ_8:
                 
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     rom_read_8((uint8_t *) & PacketToPC, cmd_op_addr, USB_PACKET_SIZE);
@@ -213,6 +244,95 @@ void ProcessIO(void) {
                 }
                 
                 break;
+              
+            case GENESIS_ROM_READ:
+            case ROM_READ_16:
+            //case GENESIS_SRAM_READ:
+                if (!USBHandleBusy(USBGenericInHandle)) {
+                    rom_read_16((uint8_t *) & PacketToPC, cmd_op_addr, USB_PACKET_SIZE);
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+                    cmd_op_addr += USB_PACKET_SIZE>>1;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;
+            
+            case (GENESIS_SRAM_READ):
+                if (!USBHandleBusy(USBGenericInHandle)) {                    
+                    genesis_sram_read((uint8_t *) & PacketToPC, cmd_op_addr, USB_PACKET_SIZE);
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+                    cmd_op_addr += USB_PACKET_SIZE>>1;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;
+            case GENESIS_SRAM_WRITE:
+                if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
+                    USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
+                    uint8_t status = genesis_sram_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    PacketToPC.Command = status;
+                    
+                    // not busy anymore
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+            
+                    cmd_op_addr += USB_PACKET_SIZE;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;   
+                
+            case SNES_SRAM_WRITE:
+                if (!USBHandleBusy(USBGenericOutHandle) && !USBHandleBusy(USBGenericInHandle)) {
+                    USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM, (uint8_t*) & OUTPacket, USBGEN_EP_SIZE);
+                    uint8_t status = snes_sram_write((uint8_t *) &OUTPacket, cmd_op_addr, USB_PACKET_SIZE);
+                    PacketToPC.Command = status;
+                    
+                    // not busy anymore
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+            
+                    cmd_op_addr += USB_PACKET_SIZE;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;    
+            case SNES_SRAM_READ:
+                if (!USBHandleBusy(USBGenericInHandle)) {
+                    snes_sram_read((uint8_t *) & PacketToPC, cmd_op_addr, USB_PACKET_SIZE);
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+                    cmd_op_addr += USB_PACKET_SIZE;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;
+                
+            case SNES_ROM_READ:
+                if (!USBHandleBusy(USBGenericInHandle)) {
+                    snes_rom_read((uint8_t *) & PacketToPC, cmd_op_addr, USB_PACKET_SIZE);
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+                    cmd_op_addr += USB_PACKET_SIZE;
+                    if (cmd_op_addr >= cmd_op_size) {
+                        AppState = IDLE; 
+                        rqCmd = 0;   
+                    }
+                }
+                
+                break;
+                
         }
     } else if (rqCmd != 0) {
         switch (rqCmd) {
@@ -261,6 +381,17 @@ void ProcessIO(void) {
                 }
                 break;
                 
+            case GENESIS_ROM_ERASE:
+                if (!USBHandleBusy(USBGenericInHandle)) {
+                    uint8_t * in = (uint8_t*) & PacketToPC;
+                    genesis_rom_erase(in);
+
+                    USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
+                    rqCmd = 0;
+                    AppState = IDLE;
+                }
+                break;
+                
             case PROM_ID:
                 if (!USBHandleBusy(USBGenericInHandle)) {
                     uint8_t * in = (uint8_t*) & PacketToPC;
@@ -270,6 +401,9 @@ void ProcessIO(void) {
                     
                     rom_reset_8();
                     rom_identify_8_16(&in[0x10]);
+                    
+                    genesis_rom_reset_16();
+                    genesis_rom_identify(&in[0x20]);
 
                     USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM, (uint8_t*) & PacketToPC, USBGEN_EP_SIZE);
                     rqCmd = 0;
@@ -310,7 +444,8 @@ void ProcessIO(void) {
                 amd_unlock_write_start();
                 break;
                 
-            case PROM_BULK_READ:
+            case ROM_READ_16:
+            case ROM_READ_8:
                 cmd_op_addr = rqArg0;
                 cmd_op_size = rqArg1;
                         
@@ -320,6 +455,28 @@ void ProcessIO(void) {
                 
                 break;
                 
+            case GENESIS_ROM_WRITE:
+                cmd_op_addr = rqArg0;
+                cmd_op_size = rqArg1;
+                
+                genesis_rom_reset_16();
+                
+                AppState = PENDING_OPERATION;    
+                break;
+                
+                // genesis
+            case GENESIS_SRAM_WRITE:
+            case GENESIS_SRAM_READ:
+            case GENESIS_ROM_READ:
+                // snes
+            case SNES_SRAM_WRITE:
+            case SNES_ROM_READ:    
+            case SNES_SRAM_READ:
+                cmd_op_addr = rqArg0;
+                cmd_op_size = rqArg1;
+                
+                AppState = PENDING_OPERATION;    
+                break;
                 
             case CMD_DBG:    
                 if (!USBHandleBusy(USBGenericInHandle)) {  
@@ -330,6 +487,9 @@ void ProcessIO(void) {
                     rqCmd = 0;
                     AppState = IDLE;
                 }
+                break;
+                
+            default:
                 break;
         }
     }

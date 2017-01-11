@@ -31,9 +31,14 @@
 #define QUERY_EXTENDED_INFO         0x0C    //Used by host PC app to get additional info about the device, beyond the basic NVM layout provided by the query device command
 #define TO_BOOLOADER                0x28    // go to bootloader
 #define PROM_READ                   0x40    // read prom
-#define PROM_BULK_READ              0x42    // read prom
+#define ROM_READ_8                  0x42    // read prom
+#define ROM_READ_16                 0x43    // read prom
 #define PROM_BULK_WRITE             0x44    // write prom
 #define PROM_WRITE_FINISHED         0x45    // write erom
+
+#define ROM_WRITE_16                0x46    // write rom
+#define ROM_WRITE_16_FINISHED       0x47    // write rom finished
+
 #define PROM_ID                     0x50    // read id
 #define PROM_ID_8_16                0x51    // read id
 #define ROM_ERASE                   0x60    // erase erom
@@ -42,6 +47,20 @@
 #define ROM_WRITE_8_16              0x71    // write erom
 #define ROM_WRITE_UNLOCKED_AMD      0x72    // write erom
 #define ROM_WRITE_PAGE_8_16         0x73    // write page
+
+#define SNES_ROM_READ               0x80        
+#define SNES_SRAM_READ               0x81
+#define SNES_SRAM_WRITE              0x82
+#define SNES_SROM_WRITE              0x84
+
+
+#define GENESIS_SRAM_READ            0x90  
+#define GENESIS_SRAM_WRITE           0x91
+#define GENESIS_ROM_READ            0x92 
+#define GENESIS_ROM_WRITE           0x93
+#define GENESIS_ROM_ERASE           0x94
+
+
 #define CMD_DBG                     0xDB    // DBG COMMAND
 #define CMD_AA                      0xAA
 #define CMD_AB                      0xAB

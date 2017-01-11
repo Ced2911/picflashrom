@@ -36,11 +36,26 @@ uint8_t rom_identify_8_16(uint8_t * in);
 uint8_t rom_custom(uint8_t data, uint32_t addr);
 uint8_t rom_reset_8();
 uint8_t rom_reset_8_16();
+uint8_t rom_reset_16();
+
 /* vendor specific */
 void amd_unlock_write_start();
 void amd_unlock_write_end();
 uint8_t amd_unlock_rom_write_8_16(uint8_t * in, uint32_t addr, uint8_t _len);
 uint8_t rom_page_write_8_16(uint8_t * in, uint32_t _addr, uint8_t _len);
+
+uint8_t snes_sram_read(uint8_t * out, uint32_t addr, uint8_t len);
+uint8_t snes_rom_read(uint8_t * out, uint32_t addr, uint8_t len);
+uint8_t snes_sram_write(uint8_t * in, uint32_t addr, uint8_t len);
+// genesis
+uint8_t genesis_rom_reset_16();
+uint8_t genesis_sram_write(uint8_t * in, uint32_t addr, uint8_t len);
+uint8_t genesis_sram_read(uint8_t * out, uint32_t addr, uint8_t len);
+uint8_t genesis_rom_write(uint8_t * in, uint32_t addr, uint8_t len);
+uint8_t genesis_rom_read(uint8_t * out, uint32_t addr, uint8_t len);
+uint8_t genesis_rom_identify(uint8_t * in);
+
+uint8_t genesis_rom_erase(uint8_t * in);
 
 #endif	/* ROM_H */
 

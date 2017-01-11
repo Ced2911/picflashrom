@@ -1,6 +1,7 @@
 #include <xc.h>
 
 
+#if 0
 #define CSL {LATC = PORTC & 0xF9;}
 #define CSH {LATC = PORTC | 0x06;}
 
@@ -19,6 +20,27 @@
 #define CE  0
 #define OE  1
 #define WE  2
+
+#else 
+#define CSL {LATC = PORTC & 0xF9;}
+#define CSH {LATC = PORTC | 0x06;}
+
+#define CE_L_OE_H {LATC = (PORTC & 0xFC) | 0x2 ;}
+#define CE_H_OE_H {LATC = PORTC | 0x03;}
+
+#define WE_L    {LATCbits.LC0 = 0;}
+#define WE_H    {LATCbits.LC0 = 1;}
+
+#define CE_L    {LATCbits.LC2 = 0;}
+#define CE_H    {LATCbits.LC2 = 1;}
+
+#define OE_L    {LATCbits.LC1 = 0;}
+#define OE_H    {LATCbits.LC1 = 1;}
+
+#define CE  0
+#define OE  1
+#define WE  2
+#endif
 
 #define DELAY_P { __delay_us(1); }
 #define DELAY_CMD_X { __delay_us(2); }
@@ -78,6 +100,17 @@ __delay_ms(20); \
     SET_ADDR_L(a);  \
     CSL; \
     x = PORT_DATA;\
+    CSH; \
+}
+
+#define _READ16(a, x, y) \
+{ \
+    WE_H \
+    CSH \
+    SET_ADDR_16(a);  \
+    CSL; \
+    x = PORTA;\
+    y = PORTD;\
     CSH; \
 }
 
