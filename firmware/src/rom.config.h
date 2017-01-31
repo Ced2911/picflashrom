@@ -1,5 +1,5 @@
-#include <xc.h>
-
+#ifndef ROMCFG_H
+#define ROMCFG_H
 
 #if 0
 #define CSL {LATC = PORTC & 0xF9;}
@@ -22,8 +22,13 @@
 #define WE  2
 
 #else 
+#if 0
 #define CSL {LATC = PORTC & 0xF9;}
 #define CSH {LATC = PORTC | 0x06;}
+#else
+#define CSL {LATC &= 0xF9;}
+#define CSH {LATC |= 0x06;}
+#endif
 
 #define CE_L_OE_H {LATC = (PORTC & 0xFC) | 0x2 ;}
 #define CE_H_OE_H {LATC = PORTC | 0x03;}
@@ -82,14 +87,13 @@ __delay_ms(20); \
 }
 
 
-#define _READ8(a, x) \
+#define ROM_READ8(a, x) \
 { \
-    WE_H \
     CSH \
-    SET_ADDR_H(a);  \
-    SET_ADDR_L(a);  \
+    SET_ADDR(a);  \
     CSL; \
-    x = PORT_DATA;\
+    TRISA = 0xFF; \
+    x = PORTA;\
     CSH; \
 }
 
@@ -130,3 +134,33 @@ __delay_ms(20); \
 }
 
 
+void SET_ADDR_H(uint24_t addr);
+void SET_ADDR_L(uint8_t addr);
+void SET_ADDR(uint24_t addr);
+void write_8_cmd(uint24_t addr, uint8_t b);
+void write_16_cmd(uint24_t addr, uint8_t b);
+void write_16_data(uint24_t addr, uint8_t d, uint8_t a);
+
+#define GEN_READ16(a, x, y) \
+{ \
+    CSH \
+    SET_ADDR(a);  \
+    CSL; \
+    TRISA = 0xFF; \
+    TRISD = 0xFF; \
+    x = PORTD;\
+    y = PORTA;\
+    CSH; \
+}
+
+#define GEN_READ8(a, x) \
+{ \
+    CSH \
+    SET_ADDR(a);  \
+    CSL; \
+    TRISA = 0xFF; \
+    x = PORTA;\
+    CSH; \
+}
+
+#endif ROMCFG_H

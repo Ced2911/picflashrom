@@ -1,5 +1,7 @@
 #pragma once
 #include <inttypes.h>
+#include "debug.h"
+#include "romdb.h"
 
 #define USB_READ_TIMEOUT	5000
 
@@ -15,16 +17,29 @@
 #define ARRAY_SIZE(array) \
     (sizeof(array) / sizeof(array[0]))
 
-namespace output {
-	void error(const char * str, ...);
-	void warning(const char * str, ...);
-	void debug(const char * str, ...);
-	void info(const char * str, ...);
-	void success(const char * str, ...);
-	void print(const char * str, ...);
-}
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
 
+enum {
+	CONSOLE_TYPE_RAW,
+	CONSOLE_TYPE_SNES,
+	CONSOLE_TYPE_GENESIS
+};
 
+enum {
+	MEMORY_AREA_ROM,
+	MEMORY_AREA_SRAM
+};
+
+extern int console_type;
+extern int console_memory_area;
+void progress_barr(char *label, int step, int total);
+uint32_t file_size(const char * filename);
+
+// rom.cpp - threaded func
+void rom_read(const char * filename, uint32_t size);
+int rom_write(const char * filename, uint32_t size, const rom_t * rom = NULL);
+int rom_erase(const rom_t * rom = NULL);
 
 #include <ctime>
 class cclock {

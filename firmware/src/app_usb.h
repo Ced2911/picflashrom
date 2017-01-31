@@ -41,8 +41,11 @@
 
 #define PROM_ID                     0x50    // read id
 #define PROM_ID_8_16                0x51    // read id
+
 #define ROM_ERASE                   0x60    // erase erom
 #define ROM_ERASE_8_16              0x61    // erase erom
+#define ROM_ERASE_16                0x62
+
 #define ROM_WRITE                   0x70    // write erom
 #define ROM_WRITE_8_16              0x71    // write erom
 #define ROM_WRITE_UNLOCKED_AMD      0x72    // write erom

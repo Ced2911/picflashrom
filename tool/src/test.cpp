@@ -21,33 +21,33 @@ int rom_debug_write(const char * filename, uint32_t size) {
 
 		// now flash !
 		if (cmd_write_rom(data, size) == -1) {
-			output::error("error will writing %s.\r\n", filename);
+			LERROR("error will writing %s.", filename);
 			return -1;
 		}
 		fclose(fd);
 
 		// now read back data
-		cmd_read_rom(verif, size + 0x40);
+		cmd_read_rom(verif, 0, size + 0x40);
 
 		// now compare
 		for (int i = 0; i < size; i++) {
 			if (data[i] != verif[i]) {
 
-				output::error("error at %08x\r\n", i);
+				LERROR("error at %08x", i);
 
-				output::error("read\r\n");
+				LERROR("read");
 				hexdump(&verif[i], DUMP_SIZE);
 
-				output::error("source\r\n");
+				LERROR("source");
 				hexdump(&data[i], DUMP_SIZE);
 				return -1;
 			}
 		}
-		output::error("test ok\r\n");
+		LERROR("test ok");
 		return 0;
 	}
 	else {
-		output::error("Can not open %s for reading.\r\n", filename);
+		LERROR("Can not open %s for reading.", filename);
 	}
 	return -1;
 }

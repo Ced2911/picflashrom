@@ -19,6 +19,12 @@
     <Filter Include="libs\hidapi">
       <UniqueIdentifier>{2290a43c-db95-46c6-824c-e3fdd291f72b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers sources\console">
+      <UniqueIdentifier>{4914acaf-7294-45e6-bffb-b100a701733e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\console\snes">
+      <UniqueIdentifier>{11e489f0-a869-4c11-9121-cc09f2cf377b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -45,6 +51,15 @@
     <ClCompile Include="src\rom_tools.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\console\cart.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\console\snes.cpp">
+      <Filter>Fichiers sources\console\snes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rom.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\hidapi\hidapi\hidapi.h">
@@ -67,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="src\rom_tools.h">
       <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\console\cart.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="src\console\snes.h">
+      <Filter>Fichiers sources\console\snes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

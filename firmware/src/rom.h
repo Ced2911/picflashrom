@@ -19,17 +19,21 @@ void rom_start_write();
 uint8_t rom_read_8(uint8_t * out, uint32_t addr, uint8_t len);
 uint8_t rom_read_16(uint8_t * out, uint32_t addr, uint8_t len);
 
-/* generic write */
+/* generic erase */
 uint8_t rom_erase_8(uint8_t * out);
+uint8_t rom_erase_8_16(uint8_t * out);
+uint8_t rom_erase_16(uint8_t * out);
+
+/* generic write */
 uint8_t rom_write_8(uint8_t * out, uint32_t addr, uint8_t len);
 uint8_t rom_write_8_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 uint8_t rom_write_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 
 /* generic ID */
 uint8_t rom_identify_8(uint8_t * in);
+uint8_t rom_identify_16(uint8_t * in);
 
 /** work in 8bit but need 16bit command*/
-uint8_t rom_erase_8_16(uint8_t * out);
 uint8_t rom_write_8_16(uint8_t * out, uint32_t addr, uint8_t len) ;
 uint8_t rom_identify_8_16(uint8_t * in);
 
@@ -47,15 +51,18 @@ uint8_t rom_page_write_8_16(uint8_t * in, uint32_t _addr, uint8_t _len);
 uint8_t snes_sram_read(uint8_t * out, uint32_t addr, uint8_t len);
 uint8_t snes_rom_read(uint8_t * out, uint32_t addr, uint8_t len);
 uint8_t snes_sram_write(uint8_t * in, uint32_t addr, uint8_t len);
+uint8_t snes_rom_identify(uint8_t * in);
+uint8_t snes_lorom_identify_8(uint8_t * in);
+uint8_t snes_lorom_identify_8_16(uint8_t * in);
+uint8_t snes_hirom_identify_8_16(uint8_t * in);
 // genesis
-uint8_t genesis_rom_reset_16();
 uint8_t genesis_sram_write(uint8_t * in, uint32_t addr, uint8_t len);
 uint8_t genesis_sram_read(uint8_t * out, uint32_t addr, uint8_t len);
-uint8_t genesis_rom_write(uint8_t * in, uint32_t addr, uint8_t len);
-uint8_t genesis_rom_read(uint8_t * out, uint32_t addr, uint8_t len);
-uint8_t genesis_rom_identify(uint8_t * in);
+// optimized ?
+uint8_t  js_rom_read_8(uint8_t * out, uint32_t addr, uint8_t _len);
+uint8_t js_rom_write_8(uint8_t * in, uint32_t addr, uint8_t _len) ;
 
-uint8_t genesis_rom_erase(uint8_t * in);
 
+uint8_t snes_read_rom(uint8_t * out, uint32_t addr, uint8_t _len);
 #endif	/* ROM_H */
 

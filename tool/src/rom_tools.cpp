@@ -142,3 +142,16 @@ void split_rom_16_8(const char * fin, const char *fouta, const char *foutb) {
 	delete ba;
 	delete bb;
 }
+
+
+uint32_t file_size(const char * filename) {
+	FILE * fd = fopen(filename, "rb");
+	uint32_t s = 0;
+	if (fd) {
+		fseek(fd, 0, SEEK_END);
+		s = ftell(fd);
+	}
+	fclose(fd);
+	return s;
+}
+

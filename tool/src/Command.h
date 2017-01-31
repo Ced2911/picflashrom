@@ -31,6 +31,7 @@ template <typename  T> struct atomic_value {
 };
 
 
+
 //Bootloader Command From Host - Switch() State Variable Choices
 #define QUERY_DEVICE                0x02    //Command that the host uses to learn about the device (what regions can be programmed, and what type of memory is the region)
 #define UNLOCK_CONFIG               0x03    //Note, this command is used for both locking and unlocking the config bits (see the "//Unlock Configs Command Definitions" below)
@@ -43,9 +44,14 @@ template <typename  T> struct atomic_value {
 #define QUERY_EXTENDED_INFO         0x0C    //Used by host PC app to get additional info about the device, beyond the basic NVM layout provided by the query device command
 #define TO_BOOLOADER                0x28    // go to bootloader
 #define PROM_READ                   0x40    // read prom
-#define PROM_BULK_READ              0x42    // read prom
+#define ROM_READ_8                  0x42    // read prom
+#define ROM_READ_16                 0x43    // read prom
 #define PROM_BULK_WRITE             0x44    // write prom
 #define PROM_WRITE_FINISHED         0x45    // write erom
+
+#define ROM_WRITE_16                0x46    // write rom
+#define ROM_WRITE_16_FINISHED       0x47    // write rom finished
+
 #define PROM_ID                     0x50    // read id
 #define PROM_ID_8_16                0x51    // read id
 #define ROM_ERASE                   0x60    // erase erom
@@ -53,10 +59,25 @@ template <typename  T> struct atomic_value {
 #define ROM_WRITE                   0x70    // write erom
 #define ROM_WRITE_8_16              0x71    // write erom
 #define ROM_WRITE_UNLOCKED_AMD      0x72    // write erom
+#define ROM_WRITE_PAGE_8_16         0x73    // write page
+
+#define SNES_ROM_READ               0x80        
+#define SNES_SRAM_READ               0x81
+#define SNES_SRAM_WRITE              0x82
+#define SNES_SROM_WRITE              0x84
+
+
+#define GENESIS_SRAM_READ            0x90  
+#define GENESIS_SRAM_WRITE           0x91
+#define GENESIS_ROM_READ            0x92 
+#define GENESIS_ROM_WRITE           0x93
+#define GENESIS_ROM_ERASE           0x94
+
+
+#define CMD_DBG                     0xDB    // DBG COMMAND
 #define CMD_AA                      0xAA
 #define CMD_AB                      0xAB
 #define CMD_AC                      0xAC
-#define CMD_DBG                     0xDB    // DBG COMMAND
 
 hid_device * usb_connect();
 
@@ -65,16 +86,24 @@ uint32_t usb_read(uint8_t * out, uint32_t size);
 
 void cmd_bootloader();
 
-uint32_t cmd_read_rom(uint8_t * out, uint32_t size);
-uint32_t cmd_read_rom_16(uint16_t * out, uint32_t size);
+uint32_t cmd_read_rom(uint8_t cmd, uint8_t * out, uint32_t start, uint32_t size);
+uint32_t cmd_read_rom(uint8_t * out, uint32_t start, uint32_t size);
+
+uint32_t cmd_read_rom_16(uint8_t cmd, uint8_t * out, uint32_t start, uint32_t size);
+uint32_t cmd_read_rom_16(uint8_t * out, uint32_t start, uint32_t size);
 
 uint32_t cmd_write_rom(uint8_t * in, uint32_t size);
 uint32_t cmd_write_rom_8_16(uint8_t * in, uint32_t size);
 uint32_t cmd_write_rom_16(uint16_t * in, uint32_t size);
+uint32_t cmd_write_rom_16(uint8_t cmd, uint32_t start, uint8_t * in, uint32_t size);
+uint32_t cmd_write_rom(uint8_t cmd, uint8_t * in, uint32_t size);
+uint32_t cmd_write_rom(uint8_t cmd, uint32_t start, uint8_t * in, uint32_t size);
 uint32_t cmd_write_rom_amd_unlocked(uint8_t * in, uint32_t size);
+uint32_t cmd_write_rom_page(uint8_t * in, uint32_t size);
 void cmd_erase();
 void cmd_erase_8_16();
 void cmd_erase_16();
+void cmd_erase(uint8_t cmd);
 
 // Common
 void cmd_read_id(uint8_t * out);

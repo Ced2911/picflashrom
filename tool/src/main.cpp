@@ -15,10 +15,11 @@
 #include "hidapi.h"
 #include "Command.h"
 #include "usb.h"
-#include "ccrwrom.h"
 #include "romdb.h"
+#include "ccrwrom.h"
 #include "rom_tools.h"
 #include "debug.h"
+#include "console/snes.h"
 
 #ifdef WIN32
 #define PATH_DELIM	'\\'
@@ -26,6 +27,9 @@
 #define PATH_DELIM	'/'
 #endif
 
+int verbose_flag = 0;
+int console_type = CONSOLE_TYPE_RAW;
+int console_memory_area = 0;
 
 enum ARG_COMMAND {
 	ARG_HELP = 0,
@@ -43,7 +47,7 @@ enum ARG_COMMAND {
 
 struct command_available_t : option {
 	const char *help;
-	command_available_t(const char *_name, int _has_arg, int *_flag, int _val, const char *_help)  {
+	command_available_t(const char *_name, int _has_arg, int *_flag, int _val, const char *_help) {
 		name = _name;
 		has_arg = _has_arg;
 		flag = _flag;
@@ -65,6 +69,8 @@ static command_available_t commands[] = {
 	{ "read",  required_argument, 0, 'r' , "Read rom to file" },
 	{ "size",    required_argument, 0, 's', "Size to read/write in bytes" },
 	{ "M",    required_argument, 0, 'm', "Size to read/write in megabit" },
+	{ "console",    required_argument, 0, 'c', "Console type [raw, snes, genesis, ...]" },
+	{ "area",    required_argument, 0, 'a', "memory area, 0 rom or 1 for sram" },
 #if _DEBUG
 	{ "debug",    required_argument, 0, 'W', "Debug write cmd..." },
 	{ "debug",    required_argument, 0, 'G', "Debug cmd addr/data" },
@@ -92,19 +98,22 @@ int rom_debug_write(const char * filename, uint32_t size);
 static void help() {
 	char help[2048] = "";
 	char * p = help;
-	output::print("usage: %s\r\n", app_name.c_str());
+	printf("usage: %s\r\n", app_name.c_str());
 
 	for (int i = 0; i < ARRAY_SIZE(commands); i++) {
-		if (commands[i].name !=NULL)
-			output::print("\t -%s \t\t %s\r\n", commands[i].name, commands[i].help);
+		if (commands[i].name != NULL)
+			printf("\t -%s \t\t %s\r\n", commands[i].name, commands[i].help);
 	}
 }
 
 
-static void progress_barr(char *label, int step, int total)
+void progress_barr(char *label, int step, int total)
 {
 	//progress width
 	const int pwidth = 72;
+
+	// clamp
+	step = min(step, total);
 
 	//minus label len
 	int width = pwidth - strlen(label);
@@ -119,124 +128,10 @@ static void progress_barr(char *label, int step, int total)
 	//fill progress bar with spaces
 	printf("% *c", width - pos + 1, ']');
 	printf(" %3d%%\r", percent);
-}
 
-static uint32_t file_size(const char * filename) {
-	FILE * fd = fopen(filename, "rb");
-	uint32_t s = 0;
-	if (fd) {
-		fseek(fd, 0, SEEK_END);
-		s = ftell(fd);
+	if (step == total) {
+		printf("\r\n");
 	}
-	fclose(fd);
-	return s;
-}
-
-static void rom_read(const char * filename, uint32_t size) {
-	uint8_t * data = new uint8_t[size];
-	FILE * fd = fopen(filename, "wb");
-	if (fd) {
-		// run in thread
-		output::info("Reading to %s\r\n", filename);
-		cclock elapsed;
-		std::chrono::milliseconds span(100);
-		std::future<uint32_t> read = std::async(cmd_read_rom, data, size);
-		float percent = 0;
-
-		while (read.wait_for(span) == std::future_status::timeout) {
-			progress_barr("Reading: ", cmd_position.get(), size);
-		}
-
-		// Finished
-		if (read.get() == 0) {
-			// 100%
-			progress_barr("Reading: ", size, size);
-
-			if (verbose_flag) {
-				output::info("\r\nTime elapsed %f\r\n", elapsed.elapsed());
-			}
-
-			fwrite(data, size, 1, fd);
-		}
-		else {
-			output::error("Error reading eeprom to %s.\r\n", filename);
-		}
-	}
-	else {
-		output::error("Can not open %s for writing.\r\n", filename);
-	}
-	fclose(fd);
-	//delete[] data;
-}
-
-uint32_t _cmd_write_rom(const rom_t * rom, uint8_t * in, uint32_t size) {
-	if (rom && rom->feature & FEAT_FAST_WRITE_AMD) {
-		output::error("cmd_write_rom_amd_unlocked\r\n");
-		return cmd_write_rom_amd_unlocked(in, size);
-	}
-	else if (rom && rom->feature & FEAT_COMMAND_16_BIT) {
-		output::error("cmd_write_rom_8_16\r\n");
-		return cmd_write_rom_8_16(in, size);
-	}
-	else {
-		output::error("cmd_write_rom\r\n");
-		return cmd_write_rom(in, size);
-	}
-}
-
-static int rom_write(const char * filename, uint32_t size, const rom_t * rom = NULL) {
-	uint32_t status = 0;
-	uint8_t * data = new uint8_t[size];
-	FILE * fd = fopen(filename, "rb");
-	if (fd) {
-		fread(data, size, 1, fd);
-
-		// Erase the chip first
-		//cmd_erase();
-
-
-		// run in thread
-		cclock elapsed;
-		std::chrono::milliseconds span(100);
-		std::future<uint32_t> write = std::async(_cmd_write_rom, rom, data, size);
-		float percent = 0;
-		output::info("Writing %s\r\n", filename);
-
-		while (write.wait_for(span) == std::future_status::timeout) {
-			progress_barr("Writing: ", cmd_position.get(), size);
-		}
-		status = write.get();
-		// Finished
-		if (status == 0) {
-			// 100%
-			progress_barr("Writing: ", size, size);
-
-			if (verbose_flag) {
-				output::info("\r\nTime elapsed %f\r\n", elapsed.elapsed());
-			}
-		}
-		else {
-			output::info("Error writing at 0x%x\r\n", status);
-		}
-		fclose(fd);
-		return 0;
-	}
-	else {
-		output::error("Can not open %s for reading.\r\n", filename);
-	}
-	return -1;
-	//delete[] data;
-}
-
-static int rom_erase(const rom_t * rom = NULL) {
-	if (rom != NULL && (rom->feature &FEAT_COMMAND_16_BIT)) {
-		output::debug("cmd_erase_8_16.\r\n");
-		cmd_erase_8_16();
-	} else {
-		output::debug("cmd_erase.\r\n");
-		cmd_erase();
-	}
-	return 0;
 }
 
 
@@ -274,9 +169,30 @@ int main(int argc, char* argv[])
 	return 0;
 #endif
 
+	console_type = CONSOLE_TYPE_RAW;
+	console_memory_area = 0;
+
 	//while ((c = getopt(argc, argv, "bier:w:s:m:d:")) != -1)
 	while ((c = getopt_long(argc, argv, optlg, commands, &option_index)) != -1)
 		switch (c) {
+		case 'c':
+			if (stricmp(optarg, "snes") == 0) {
+				console_type = CONSOLE_TYPE_SNES;
+			}
+			else if (stricmp(optarg, "genesis") == 0) {
+				console_type = CONSOLE_TYPE_GENESIS;
+			}
+
+			break;
+		case 'a':
+			if (stricmp(optarg, "rom") == 0) {
+				console_memory_area = MEMORY_AREA_ROM;
+			}
+			else if (stricmp(optarg, "sram") == 0) {
+				console_memory_area = MEMORY_AREA_SRAM;
+			}
+			break;
+
 		case 's':
 			//size = atoi(optarg) * 128 * 1024;
 			size = atoi(optarg);
@@ -338,27 +254,51 @@ int main(int argc, char* argv[])
 		if (handle != NULL) {
 			cmd_query(buf);
 			if (buf[0x01] == 0x29) {
+				// Display firmware information
 
 			}
 
-			// Identify rom
-			cmd_read_id(buf);
-			rom = romdb_identify(buf);
-			if (rom) {
-				output::info("Known chip: %s - %s\r\n", rom->manufacturer, rom->name);
+			if (console_type == CONSOLE_TYPE_RAW) {
+				LINFO("Running in raw mode");
 			}
-			// tmp hack
-			//rom = romdb_identify(0xC2, 0xA8);
+			else {
+				LINFO("Running in {0} mode", (console_type == CONSOLE_TYPE_SNES) ? "SNES" : "GENESIS");
+				LINFO("Memory area: {0:s}", (console_memory_area == MEMORY_AREA_ROM) ? "ROM" : "SRAM");
+			}
+
+			if ((console_type == CONSOLE_TYPE_RAW) || (command != ARG_READ)) {
+				// Identify rom
+				cmd_read_id(buf);
+				rom = romdb_identify(buf);
+
+				if (console_type == CONSOLE_TYPE_RAW) {
+					// check if genesis port used
+					if (romdb_is_from_genesis_port(buf)) {
+						console_type = CONSOLE_TYPE_GENESIS;
+					}
+				}
+
+				if (console_type == CONSOLE_TYPE_GENESIS) {
+					LINFO("Genesis / 16bit mode");
+				}
+				else {
+					LINFO("Snes / 8bit mode");
+				}
+				if (rom) {
+					LINFO("Known chip: {0} - {1}", rom->manufacturer, rom->name);
+				}
+			}
+
 			switch (command) {
 			case ARG_BOOTLOADER:
 				cmd_bootloader();
-				output::success("reboot to bootloader\r\n");
+				LINFO("Reboot to bootloader");
 				break;
 
 			case ARG_ID:
 				// Identify rom
 				if (!rom) {
-					output::warning("Unknown chip\r\n");
+					LWARN("Unknown chip");
 				}
 
 				break;
@@ -368,28 +308,43 @@ int main(int argc, char* argv[])
 				}
 				if (size > 0) {
 					rom_read(filename, size);
-					output::success("Chip read\r\n");
+					LINFO("Chip read");
 				}
 
 				break;
 			case ARG_ERASE:
 				rom_erase(rom);
-				output::success("Chip erased\r\n");
+				LINFO("Chip erased");
 				break;
 			case ARG_WRITE:
-				if (size == 0 && rom != NULL) {
-					//size = rom->size;
-					size = min(file_size(filename), rom->size);
-				}
+				if (console_memory_area == MEMORY_AREA_ROM) {
+					if (size == 0 && rom != NULL) {
+						// set/clamp max filesize
+						size = min(file_size(filename), rom->size);
+					}
 
-				if (size > 0 && rom != NULL) {
-					if (rom_write(filename, size, rom) == 0) {
-						output::success("Chip written\r\n");
+					if (size > 0 && rom != NULL) {
+						if (rom_write(filename, size, rom) == 0) {
+							LINFO("Chip written");
+						}
+						else {
+							LERROR("Error");
+						}
 					}
 					else {
-						output::error("Error\r\n");
+						LERROR("Unknow memory can't write");
 					}
 				}
+				else {
+					size = file_size(filename);
+					if (rom_write(filename, size, NULL) == 0) {
+						LINFO("Chip written");
+					}
+					else {
+						LERROR("Error");
+					}
+				}
+
 				break;
 
 #ifdef _DEBUG
@@ -399,14 +354,14 @@ int main(int argc, char* argv[])
 
 			case ARG_DBG_DATA:
 				dbg_addr = -1;
-				output::success("send cmd_dbg_data %02x %08x\r\n", dbg_data, dbg_addr);
+				LINFO("send cmd_dbg_data %02x %08x", dbg_data, dbg_addr);
 				cmd_dbg_data(dbg_data, dbg_addr);
 				break;
 			}
 #endif
 		}
 		else {
-			output::error("No device connected\r\n");
+			LERROR("No device connected");
 		}
 
 		usb.close();

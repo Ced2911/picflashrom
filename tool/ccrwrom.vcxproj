@@ -23,8 +23,11 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
     </ClCompile>
     <ClCompile Include="src\Command.cpp" />
+    <ClCompile Include="src\console\cart.cpp" />
+    <ClCompile Include="src\console\snes.cpp" />
     <ClCompile Include="src\debug.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\rom.cpp" />
     <ClCompile Include="src\romdb.cpp" />
     <ClCompile Include="src\rom_tools.cpp" />
     <ClCompile Include="src\test.cpp" />
@@ -34,6 +37,8 @@
     <ClInclude Include="libs\hidapi\hidapi\hidapi.h" />
     <ClInclude Include="src\ccrwrom.h" />
     <ClInclude Include="src\Command.h" />
+    <ClInclude Include="src\console\cart.h" />
+    <ClInclude Include="src\console\snes.h" />
     <ClInclude Include="src\debug.h" />
     <ClInclude Include="src\romdb.h" />
     <ClInclude Include="src\rom_tools.h" />
@@ -109,13 +114,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions> _CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\console\tools\ccrwrom\libs\libusb;libs/hidapi/hidapi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>libs\spdlog;src;libs\libusb;libs/hidapi/hidapi;libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>setupapi.lib;libusb-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>I:\console\tools\ccrwrom\libs\libusb;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\libusb;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -49,7 +49,8 @@
 #include <stdint.h>
 
 /** DEFINITIONS ****************************************************/
-#define USB_EP0_BUFF_SIZE		8	// Valid Options: 8, 16, 32, or 64 bytes.
+//#define USB_EP0_BUFF_SIZE		8	// Valid Options: 8, 16, 32, or 64 bytes.
+#define USB_EP0_BUFF_SIZE		64	// Valid Options: 8, 16, 32, or 64 bytes.
 								// Using larger options take more SRAM, but
 								// does not provide much advantage in most types
 								// of applications.  Exceptions to this, are applications
@@ -137,7 +138,7 @@
 //and it never uses host to device control transfers with data stage, then
 //it is not required to enable the USB_ENABLE_STATUS_STAGE_TIMEOUTS feature.
 
-#define USB_ENABLE_STATUS_STAGE_TIMEOUTS    //Comment this out to disable this feature.
+//#define USB_ENABLE_STATUS_STAGE_TIMEOUTS    //Comment this out to disable this feature.
 
 //Section 9.2.6 of the USB 2.0 specifications indicate that:
 //1.  Control transfers with no data stage: Status stage must complete within

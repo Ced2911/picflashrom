@@ -37,7 +37,15 @@ const rom_t romdb[] = {
 		0xC9,
 		8 * 1024 * 1024,
 		FEAT_READ_8_BIT | FEAT_WRITE_8_BIT | FEAT_COMMAND_16_BIT,
-	}
+	},{
+		"MXIC",
+		"MX29L3211",
+		0xC2,
+		0xF9,
+		4 * 1024 * 1024,
+		FEAT_READ_8_BIT | FEAT_WRITE_8_BIT | FEAT_COMMAND_16_BIT | FEAT_PAGE_WRITE,
+		//FEAT_READ_8_BIT | FEAT_WRITE_8_BIT | FEAT_COMMAND_16_BIT,
+	},
 };
 
 
@@ -59,8 +67,24 @@ const rom_t * romdb_identify(uint8_t * buf) {
 	r = romdb_identify(buf[0], buf[1]);
 	if (r == NULL) {
 		// try 16 bit command ?
-		r = romdb_identify(buf[0x10], buf[0x11]);
+		r = romdb_identify(buf[0x8], buf[0x9]);
 	}
-
+	if (r == NULL) {
+		// try genesis port ?
+		r = romdb_identify(buf[0x11], buf[0x13]);
+	}
+	if (r == NULL) {
+		// snes lorom 8 bit
+		r = romdb_identify(buf[0x18], buf[0x19]);
+	}
+	if (r == NULL) {
+		// snes lorom 8/16 bit
+		r = romdb_identify(buf[0x20], buf[0x21]);
+	}
 	return r;
+}
+
+
+bool romdb_is_from_genesis_port(uint8_t * buf) {
+	return romdb_identify(buf[0x21], buf[0x23]) != NULL;
 }
